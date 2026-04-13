@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:millio/features/auth/presentation/screens/onboarding_main.dart';
 import 'dart:math';
 
-class LoadingScreen extends StatelessWidget {
+import 'package:millio/features/auth/presentation/screens/onboarding_screen_1.dart';
+
+class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
+
+  @override
+  State<LoadingScreen> createState() => _LoadingScreenState();
+}
+
+class _LoadingScreenState extends State<LoadingScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _navigateNext();
+  }
+
+  void _navigateNext() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OnboardingScreen(), 
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

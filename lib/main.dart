@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/loading_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => OnboardingProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+    );
 }
 
 class MyApp extends StatelessWidget {
