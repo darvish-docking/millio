@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/onboarding_screen_1.dart';
 import 'package:millio/features/auth/presentation/screens/onboarding_screen_2.dart';
@@ -58,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: provider.currentIndex == index ? 20 : 6,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.background,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -75,7 +76,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: AppColors.background.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(40),
                     ),
                     child: Row(
@@ -95,7 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             child: const Center(
                               child: Text(
                                 "Skip",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: AppColors.background),
                               ),
                             ),
                           ),
@@ -122,13 +123,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: AppColors.background,
                                 borderRadius: BorderRadius.circular(30),
 
                                 // ✨ GLOW EFFECT
                                 boxShadow: const [
                                   BoxShadow(
-                                    color: Colors.white70,
+                                    color: AppColors.boxShadow,
                                     blurRadius: 20,
                                     spreadRadius: 2,
                                   ),
@@ -138,7 +139,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 child: Text(
                                   "Next",
                                   style: TextStyle(
-                                    color: Colors.green.shade700,
+                                    color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

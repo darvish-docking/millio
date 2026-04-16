@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/onboarding_main.dart';
 import 'dart:math';
 
@@ -34,6 +35,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -50,10 +56,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white,        // 🔹 top-left
+              AppColors.background,        // 🔹 top-left
               // Color(0xFF6A00F4),   // violet
-              Color(0xFF62C222),   // green
-              Colors.white,        // 🔹 bottom-right
+              AppColors.primary,   // green
+              AppColors.background,        // 🔹 bottom-right
             ],
             stops: [
               0.2,   // white start
@@ -71,7 +77,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         right: -80,
         child: _blurCircle(
           size: 350,
-          color: Color(0xFF62C222).withValues(alpha:  0.3),
+          color: AppColors.primary.withValues(alpha:  0.3),
         ),
       ),
 
@@ -82,7 +88,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   child: eggOvalLine(
     width: 440,
     height: 220,
-    color: Colors.green.withOpacity(0.4),
+    color: AppColors.primary.withOpacity(0.4),
     angle: 310, // tweak slightly if needed
   ),
 ),
@@ -94,7 +100,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         left: -80,
         child: _blurCircle(
           size: 300,
-          color: Colors.purpleAccent.withValues(alpha:  0.3),
+          color: AppColors.purpleAccent.withValues(alpha:  0.3),
         ),
       ),
 
@@ -104,7 +110,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         left: -80,
         child: _blurCircle(
           size: 200,
-          color: Colors.purple.withValues(alpha:  0.4),
+          color: AppColors.purple.withValues(alpha:  0.4),
         ),
       ),
 
@@ -115,14 +121,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: eggOvalLine(
           width: 440,
           height: 220,
-          color: Colors.purple.withValues(alpha:  0.3),
+          color: AppColors.purple.withValues(alpha:  0.3),
           angle: -40,
         ),
       ),
 
       /// 🔹 Extra soft white overlay (optional for smoothness)
       Container(
-        color: Colors.white.withValues(alpha:  0.1),
+        color: AppColors.background.withValues(alpha:  0.1),
       ),
     
       Positioned(
@@ -155,11 +161,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
                 /// 🔸 Logo (from assets)
                 Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding:  EdgeInsets.all(width * 0.045),
                   child: Image.asset(
                     "assets/images/Logo.png",
                     fit: BoxFit.contain,
-                    color: Colors.lightGreenAccent,
+                    color: AppColors.lightGreenAccent,
                   ),
                 ),
 

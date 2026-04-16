@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/onboarding_screen_4.dart';
 
 class OnboardingScreenThree extends StatefulWidget {
@@ -24,9 +25,9 @@ class _OnboardingScreenThreeState extends State<OnboardingScreenThree> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF7E57C2),
-              Color(0xFF8BC34A), // green
-              Color(0xFF7E57C2), // purple
+              AppColors.secondary,
+              AppColors.primary, // green
+              AppColors.secondary, // purple
             ],
           ),
         ),
@@ -67,7 +68,7 @@ class _OnboardingScreenThreeState extends State<OnboardingScreenThree> {
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
                       height: 1.1,
-                      color: Colors.white,
+                      color: AppColors.background,
                     ),
                   ),
                 ),
