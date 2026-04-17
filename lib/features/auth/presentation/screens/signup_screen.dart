@@ -236,6 +236,7 @@ class SignUpScreen extends StatelessWidget {
                   ),
 
                   SizedBox(height: height * 0.015),
+                  
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),

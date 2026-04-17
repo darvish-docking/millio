@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/features/auth/presentation/screens/forgot_password.dart';
 import 'package:millio/features/auth/presentation/screens/otp_screen.dart';
 import 'package:millio/features/auth/presentation/screens/signup_screen.dart';
 
@@ -257,7 +258,14 @@ class SignInScreen extends StatelessWidget {
                         ],
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordScreen(),
+                            ),
+                          );
+                        },
                         child: const Text(
                           "Forgot Password",
                           style: TextStyle(

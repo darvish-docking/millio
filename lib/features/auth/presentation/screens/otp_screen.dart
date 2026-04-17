@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/features/auth/presentation/screens/profile_details_screen.dart';
 
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
@@ -179,7 +180,14 @@ class OtpScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileDetailsScreen(),
+                    ),
+                  );
+                },
                 child: Text(
                   "Confirm",
                   style: TextStyle(
