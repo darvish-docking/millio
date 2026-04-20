@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/common/custom_bottom_nav.dart';
+import 'package:millio/core/constants/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,6 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   final offers = List.generate(6, (index) => index);
+
+  final PageController _pageController = PageController(viewportFraction: 0.75);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,36 +146,62 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: h * .015),
 
               /// CATEGORY LIST
-              SizedBox(
-                height: h * .14,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (_, index) {
-                    return Container(
-                      width: w * .22,
-                      margin: EdgeInsets.only(right: 12),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: w * .08,
-                            backgroundColor: Colors.orange.shade50,
-                            child: Image.asset(
-                              "assets/images/${categories[index]}.png",
-                              width: w * .09,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            categories[index],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: w * .03),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+              GridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: categories.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 0.75,
                 ),
+                itemBuilder: (_, index) {
+                  final bgColors = [
+                    Colors.orange.shade50,
+                    Colors.blue.shade50,
+                    Colors.pink.shade50,
+                    Colors.green.shade50,
+                    Colors.purple.shade50,
+                    Colors.red.shade50,
+                    Colors.teal.shade50,
+                    Colors.amber.shade50,
+                  ];
+                  return Column(
+                    children: [
+                      Container(
+                        width: w * .16,
+                        height: w * .16,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              bgColors[index % bgColors.length],
+                              Colors.white,
+                            ],
+                          ),
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            "assets/images/${categories[index]}.png",
+                            width: w * .09,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        categories[index],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: w * .03),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  );
+                },
               ),
 
               SizedBox(height: h * .025),
@@ -172,19 +212,91 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: h * .015),
 
               SizedBox(
-                height: h * .28,
+                height: h * .35,
                 child: PageView.builder(
-                  controller: PageController(viewportFraction: .75),
+                  controller: _pageController,
                   itemCount: 5,
                   itemBuilder: (_, index) {
-                    return AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        image: DecorationImage(
-                          image: AssetImage("assets/deal${index+1}.png"),
-                          fit: BoxFit.cover,
+                    return AnimatedBuilder(
+                      animation: _pageController,
+                      builder: (context, child) {
+                        double value = 1.0;
+                        if (_pageController.position.haveDimensions) {
+                          value = _pageController.page! - index;
+                          value = (1 - (value.abs() * 0.15)).clamp(0.85, 1.0);
+                        } else {
+                          value = index == 0 ? 1.0 : 0.85;
+                        }
+                        return Transform.scale(
+                          scale: value,
+                          child: child,
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withOpacity(0.4),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Image.asset(
+                                "assets/deal${index + 1}.png",
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Center(
+                                    child: Icon(Icons.local_offer, color: Colors.white54, size: 50),
+                                  );
+                                },
+                              ),
+                              Container(
+                                // width: w * 0.05,
+                                // height: h * 0.05,
+                                color: const Color.fromARGB(255, 201, 241, 203).withOpacity(0.6)),
+                              Center(
+                                child:Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                  Image.asset(
+                                  "assets/images/food-1.png",
+                                  width: w * 0.2,
+                                  height: h * 0.2,
+                                  
+                                ),
+                                Text('Seafood Som Tum',
+                                maxLines: 2,
+                                style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                
+                                  Text('\$ 3.99 - \$ 2.59',
+                                maxLines: 2,
+                                style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                  ]
+                                )
+                                 
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -233,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius:
                                 BorderRadius.circular(18),
                             child: Image.asset(
-                              "assets/food1.png",
+                              "assets/images/food-2.png",
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),
@@ -253,19 +365,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Row(
                           children: [
-                            Icon(Icons.location_on,
-                                size: 14,
-                                color: Colors.grey),
-                            Text("1.2 km"),
+                            // Icon(Icons.location_on,
+                            //     size: 14,
+                            //     color: const Color.fromARGB(255, 236, 234, 234)),
 
-                            Spacer(),
+                            Text("1.2 km |",
+                            style: TextStyle(
+                              color: AppColors.textSecondary
+                            ),),
+
+                            // Spacer(),
 
                             Icon(Icons.star,
                                 size: 14,
                                 color: Colors.amber),
 
-                            Text("4.8"),
-                            Text("(230)")
+                            Text("4.8",
+                            style: TextStyle(
+                              color: AppColors.textSecondary
+                            ),),
+                            Text("(230)",
+                            style: TextStyle(
+                              color: AppColors.textSecondary
+                            ),)
                           ],
                         ),
 
@@ -274,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           "\$12.99",
                           style: TextStyle(
-                            color: Colors.green,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         )
@@ -332,7 +454,14 @@ class _HomeScreenState extends State<HomeScreen> {
         Spacer(),
         TextButton(
           onPressed: () {},
-          child: Text("See All"),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.green.shade50,
+            foregroundColor: Colors.green,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          child: const Text("See All"),
         ),
       ],
     );

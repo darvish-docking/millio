@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class CustomBottomNav extends StatelessWidget {
-
   final int index;
   final Function(int) onTap;
 
@@ -13,34 +12,76 @@ class CustomBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: index,
-      onTap: onTap,
-      selectedItemColor: Colors.green,
-      unselectedItemColor: Colors.grey,
-      type: BottomNavigationBarType.fixed,
-      items: const [
+    // Nav item icons: Home, Ticket with a star, Messages, Profile
+    final List<IconData> navIcons = [
+      Icons.home_outlined,
+      Icons.local_activity_outlined, 
+      Icons.chat_bubble_outline,
+      Icons.person_outline,
+    ];
 
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: "Home",
-        ),
+    final List<IconData> activeNavIcons = [
+      Icons.home,
+      Icons.local_activity,
+      Icons.chat_bubble,
+      Icons.person,
+    ];
 
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_border),
-          label: "Wishlist",
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 16),
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(50),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart_outlined),
-          label: "Cart",
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(navIcons.length, (i) {
+            final isActive = index == i;
+            return GestureDetector(
+              onTap: () => onTap(i),
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox(
+                width: 60,
+                height: double.infinity,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      isActive ? activeNavIcons[i] : navIcons[i],
+                      color: isActive ? Colors.white : Colors.grey.shade600,
+                      size: 28,
+                    ),
+                    if (isActive)
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          height: 8,
+                          width: 16,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          }),
         ),
-
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          label: "Profile",
-        ),
-      ],
+      ),
     );
   }
 }
