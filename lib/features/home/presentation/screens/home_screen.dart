@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/features/home/presentation/screens/categories.dart';
+import 'package:millio/features/home/presentation/screens/hot_deal_today.dart';
+import 'package:millio/features/home/presentation/screens/special_offers.dart';
+
+class SpecialOffer {
+  final String image;
+  final String title;
+  final String distance;
+  final String rating;
+  final String reviewCount;
+  final double price;
+
+  SpecialOffer({
+    required this.image,
+    required this.title,
+    required this.distance,
+    required this.rating,
+    required this.reviewCount,
+    required this.price,
+  });
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,7 +45,56 @@ class _HomeScreenState extends State<HomeScreen> {
     "Sea Food"
   ];
 
-  final offers = List.generate(6, (index) => index);
+  final List<SpecialOffer> specialOffers = [
+    SpecialOffer(
+      image: "assets/images/Buffalo Chicken Dip.png",
+      title: "Buffalo Chicken Dip",
+      distance: "1.2 km",
+      rating: "4.8",
+      reviewCount: "(230)",
+      price: 12.99,
+    ),
+    SpecialOffer(
+      image: "assets/images/Baked Spaghetti.png",
+      title: "Baked Spaghetti",
+      distance: "2.1 km",
+      rating: "4.5",
+      reviewCount: "(115)",
+      price: 15.50,
+    ),
+    SpecialOffer(
+      image: "assets/images/Maltesers Tiramisu.png",
+      title: "Maltesers Tiramisu",
+      distance: "0.8 km",
+      rating: "4.9",
+      reviewCount: "(540)",
+      price: 24.00,
+    ),
+    SpecialOffer(
+      image: "assets/images/Backyard Burgers.png",
+      title: "Backyard Burgers",
+      distance: "3.5 km",
+      rating: "4.7",
+      reviewCount: "(88)",
+      price: 6.99,
+    ),
+    SpecialOffer(
+      image: "assets/images/Sirloin steak.png",
+      title: "Sirloin steak",
+      distance: "1.5 km",
+      rating: "4.6",
+      reviewCount: "(122)",
+      price: 4.50,
+    ),
+    SpecialOffer(
+      image: "assets/images/Canadian Lobster.png",
+      title: "Canadian Lobster",
+      distance: "4.2 km",
+      rating: "4.2",
+      reviewCount: "(319)",
+      price: 5.99,
+    ),
+  ];
 
   final PageController _pageController = PageController(viewportFraction: 0.75);
 
@@ -133,15 +203,103 @@ class _HomeScreenState extends State<HomeScreen> {
                     top: 0,
                     child: Image.asset(
                       "assets/images/Hamburger.png",
+                      width: w * 0.5,
+                      height: h * 0.3,
                     ),
                   ),
+                  Positioned(
+                    left: 20,
+                    bottom: 0,
+                    top: 20,
+                    child: Text('Sale Off 30%',
+                    style: TextStyle(
+                      color: AppColors.background,
+                      fontFamily:  'Montserrat',
+                    ),)
+                  ),
+                  Positioned(
+                    left: 20,
+                    bottom: 0,
+                    top: 20,
+                    child: Divider(
+                      height: 2,          // total space occupied vertically
+                      thickness: 2,        // actual line thickness
+                      color: Colors.grey,
+                      indent: 20,          // left spacing
+                      endIndent: 20,       // right spacing
+                    ),
+                  ),
+                  
+                  Positioned(
+                    left: 20,
+                    bottom: 0,
+                    top: 40,
+                    child: Text('Special',
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: AppColors.background,
+                      fontFamily:  'Montserrat',
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold
+                    ),)
+                  ),
+
+                   Positioned(
+                    left: 20,
+                    bottom: 0,
+                    top: 80,
+                    child: Text('Offers',
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: AppColors.background,
+                      fontFamily:  'Montserrat',
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold
+                    ),)
+                  ),
+
+                  Positioned(
+                    left: 20,
+                    bottom: 0,
+                    top: 120,
+                    child: 
+                  Container(
+                    height: h * 0.01,
+                    width: w * 0.08,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.chevron_right,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  )),
+
                 ],
               ),
 
               SizedBox(height: h * .03),
 
               /// CATEGORIES HEADER
-              sectionHeader("Categories"),
+              sectionHeader("Categories", onSeeAllTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoriesScreen(categories: categories),
+                  ),
+                );
+              }),
 
               SizedBox(height: h * .015),
 
@@ -207,7 +365,14 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: h * .025),
 
               /// HOT DEAL
-              sectionHeader("Hot Deal Today"),
+              sectionHeader("Hot Deal Today", onSeeAllTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HotDealTodayScreen(),
+                  ),
+                );
+              }),
 
               SizedBox(height: h * .015),
 
@@ -250,15 +415,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
-                              Image.asset(
-                                "assets/deal${index + 1}.png",
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Center(
-                                    child: Icon(Icons.local_offer, color: Colors.white54, size: 50),
-                                  );
-                                },
-                              ),
+                              // Image.asset(
+                              //   "assets/deal${index + 1}.png",
+                              //   fit: BoxFit.cover,
+                              //   errorBuilder: (context, error, stackTrace) {
+                              //     return const Center(
+                              //       child: Icon(Icons.local_offer, color: Colors.white54, size: 50),
+                              //     );
+                              //   },
+                              // ),
                               Container(
                                 // width: w * 0.05,
                                 // height: h * 0.05,
@@ -307,28 +472,36 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: h * .03),
 
               /// SPECIAL OFFER
-              sectionHeader("Special Offers"),
+              sectionHeader("Special Offers", onSeeAllTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SpecialOffersScreen(specialOffers: specialOffers),
+                  ),
+                );
+              }),
 
               SizedBox(height: h * .015),
 
               GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: offers.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: specialOffers.length,
                 gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
+                    const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 14,
                   crossAxisSpacing: 14,
                   childAspectRatio: .72,
                 ),
                 itemBuilder: (_, index) {
+                  final offer = specialOffers[index];
                   return Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           blurRadius: 8,
                           color: Colors.black12,
@@ -345,57 +518,55 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius:
                                 BorderRadius.circular(18),
                             child: Image.asset(
-                              "assets/images/food-2.png",
+                              offer.image,
                               fit: BoxFit.cover,
                               width: double.infinity,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(color: Colors.grey.shade200, child: const Icon(Icons.fastfood, color: Colors.grey)),
                             ),
                           ),
                         ),
 
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
                         Text(
-                          "Burger Meal",
-                          style: TextStyle(
+                          offer.title,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
 
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
 
                         Row(
                           children: [
-                            // Icon(Icons.location_on,
-                            //     size: 14,
-                            //     color: const Color.fromARGB(255, 236, 234, 234)),
-
-                            Text("1.2 km |",
-                            style: TextStyle(
+                            Text("${offer.distance} |",
+                            style: const TextStyle(
                               color: AppColors.textSecondary
                             ),),
 
-                            // Spacer(),
-
-                            Icon(Icons.star,
+                            const Icon(Icons.star,
                                 size: 14,
                                 color: Colors.amber),
 
-                            Text("4.8",
-                            style: TextStyle(
+                            Text(offer.rating,
+                            style: const TextStyle(
                               color: AppColors.textSecondary
                             ),),
-                            Text("(230)",
-                            style: TextStyle(
+                            Text(offer.reviewCount,
+                            style: const TextStyle(
                               color: AppColors.textSecondary
                             ),)
                           ],
                         ),
 
-                        SizedBox(height: 6),
+                        const SizedBox(height: 6),
 
                         Text(
-                          "\$12.99",
-                          style: TextStyle(
+                          "\$${offer.price.toStringAsFixed(2)}",
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
@@ -411,15 +582,52 @@ class _HomeScreenState extends State<HomeScreen> {
               /// VIDEO AREA
               Container(
                 height: h * .22,
+                width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.black12,
                   borderRadius: BorderRadius.circular(20),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.play_circle_fill,
-                    size: 60,
+                  image: const DecorationImage(
+                    image: AssetImage("assets/images/video.png"),
+                    fit: BoxFit.cover,
                   ),
+                ),
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.8),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Positioned(
+                      left: 16,
+                      bottom: 16,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.play_circle_fill,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Video promotion",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -441,7 +649,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget sectionHeader(String title) {
+  Widget sectionHeader(String title, {VoidCallback? onSeeAllTap}) {
     return Row(
       children: [
         Text(
@@ -453,7 +661,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Spacer(),
         TextButton(
-          onPressed: () {},
+          onPressed: onSeeAllTap ?? () {},
           style: TextButton.styleFrom(
             backgroundColor: Colors.green.shade50,
             foregroundColor: Colors.green,
