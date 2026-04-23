@@ -60,7 +60,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
     final padding = w * 0.04;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -71,14 +71,14 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 children: [
                   // Back Button
                   Material(
-                    color: Colors.grey.shade100,
+                    color: AppColors.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: Colors.black),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
                       ),
                     ),
                   ),
@@ -100,14 +100,14 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon: Icon(Icons.call_outlined, color: Colors.black, size: w * 0.06),
+                    icon: Icon(Icons.call_outlined, color: AppColors.textPrimary, size: w * 0.06),
                     onPressed: () {},
                   ),
                   SizedBox(width: w * 0.04),
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon: Icon(Icons.warning_amber_rounded, color: Colors.black, size: w * 0.06),
+                    icon: Icon(Icons.warning_amber_rounded, color: AppColors.textPrimary, size: w * 0.06),
                     onPressed: () {},
                   ),
                 ],
@@ -133,7 +133,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                             child: Text(
                               msg.date!,
                               style: TextStyle(
-                                color: Colors.grey.shade400,
+                                color: AppColors.backgroundSecondary4,
                                 fontSize: w * 0.035,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Montserrat',
@@ -154,7 +154,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: w * 0.045, vertical: h * 0.002),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
@@ -163,7 +163,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                       offset: const Offset(0, 5),
                     ),
                   ],
-                  border: Border.all(color: Colors.grey.shade100),
+                  border: Border.all(color: AppColors.backgroundSecondary1),
                 ),
                 child: Row(
                   children: [
@@ -173,7 +173,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                         decoration: InputDecoration(
                           hintText: "Write a message...",
                           hintStyle: TextStyle(
-                            color: Colors.grey.shade400,
+                            color: AppColors.backgroundSecondary4,
                             fontFamily: 'Montserrat',
                             fontSize: w * 0.038,
                           ),
@@ -187,7 +187,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     Container(
                       height: 18,
                       width: 1,
-                      color: Colors.grey.shade200,
+                      color: AppColors.backgroundSecondary2,
                       margin: EdgeInsets.symmetric(horizontal: w * 0.01),
                     ),
 
@@ -207,11 +207,11 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.camera_alt_outlined, color: Colors.grey.shade400, size: w * 0.055),
+                                  icon: Icon(Icons.camera_alt_outlined, color: AppColors.backgroundSecondary4, size: w * 0.055),
                                   onPressed: () {},
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.grid_view_sharp, color: Colors.grey.shade400, size: w * 0.055),
+                                  icon: Icon(Icons.grid_view_sharp, color: AppColors.backgroundSecondary4, size: w * 0.055),
                                   onPressed: () {},
                                 ),
                               ],
@@ -248,7 +248,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               constraints: BoxConstraints(maxWidth: w * 0.72),
               padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: h * 0.014),
               decoration: BoxDecoration(
-                color: msg.isSentByMe ? AppColors.primary : Colors.grey.shade100,
+                color: msg.isSentByMe ? AppColors.primary : AppColors.backgroundSecondary1,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(w * 0.045),
                   topRight: Radius.circular(w * 0.045),
@@ -257,7 +257,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: AppColors.textPrimary.withOpacity(0.03),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -269,7 +269,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                   Text(
                     msg.text,
                     style: TextStyle(
-                      color: msg.isSentByMe ? Colors.white : Colors.black87,
+                      color: msg.isSentByMe ? AppColors.background : AppColors.textPrimarylight87,
                       fontFamily: 'Montserrat',
                       fontSize: w * 0.038,
                       height: 1.45,
@@ -281,7 +281,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     child: Text(
                       msg.time,
                       style: TextStyle(
-                        color: msg.isSentByMe ? Colors.white70 : Colors.grey.shade500,
+                        color: msg.isSentByMe ? AppColors.background07 : AppColors.backgroundSecondary5,
                         fontSize: w * 0.025,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Montserrat',
@@ -301,16 +301,16 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.background,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.12),
+                        color: AppColors.textPrimary.withOpacity(0.12),
                         blurRadius: 6,
                         offset: const Offset(0, 3),
                       ),
                     ],
-                    border: Border.all(color: Colors.grey.shade100),
+                    border: Border.all(color: AppColors.backgroundSecondary1),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

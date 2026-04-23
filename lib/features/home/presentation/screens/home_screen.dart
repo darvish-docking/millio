@@ -5,6 +5,7 @@ import 'package:millio/features/home/presentation/screens/categories.dart';
 import 'package:millio/features/home/presentation/screens/hot_deal_today.dart';
 import 'package:millio/features/home/presentation/screens/special_offers.dart';
 import 'package:millio/features/home/presentation/screens/chat_box_screen.dart';
+import 'package:millio/features/cart/presentation/screens/cart.dart';
 
 class SpecialOffer {
   final String image;
@@ -23,6 +24,57 @@ class SpecialOffer {
     required this.price,
   });
 }
+
+final List<SpecialOffer> specialOffers = [
+  SpecialOffer(
+    image: "assets/images/Buffalo Chicken Dip.png",
+    title: "Buffalo Chicken Dip",
+    distance: "1.2 km",
+    rating: "4.8",
+    reviewCount: "(230)",
+    price: 12.99,
+  ),
+  SpecialOffer(
+    image: "assets/images/Baked Spaghetti.png",
+    title: "Baked Spaghetti",
+    distance: "2.1 km",
+    rating: "4.5",
+    reviewCount: "(115)",
+    price: 15.50,
+  ),
+  SpecialOffer(
+    image: "assets/images/Maltesers Tiramisu.png",
+    title: "Maltesers Tiramisu",
+    distance: "0.8 km",
+    rating: "4.9",
+    reviewCount: "(540)",
+    price: 24.00,
+  ),
+  SpecialOffer(
+    image: "assets/images/Backyard Burgers.png",
+    title: "Backyard Burgers",
+    distance: "3.5 km",
+    rating: "4.7",
+    reviewCount: "(88)",
+    price: 6.99,
+  ),
+  SpecialOffer(
+    image: "assets/images/Sirloin steak.png",
+    title: "Sirloin steak",
+    distance: "1.5 km",
+    rating: "4.6",
+    reviewCount: "(122)",
+    price: 4.50,
+  ),
+  SpecialOffer(
+    image: "assets/images/Canadian Lobster.png",
+    title: "Canadian Lobster",
+    distance: "4.2 km",
+    rating: "4.2",
+    reviewCount: "(319)",
+    price: 5.99,
+  ),
+];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -46,57 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
     "Sea Food"
   ];
 
-  final List<SpecialOffer> specialOffers = [
-    SpecialOffer(
-      image: "assets/images/Buffalo Chicken Dip.png",
-      title: "Buffalo Chicken Dip",
-      distance: "1.2 km",
-      rating: "4.8",
-      reviewCount: "(230)",
-      price: 12.99,
-    ),
-    SpecialOffer(
-      image: "assets/images/Baked Spaghetti.png",
-      title: "Baked Spaghetti",
-      distance: "2.1 km",
-      rating: "4.5",
-      reviewCount: "(115)",
-      price: 15.50,
-    ),
-    SpecialOffer(
-      image: "assets/images/Maltesers Tiramisu.png",
-      title: "Maltesers Tiramisu",
-      distance: "0.8 km",
-      rating: "4.9",
-      reviewCount: "(540)",
-      price: 24.00,
-    ),
-    SpecialOffer(
-      image: "assets/images/Backyard Burgers.png",
-      title: "Backyard Burgers",
-      distance: "3.5 km",
-      rating: "4.7",
-      reviewCount: "(88)",
-      price: 6.99,
-    ),
-    SpecialOffer(
-      image: "assets/images/Sirloin steak.png",
-      title: "Sirloin steak",
-      distance: "1.5 km",
-      rating: "4.6",
-      reviewCount: "(122)",
-      price: 4.50,
-    ),
-    SpecialOffer(
-      image: "assets/images/Canadian Lobster.png",
-      title: "Canadian Lobster",
-      distance: "4.2 km",
-      rating: "4.2",
-      reviewCount: "(319)",
-      price: 5.99,
-    ),
-  ];
-
   final PageController _pageController = PageController(viewportFraction: 0.75);
 
   @override
@@ -118,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -139,6 +140,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
 
                   Icon(Icons.notifications_none, size: w * .07),
+                  SizedBox(width: w * .03),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const CartScreen()),
+                      );
+                    },
+                    child: Icon(Icons.shopping_cart_outlined, size: w * .07),
+                  ),
                   SizedBox(width: w * .03),
 
                   GestureDetector(
@@ -170,12 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
               /// SEARCH BAR
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 10,
-                      color: Colors.black12,
+                      color: AppColors.textPrimarylight12,
                       offset: Offset(0, 4),
                     )
                   ],
@@ -201,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     height: h * .18,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 121, 39, 176),
+                      color: AppColors.home,
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
@@ -233,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Divider(
                       height: 2,          // total space occupied vertically
                       thickness: 2,        // actual line thickness
-                      color: Colors.grey,
+                      color: AppColors.backgroundSecondary,
                       indent: 20,          // left spacing
                       endIndent: 20,       // right spacing
                     ),
@@ -276,11 +288,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: h * 0.01,
                     width: w * 0.08,
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black12,
+                          color: AppColors.textPrimarylight12,
                           blurRadius: 8,
                           offset: Offset(0, 4),
                         ),
@@ -289,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const Center(
                       child: Icon(
                         Icons.chevron_right,
-                        color: Colors.white,
+                        color: AppColors.background,
                         size: 30,
                       ),
                     ),
@@ -326,14 +338,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 itemBuilder: (_, index) {
                   final bgColors = [
-                    Colors.orange.shade50,
-                    Colors.blue.shade50,
-                    Colors.pink.shade50,
-                    Colors.green.shade50,
-                    Colors.purple.shade50,
-                    Colors.red.shade50,
-                    Colors.teal.shade50,
-                    Colors.amber.shade50,
+                    AppColors.category1,
+AppColors.category2,
+AppColors.category3,
+AppColors.category4,      
+AppColors.category5,
+      AppColors.category6,
+      AppColors.category7,
+      AppColors.category8,
                   ];
                   return Column(
                     children: [
@@ -347,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             end: Alignment.bottomCenter,
                             colors: [
                               bgColors[index % bgColors.length],
-                              Colors.white,
+                              AppColors.background,
                             ],
                           ),
                         ),
@@ -409,11 +421,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.green.withOpacity(0.4),
+                              color: AppColors.primary.withOpacity(0.4),
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
@@ -436,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Container(
                                 // width: w * 0.05,
                                 // height: h * 0.05,
-                                color: const Color.fromARGB(255, 201, 241, 203).withOpacity(0.6)),
+                                color: AppColors.primaryLight.withOpacity(0.6)),
                               Center(
                                 child:Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -509,11 +521,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
+                      color: AppColors.background,
                       boxShadow: const [
                         BoxShadow(
                           blurRadius: 8,
-                          color: Colors.black12,
+                          color: AppColors.textPrimarylight12,
                         )
                       ],
                     ),
@@ -531,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) =>
-                                  Container(color: Colors.grey.shade200, child: const Icon(Icons.fastfood, color: Colors.grey)),
+                                  Container(color: AppColors.backgroundSecondary2, child: const Icon(Icons.fastfood, color: AppColors.backgroundSecondary)),
                             ),
                           ),
                         ),
@@ -608,8 +620,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.8),
+                            AppColors.transparent,
+                            AppColors.textPrimary.withOpacity(0.8),
                           ],
                         ),
                       ),
@@ -622,13 +634,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icon(
                             Icons.play_circle_fill,
                             size: 40,
-                            color: Colors.white,
+                            color: AppColors.background,
                           ),
                           SizedBox(width: 10),
                           Text(
                             "Video promotion",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: AppColors.background,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -672,8 +684,8 @@ class _HomeScreenState extends State<HomeScreen> {
         TextButton(
           onPressed: onSeeAllTap ?? () {},
           style: TextButton.styleFrom(
-            backgroundColor: Colors.green.shade50,
-            foregroundColor: Colors.green,
+            backgroundColor: AppColors.primaryLight05,
+            foregroundColor: AppColors.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),

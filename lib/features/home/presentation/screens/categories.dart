@@ -15,18 +15,18 @@ class CategoriesScreen extends StatelessWidget {
     
     // Using the same pastel background colors as home screen, but in a square container
     final bgColors = [
-      Colors.orange.shade50,
-      Colors.blue.shade50,
-      Colors.pink.shade50,
-      Colors.green.shade50,
-      Colors.purple.shade50,
-      Colors.red.shade50,
-      Colors.teal.shade50,
-      Colors.amber.shade50,
+      AppColors.category1,
+AppColors.category2,
+AppColors.category3,
+AppColors.category4,      
+AppColors.category5,
+      AppColors.category6,
+      AppColors.category7,
+      AppColors.category8,
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -35,7 +35,7 @@ class CategoriesScreen extends StatelessWidget {
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: Colors.grey.shade300,
+            color: AppColors.backgroundSecondary3,
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -57,7 +57,7 @@ class CategoriesScreen extends StatelessWidget {
         ),
         title: const Text(
           "Categories",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
       ),
@@ -129,7 +129,7 @@ class CategoriesScreen extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 bgColors[index % bgColors.length],
-                Colors.white,
+                AppColors.background,
               ],
             ),
             borderRadius: BorderRadius.circular(16),

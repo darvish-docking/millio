@@ -28,23 +28,23 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         elevation: 0,
         leadingWidth: 56,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Center(
             child: Material(
-              color: Colors.grey.shade100,
+              color: AppColors.backgroundSecondary1,
               shape: const CircleBorder(),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
                 child: const Padding(
                   padding: EdgeInsets.all(8),
-                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: Colors.black),
+                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColors.textPrimary,),
                 ),
               ),
             ),
@@ -56,7 +56,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
             fontSize: 22,
             fontWeight: FontWeight.bold,
             fontFamily: 'Montserrat',
-            color: Colors.black,
+            color: AppColors.textPrimary,
           ),
         ),
         centerTitle: false,
@@ -80,7 +80,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                         borderRadius: BorderRadius.circular(w * 0.05),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: AppColors.textPrimary.withOpacity(0.08),
                             blurRadius: 15,
                             offset: const Offset(0, 8),
                           )
@@ -122,7 +122,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                           padding: EdgeInsets.symmetric(horizontal: w * 0.015),
                           child: Icon(
                             index < _selectedRating ? Icons.star : Icons.star_border,
-                            color: Colors.amber,
+                            color: AppColors.amber,
                             size: w * 0.12,
                           ),
                         ),
@@ -154,20 +154,20 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                     decoration: InputDecoration(
                       hintText: "Message",
                       hintStyle: TextStyle(
-                        color: Colors.grey.shade400,
+                        color: AppColors.backgroundSecondary4,
                         fontFamily: 'Montserrat',
                         fontSize: w * 0.038,
                       ),
                       filled: true,
-                      fillColor: Colors.grey.shade50,
+                      fillColor: AppColors.backgroundSecondary1,
                       contentPadding: EdgeInsets.all(w * 0.04),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(w * 0.04),
-                        borderSide: BorderSide(color: Colors.grey.shade100),
+                        borderSide: BorderSide(color: AppColors.backgroundSecondary1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(w * 0.04),
-                        borderSide: BorderSide(color: Colors.grey.shade100),
+                        borderSide: BorderSide(color: AppColors.backgroundSecondary1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(w * 0.04),
@@ -177,7 +177,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: w * 0.04,
-                      color: Colors.black87,
+                      color: AppColors.textPrimarylight87,
                     ),
                   ),
                   
@@ -208,7 +208,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                 child: Text(
                   "Submit",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.background,
                     fontSize: w * 0.045,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Montserrat',

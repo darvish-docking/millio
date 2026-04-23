@@ -3,6 +3,8 @@ import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/product_description_screen.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart';
 import 'package:millio/features/home/presentation/screens/reviews_screen.dart';
+import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final SpecialOffer offer;
@@ -26,7 +28,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final offer = widget.offer;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           /// 🖼️ LAYER 1: Background Image (Static)
@@ -39,8 +41,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               offer.image,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
-                color: Colors.grey.shade200,
-                child: Icon(Icons.fastfood, size: w * 0.2, color: Colors.grey),
+                color: AppColors.backgroundSecondary2,
+                child: Icon(Icons.fastfood, size: w * 0.2, color: AppColors.backgroundSecondary),
               ),
             ),
           ),
@@ -58,14 +60,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   width: w,
                   padding: EdgeInsets.fromLTRB(padding, h * 0.02, padding, padding),
                   decoration: const BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.background,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(40),
                       topRight: Radius.circular(40),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
+                        color: AppColors.textPrimarylight12,
                         blurRadius: 10,
                         offset: Offset(0, -5),
                       ),
@@ -82,7 +84,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           height: 4,
                           margin: EdgeInsets.only(bottom: h * 0.02),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+                            color: AppColors.backgroundSecondary3,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -152,14 +154,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             SizedBox(width: w * 0.01),
                             Text(
                               offer.distance,
-                              style: TextStyle(color: Colors.grey, fontSize: w * 0.035, fontFamily: 'Montserrat'),
+                              style: TextStyle(color: AppColors.backgroundSecondary, fontSize: w * 0.035, fontFamily: 'Montserrat'),
                             ),
                             SizedBox(width: w * 0.04),
-                            Icon(Icons.star, size: w * 0.04, color: Colors.amber),
+                            Icon(Icons.star, size: w * 0.04, color: AppColors.amber),
                             SizedBox(width: w * 0.01),
                             Text(
                               "${offer.rating} ${offer.reviewCount}",
-                              style: TextStyle(color: Colors.grey, fontSize: w * 0.035, fontFamily: 'Montserrat'),
+                              style: TextStyle(color: AppColors.backgroundSecondary, fontSize: w * 0.035, fontFamily: 'Montserrat'),
                             ),
                           ],
                         ),
@@ -228,7 +230,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               children: [
                                 /// Minus Button (Dark Green Square)
                                 Material(
-                                  color: const Color(0xFF388E3C), // Darker green
+                                  color: AppColors.primaryDark, // Darker green
                                   borderRadius: BorderRadius.circular(8),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
@@ -240,7 +242,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     child: SizedBox(
                                       width: w * 0.08,
                                       height: w * 0.08,
-                                      child: Icon(Icons.remove, size: w * 0.05, color: Colors.white),
+                                      child: Icon(Icons.remove, size: w * 0.05, color: AppColors.background),
                                     ),
                                   ),
                                 ),
@@ -254,14 +256,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       fontSize: w * 0.045,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'Montserrat',
-                                      color: const Color(0xFF388E3C),
+                                      color: AppColors.primaryDark,
                                     ),
                                   ),
                                 ),
 
                                 /// Plus Button (Dark Green Square)
                                 Material(
-                                  color: const Color(0xFF388E3C), // Darker green
+                                  color: AppColors.primaryDark, // Darker green
                                   borderRadius: BorderRadius.circular(8),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
@@ -271,7 +273,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     child: SizedBox(
                                       width: w * 0.08,
                                       height: w * 0.08,
-                                      child: Icon(Icons.add, size: w * 0.05, color: Colors.white),
+                                      child: Icon(Icons.add, size: w * 0.05, color: AppColors.background),
                                     ),
                                   ),
                                 ),
@@ -283,7 +285,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             child: SizedBox(
                               height: h * 0.065,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.read<CartProvider>().addItem(offer, quantity);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("${offer.title} added to cart"),
+                                      backgroundColor: AppColors.primary,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,
                                   shape: RoundedRectangleBorder(
@@ -322,7 +333,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 children: [
                   /// Back Button
                   Material(
-                    color: Colors.grey.shade300,
+                    color: AppColors.backgroundSecondary3,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
@@ -354,14 +365,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             height: iconSize,
                             width: iconSize,
                             child: Center(
-                              child: Icon(Icons.search, size: iconSize * 0.55, color: Colors.black87),
+                              child: Icon(Icons.search, size: iconSize * 0.55, color: AppColors.textPrimarylight87),
                             ),
                           ),
                         ),
                       ),
                       SizedBox(width: padding * 0.6),
                       Material(
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppColors.background.withOpacity(0.9),
                         shape: const CircleBorder(),
                         clipBehavior: Clip.hardEdge,
                         child: InkWell(
@@ -370,7 +381,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             height: iconSize,
                             width: iconSize,
                             child: Center(
-                              child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: Colors.black87),
+                              child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: AppColors.textPrimarylight87),
                             ),
                           ),
                         ),

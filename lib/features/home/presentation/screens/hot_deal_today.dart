@@ -25,7 +25,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
     final h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -33,7 +33,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: Colors.grey.shade300,
+            color: AppColors.backgroundSecondary3,
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -55,7 +55,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
         ),
         title: const Text(
           "Hot Deal Today",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
       ),
@@ -95,11 +95,11 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                           decoration: BoxDecoration(
-                            color: Colors.green,
+                            color: AppColors.primary,
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.green.withOpacity(0.4),
+                                color: AppColors.primary.withOpacity(0.4),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
@@ -111,7 +111,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                               fit: StackFit.expand,
                               children: [
                                 Container(
-                                  color: const Color.fromARGB(255, 201, 241, 203).withOpacity(0.6),
+                                  color: AppColors.primaryLight.withOpacity(0.6),
                                 ),
                                 Center(
                                   child: Image.asset(
@@ -144,7 +144,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                           decoration: BoxDecoration(
                             color: _currentIndex == index
                                 ? AppColors.primary
-                                : const Color.fromARGB(255, 189, 236, 213),
+                                : AppColors.primaryLight,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -183,7 +183,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                 'A delicious and healthy seafood salad with a perfect blend of spicy, sour, and sweet flavors to tantalize your tastebuds.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: AppColors.backgroundSecondary,
                   fontSize: 14,
                   height: 1.5,
                 ),
