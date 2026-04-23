@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/product_description_screen.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/presentation/screens/reviews_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final SpecialOffer offer;
@@ -135,23 +136,33 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                       SizedBox(height: h * 0.01),
 
-                      /// Metrics
-                      Row(
-                        children: [
-                          Icon(Icons.location_on, size: w * 0.04, color: Colors.grey),
-                          SizedBox(width: w * 0.01),
-                          Text(
-                            offer.distance,
-                            style: TextStyle(color: Colors.grey, fontSize: w * 0.035, fontFamily: 'Montserrat'),
-                          ),
-                          SizedBox(width: w * 0.04),
-                          Icon(Icons.star, size: w * 0.04, color: Colors.amber),
-                          SizedBox(width: w * 0.01),
-                          Text(
-                            "${offer.rating} ${offer.reviewCount}",
-                            style: TextStyle(color: Colors.grey, fontSize: w * 0.035, fontFamily: 'Montserrat'),
-                          ),
-                        ],
+                      /// Metrics (Clickable for Reviews)
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReviewsScreen(offer: offer),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.location_on, size: w * 0.04, color: Colors.grey),
+                            SizedBox(width: w * 0.01),
+                            Text(
+                              offer.distance,
+                              style: TextStyle(color: Colors.grey, fontSize: w * 0.035, fontFamily: 'Montserrat'),
+                            ),
+                            SizedBox(width: w * 0.04),
+                            Icon(Icons.star, size: w * 0.04, color: Colors.amber),
+                            SizedBox(width: w * 0.01),
+                            Text(
+                              "${offer.rating} ${offer.reviewCount}",
+                              style: TextStyle(color: Colors.grey, fontSize: w * 0.035, fontFamily: 'Montserrat'),
+                            ),
+                          ],
+                        ),
                       ),
 
                       SizedBox(height: h * 0.02),

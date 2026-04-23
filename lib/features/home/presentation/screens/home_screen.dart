@@ -4,6 +4,7 @@ import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/categories.dart';
 import 'package:millio/features/home/presentation/screens/hot_deal_today.dart';
 import 'package:millio/features/home/presentation/screens/special_offers.dart';
+import 'package:millio/features/home/presentation/screens/chat_box_screen.dart';
 
 class SpecialOffer {
   final String image;
@@ -140,7 +141,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icon(Icons.notifications_none, size: w * .07),
                   SizedBox(width: w * .03),
 
-                  Icon(Icons.menu, size: w * .07),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ChatBoxScreen()),
+                      );
+                    },
+                    child: Icon(Icons.menu, size: w * .07),
+                  ),
                 ],
               ),
 

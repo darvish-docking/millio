@@ -49,16 +49,36 @@ class ProductDescriptionScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Image.asset(
+              'assets/images/shade1.png',
+              width:  w ,
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          
+
           // 🍳 Decorative bottom background
           Positioned(
-            bottom: -h * 0.1,
+            bottom: h * 0.001,
             left: -w * 0.2,
-            child: Opacity(
-              opacity: 0.1,
-              child: Image.asset(
-                'assets/images/Sirloin steak.png',
-                width: w * 0.8,
-              ),
+            child: Image.asset(
+              'assets/images/bullseye.png',
+              width: w * 0.8,
+            ),
+          ),
+
+          // 🍳 Decorative bottom background
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Image.asset(
+              'assets/images/Egg.png',
+              width: w * 0.8,
             ),
           ),
 
@@ -98,7 +118,7 @@ class ProductDescriptionScreen extends StatelessWidget {
                         ),
                         child: const Icon(
                           Icons.play_arrow,
-                          color: AppColors.primary,
+                          color: AppColors.textPrimary,
                           size: 30,
                         ),
                       ),
