@@ -20,7 +20,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     final height = size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -58,7 +58,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     style: TextStyle(
                       fontSize: width * 0.055,
                       fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ],
@@ -102,7 +102,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     style: TextStyle(
                       fontSize: width * 0.045,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: AppColors.textPrimarylight87,
                     ),
                   ),
                   
@@ -170,10 +170,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(width * 0.09),
-        color: Colors.white,
+        color: AppColors.background,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: AppColors.textPrimary.withOpacity(0.06),
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 4), // x,y
@@ -187,7 +187,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           hintText: hint,
           hintStyle: TextStyle(
             fontSize: width * 0.04,
-            color: Colors.grey.shade500,
+            color: AppColors.backgroundSecondary5,
             fontFamily: 'Montserrat',
           ),
           filled: true,
@@ -207,7 +207,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(width * 0.09),
             borderSide: const BorderSide(
-              color: Colors.green,
+              color: AppColors.primary,
               width: 2,
             ),
           ),

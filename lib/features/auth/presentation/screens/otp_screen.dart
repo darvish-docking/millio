@@ -140,9 +140,9 @@ class OtpScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     counterText: "",
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: AppColors.background,
                     /// 👇 background when focused
-    focusColor: Color(0xFF62C222).withValues(alpha:  0.2),
+    focusColor: AppColors.primary.withValues(alpha:  0.2),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50), // oval shape
                       borderSide: BorderSide.none,

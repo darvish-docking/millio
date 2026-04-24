@@ -14,6 +14,10 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -38,33 +42,42 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
             child: Column(
               children: [
             
-                const SizedBox(height: 20),
+                SizedBox(height: height * 0.02),
             
                 // ✅ LOGO / TITLE
                 Column(
                   children:  [
-                    Image.asset('assets/images/second-logo.png')
+                    Image.asset(
+                      'assets/images/second-logo.png',
+                      height: height * 0.05,
+                      fit: BoxFit.contain,
+                    )
                   ],
                 ),
             
-                const SizedBox(height: 40),
+                SizedBox(height: height * 0.04),
             
                 // ✅ PLACEHOLDER IMAGE
                 Center(
-                    child: Image.asset('assets/images/coffee.png'),
+                    child: Image.asset(
+                      'assets/images/coffee.png',
+                      height: height * 0.45,
+                      width: width * 0.9,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 
             
-                const SizedBox(height: 40),
+                SizedBox(height: height * 0.04),
             
                 // ✅ TITLE TEXT
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.05),
                   child: Text(
                     "A Rhythmic Pattern Of Food And Taste",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 38,
+                      fontSize: width * 0.09,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
                       height: 1.1,
@@ -73,105 +86,8 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
                   ),
                 ),
             
-                const SizedBox(height: 10),
+                SizedBox(height: height * 0.01),
             
-                // ✅ DOT INDICATOR
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: List.generate(
-                //     4,
-                //     (index) => Container(
-                //       margin: const EdgeInsets.symmetric(horizontal: 4),
-                //       width: index == 0 ? 14 : 6,
-                //       height: 6,
-                //       decoration: BoxDecoration(
-                //         color: index == 0 ? Colors.white : Colors.white54,
-                //         borderRadius: BorderRadius.circular(10),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-            
-                // const Spacer(),
-            
-                // ✅ BOTTOM TOGGLE BUTTON
-                // Padding(
-                //   padding: const EdgeInsets.all(20),
-                //   child: Container(
-                //     padding: const EdgeInsets.all(6),
-                //     decoration: BoxDecoration(
-                //       color: Colors.white.withOpacity(0.2),
-                //       borderRadius: BorderRadius.circular(40),
-                //     ),
-                //     child: Row(
-                //       children: [
-            
-                //         // Skip
-                //         Expanded(
-                //           child: Center(
-                //             child: Text(
-                //               "Skip",
-                //               style: TextStyle(
-                //                 color: Colors.white.withOpacity(0.8),
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-            
-                //         // Toggle Button
-                //         Expanded(
-                //           child: GestureDetector(
-                //             onTap: () {
-                //               setState(() {
-                //                 isNextSelected = !isNextSelected;
-                //               });
-                //             },
-                //             child: AnimatedContainer(
-                //               duration: const Duration(milliseconds: 300),
-                //               padding: const EdgeInsets.symmetric(vertical: 12),
-                //               decoration: BoxDecoration(
-                //                 borderRadius: BorderRadius.circular(30),
-            
-                //                 // ✅ GLOW EFFECT
-                //                 color: Colors.white,
-                //                 boxShadow: [
-                //                   if (isNextSelected)
-                //                     const BoxShadow(
-                //                       color: Colors.white70,
-                //                       blurRadius: 20,
-                //                       spreadRadius: 2,
-                //                     ),
-                //                 ],
-                //               ),
-                //               child: Center(
-                //                 child: TextButton(
-                //                   onPressed: () {
-                //                     Navigator.push(
-                //                       context,
-                //                       MaterialPageRoute(builder: (_) => const OnboardingScreenThree()),
-                //                     );
-                //                   },
-                //                   style: TextButton.styleFrom(
-                //                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2), // reduce height
-                //                       minimumSize: Size.zero, // removes default min height
-                //                       tapTargetSize: MaterialTapTargetSize.shrinkWrap, // tighter layout
-                //                     ),
-                //                   child: Text(
-                //                     "Next",
-                //                     style: TextStyle(
-                //                       color: Colors.green.shade700,
-                //                       fontWeight: FontWeight.bold,
-                //                     ),
-                //                   ),
-                //                 )
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
             
               ],
             ),

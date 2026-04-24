@@ -131,7 +131,7 @@ class SignUpScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                   SizedBox(height: height * 0.02),
 
                   /// Subtitle
                   Padding(
@@ -329,7 +329,7 @@ class SignUpScreen extends StatelessWidget {
 
                   SizedBox(height: height * 0.015),
 
-                  /// Remember + Forgot
+                  /// Terms & Conditions
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -367,7 +367,7 @@ class SignUpScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF62C222),
+                        backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),

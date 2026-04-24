@@ -14,7 +14,7 @@ class SpecialOffersScreen extends StatelessWidget {
     final h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -22,7 +22,7 @@ class SpecialOffersScreen extends StatelessWidget {
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: Colors.grey.shade300,
+            color: AppColors.backgroundSecondary3,
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -44,7 +44,7 @@ class SpecialOffersScreen extends StatelessWidget {
         ),
         title: const Text(
           "Special Offers",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
       ),
@@ -58,12 +58,12 @@ class SpecialOffersScreen extends StatelessWidget {
                   /// SEARCH BAR
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.background,
                       borderRadius: BorderRadius.circular(50),
                       boxShadow: const [
                         BoxShadow(
                           blurRadius: 10,
-                          color: Colors.black12,
+                          color: AppColors.textPrimarylight12,
                           offset: Offset(0, 4),
                         )
                       ],
@@ -110,11 +110,11 @@ class SpecialOffersScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
+                        color: AppColors.background,
                         boxShadow: const [
                           BoxShadow(
                             blurRadius: 8,
-                            color: Colors.black12,
+                            color: AppColors.textPrimarylight12,
                           )
                         ],
                       ),
@@ -129,8 +129,8 @@ class SpecialOffersScreen extends StatelessWidget {
                               fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                color: Colors.grey.shade200,
-                                child: const Icon(Icons.fastfood, color: Colors.grey),
+                                color: AppColors.backgroundSecondary2,
+                                child: const Icon(Icons.fastfood, color: AppColors.backgroundSecondary),
                               ),
                             ),
                           ),
@@ -151,7 +151,7 @@ class SpecialOffersScreen extends StatelessWidget {
                               "${offer.distance} |",
                               style: const TextStyle(color: AppColors.textSecondary),
                             ),
-                            const Icon(Icons.star, size: 14, color: Colors.amber),
+                            const Icon(Icons.star, size: 14, color: AppColors.amber),
                             Text(
                               offer.rating,
                               style: const TextStyle(color: AppColors.textSecondary),

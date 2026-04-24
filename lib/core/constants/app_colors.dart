@@ -40,7 +40,7 @@ class AppColors {
 
   // 🔹 Border & Divider
   static const Color border = Color(0xFFE0E0E0);
-  static const Color divider = Color(0xFFEAEAEA);
+  static const Color divider = Color.fromARGB(255, 189, 188, 188);
 
   // 🔹 Status Colors
   static const Color success = Color(0xFF4CAF50);

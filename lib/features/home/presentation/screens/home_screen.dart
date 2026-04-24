@@ -23,6 +23,28 @@ class SpecialOffer {
     required this.reviewCount,
     required this.price,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'image': image,
+      'title': title,
+      'distance': distance,
+      'rating': rating,
+      'reviewCount': reviewCount,
+      'price': price,
+    };
+  }
+
+  factory SpecialOffer.fromMap(Map<String, dynamic> map) {
+    return SpecialOffer(
+      image: map['image'] ?? '',
+      title: map['title'] ?? '',
+      distance: map['distance'] ?? '',
+      rating: map['rating'] ?? '',
+      reviewCount: map['reviewCount'] ?? '',
+      price: (map['price'] ?? 0.0).toDouble(),
+    );
+  }
 }
 
 final List<SpecialOffer> specialOffers = [

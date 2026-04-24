@@ -56,8 +56,8 @@ class NewPasswordScreen extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.white,
-                  Colors.transparent,
+                  AppColors.background,
+                  AppColors.transparent,
                 ],
                 stops: [0.0, 1.0],
               ),
@@ -79,8 +79,8 @@ class NewPasswordScreen extends StatelessWidget {
           child: Image.asset(
             "assets/images/sky.png",
             fit: BoxFit.fill,
-            width: 400,
-            height: 400,
+            width: width * 1.0,
+            height: height * 0.4,
           ),
         ),
 

@@ -39,7 +39,7 @@ class _ProfileDetailsScreenState
     final height = size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
@@ -80,7 +80,7 @@ class _ProfileDetailsScreenState
                     style: TextStyle(
                       fontSize: width * 0.055,
                       fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ],
@@ -97,7 +97,7 @@ class _ProfileDetailsScreenState
                       width: width * 0.32,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xFFF9F9F9),
+                        color: AppColors.backgroundSecondary1,
                         // border: Border.all(
                         //   color: Colors.grey.shade300,
                         //   width: 2,
@@ -106,7 +106,7 @@ class _ProfileDetailsScreenState
                       child: Icon(
                         Icons.person,
                         size: width * 0.15,
-                        color: Colors.grey.shade500,
+                        color: AppColors.backgroundSecondary5,
                       ),
                     ),
 
@@ -118,15 +118,15 @@ class _ProfileDetailsScreenState
                         width: width * 0.09,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.green,
+                          color: AppColors.primary,
                           border: Border.all(
-                            color: Colors.white,
+                            color: AppColors.background,
                             width: 2,
                           ),
                         ),
                         child: Image.asset(
                           'assets/images/gallery.png',
-                          color: Colors.white,
+                          color: AppColors.background,
                           width: width * 0.045,
                         ),
                       ),
@@ -267,7 +267,7 @@ class _ProfileDetailsScreenState
                     style: TextStyle(
                       fontSize: width * 0.045,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: AppColors.background,
                     ),
                   ),
                 ),
@@ -296,11 +296,11 @@ class _ProfileDetailsScreenState
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(width * 0.09),
 
-      color: Colors.white,
+      color: AppColors.background,
 
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.06),
+          color: AppColors.textPrimary.withOpacity(0.06),
           blurRadius: 12,
           spreadRadius: 1,
           offset: Offset(0, 4), // x,y
@@ -312,7 +312,7 @@ class _ProfileDetailsScreenState
         hintText: hint,
         hintStyle: TextStyle(
           fontSize: width * 0.04,
-          color: Colors.grey.shade500,
+          color: AppColors.backgroundSecondary5,
           fontFamily: 'Montserrat'
         ),
         // prefixIcon: Icon(
@@ -351,7 +351,7 @@ class _ProfileDetailsScreenState
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(width * 0.09),
           borderSide: BorderSide(
-        color: Colors.green,
+        color: AppColors.primary,
         width: 2,
       ),
         ),

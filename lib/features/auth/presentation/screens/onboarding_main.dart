@@ -20,6 +20,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -40,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           // ✅ BOTTOM CONTROLS (FLOATING OVER UI)
           Positioned(
-            bottom: 50,
+            bottom: h * 0.06,
             left: 0,
             right: 0,
             child: Column(
@@ -55,9 +59,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         4,
                         (index) => AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: provider.currentIndex == index ? 20 : 6,
-                          height: 6,
+                          margin: EdgeInsets.symmetric(horizontal: w * 0.01),
+                          width: provider.currentIndex == index ? w * 0.05 : w * 0.015,
+                          height: w * 0.015,
                           decoration: BoxDecoration(
                             color: AppColors.background,
                             borderRadius: BorderRadius.circular(10),
@@ -68,16 +72,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   },
                 ),
 
-                const SizedBox(height: 40),
+                SizedBox(height: h * 0.05),
 
                 // 🔘 TOGGLE BUTTON
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: w * 0.05),
                   child: Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: EdgeInsets.all(w * 0.015),
                     decoration: BoxDecoration(
                       color: AppColors.background.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(40),
+                      borderRadius: BorderRadius.circular(w * 0.1),
                     ),
                     child: Row(
                       children: [
@@ -93,10 +97,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                           );
                             },
-                            child: const Center(
+                            child: Center(
                               child: Text(
                                 "Skip",
-                                style: TextStyle(color: AppColors.background),
+                                style: TextStyle(
+                                  color: AppColors.background,
+                                  fontSize: w * 0.038,
+                                  fontFamily: 'Montserrat',
+                                ),
                               ),
                             ),
                           ),
@@ -116,34 +124,42 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   curve: Curves.easeInOut,
                                 );
                               } else {
-                                // TODO: Navigate to Home/Login
+                                // Navigate to Sign In
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignInScreen(), 
+                                  ),
+                                );
                               }
                             },
                             child: Container(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 12),
+                                  EdgeInsets.symmetric(vertical: h * 0.015),
                               decoration: BoxDecoration(
                                 color: AppColors.background,
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(w * 0.08),
 
                                 // ✨ GLOW EFFECT
-                                boxShadow: const [
+                                boxShadow: [
                                   BoxShadow(
                                     color: AppColors.boxShadow,
-                                    blurRadius: 20,
-                                    spreadRadius: 2,
+                                    blurRadius: w * 0.05,
+                                    spreadRadius: w * 0.005,
                                   ),
                                 ],
                               ),
                               child: Center(
-                                child: Text(
-                                  "Next",
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
+                                  child: Text(
+                                    "Next",
+                                    style: TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: w * 0.038,
+                                      fontFamily: 'Montserrat',
+                                    ),
                                   ),
                                 ),
-                              ),
                             ),
                           ),
                         ),

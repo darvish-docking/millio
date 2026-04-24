@@ -21,7 +21,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void _navigateNext() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
@@ -73,21 +73,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
       /// 🔹 Green Blur Circle (Top Right)
       Positioned(
-        top: -80,
-        right: -80,
+        top: -height * 0.1,
+        right: -width * 0.2,
         child: _blurCircle(
-          size: 350,
+          size: width * 0.9,
           color: AppColors.primary.withValues(alpha:  0.3),
         ),
       ),
 
       /// 🔹 GREEN OVAL LINE
       Positioned(
-  top: -50,
-  right: 70,
+  top: -height * 0.06,
+  right: width * 0.18,
   child: eggOvalLine(
-    width: 440,
-    height: 220,
+    width: width * 1.1,
+    height: height * 0.26,
     color: AppColors.primary.withOpacity(0.4),
     angle: 310, // tweak slightly if needed
   ),
@@ -96,31 +96,31 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
       /// 🔹 Violet Blur Circle (Bottom Left)
       Positioned(
-        bottom: -120,
-        left: -80,
+        bottom: -height * 0.14,
+        left: -width * 0.2,
         child: _blurCircle(
-          size: 300,
+          size: width * 0.77,
           color: AppColors.purpleAccent.withValues(alpha:  0.3),
         ),
       ),
 
       /// 🔹 SECOND VIOLET CIRCLE (Bottom Left)
       Positioned(
-        bottom: 100,
-        left: -80,
+        bottom: height * 0.12,
+        left: -width * 0.2,
         child: _blurCircle(
-          size: 200,
+          size: width * 0.5,
           color: AppColors.purple.withValues(alpha:  0.4),
         ),
       ),
 
       /// 🔹 VIOLET OVAL LINE
       Positioned(
-        bottom: -110,
-        left: 20,
+        bottom: -height * 0.13,
+        left: width * 0.05,
         child: eggOvalLine(
-          width: 440,
-          height: 220,
+          width: width * 1.1,
+          height: height * 0.26,
           color: AppColors.purple.withValues(alpha:  0.3),
           angle: -40,
         ),
@@ -132,13 +132,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
       ),
     
       Positioned(
-                    bottom: 30,
-                    left: 120,
+                    bottom: height * 0.04,
+                    left: width * 0.3,
                     child: Text(
                       'Food & Beverage App',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 18
+                        fontSize: width * 0.045
                       ),
                     ),
                   ),
@@ -166,6 +166,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     "assets/images/Logo.png",
                     fit: BoxFit.contain,
                     color: AppColors.lightGreenAccent,
+                    // width: width * 0.8,
                   ),
                 ),
 
