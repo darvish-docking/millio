@@ -4,6 +4,7 @@ import 'package:millio/features/home/presentation/screens/home_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/features/cart/presentation/screens/address_screen.dart';
 import 'package:millio/features/cart/presentation/screens/voucher_screen.dart';
+import 'package:millio/features/cart/presentation/screens/payment_method_screen.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
@@ -19,6 +20,18 @@ class _CartScreenState extends State<CartScreen> {
   
   // Track selected address for Checkout flow
   SavedAddress? _selectedAddress;
+  String? _selectedPaymentMethodId;
+
+  String _getPaymentMethodName(String id) {
+    switch (id) {
+      case 'mastercard': return 'Mastercard';
+      case 'paypal': return 'PayPal';
+      case 'visa': return 'Visa';
+      case 'applepay': return 'Apple Pay';
+      case 'payondelivery': return 'Pay on Delivery';
+      default: return 'Payment method';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +338,17 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _buildPaymentMethodButton(double w) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () async {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PaymentMethodScreen()),
+        );
+        if (result != null && result is String) {
+          setState(() {
+            _selectedPaymentMethodId = result;
+          });
+        }
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
@@ -337,10 +360,12 @@ class _CartScreenState extends State<CartScreen> {
             // Icon(Icons.payment, color: AppColors.primary, size: w * 0.05),
             Image.asset('assets/images/Wallet.png'),
             SizedBox(width: w * 0.03),
-            const Expanded(
+            Expanded(
               child: Text(
-                "Payment method",
-                style: TextStyle(
+                _selectedPaymentMethodId != null 
+                  ? _getPaymentMethodName(_selectedPaymentMethodId!) 
+                  : "Payment method",
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Montserrat',
