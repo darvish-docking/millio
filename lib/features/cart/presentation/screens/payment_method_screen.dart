@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:millio/features/cart/presentation/screens/payment_success_screen.dart';
+import 'package:millio/features/cart/presentation/screens/payment_failure_screen.dart';
+import 'package:millio/features/cart/presentation/screens/add_card_screen.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   const PaymentMethodScreen({super.key});
@@ -62,14 +65,30 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     debugPrint("SUCCESS: ${response.paymentId}");
-    // Return back to Cart with selected method
-    Navigator.pop(context, _selectedMethodId);
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentSuccessScreen(
+          transactionId: response.paymentId ?? "N/A",
+          amount: "₹50.00", // This should be dynamic in a real app
+          dateTime: DateTime.now(),
+        ),
+      ),
+    );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     debugPrint("ERROR: ${response.code} - ${response.message}");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Payment Failed: ${response.message}")),
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentFailureScreen(
+          errorMessage: response.message ?? "Unknown Error",
+          dateTime: DateTime.now(),
+        ),
+      ),
     );
   }
 
@@ -228,7 +247,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     width: double.infinity,
                     height: h * 0.06,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AddCardScreen()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryLight,
                         elevation: 0,
