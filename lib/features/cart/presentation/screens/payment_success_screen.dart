@@ -47,7 +47,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                     ),
                     child: Icon(
                       Icons.check,
-                      color: Colors.white,
+                      color: AppColors.background,
                       size: w * 0.1,
                     ),
                   ),
@@ -122,7 +122,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                       child: Text(
                         "Back to Cart",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.background,
                           fontSize: w * 0.04,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',

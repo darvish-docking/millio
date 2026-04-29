@@ -2,9 +2,69 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
+import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
+    final _formKey = GlobalKey<FormState>();
+
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> signUpUser(BuildContext context) async {
+  String username = usernameController.text.trim();
+  String email = emailController.text.trim();
+  String password = passwordController.text.trim();
+  String confirmPassword =
+      confirmPasswordController.text.trim();
+
+
+  /// Save to SharedPreferences
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString("username", username);
+  await prefs.setString("email", email);
+  await prefs.setString("password", password);
+
+
+// need to move to SIGN IN screen
+   await prefs.setBool("isLoggedIn", true);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Signup Successful"),
+    ),
+  );
+
+  /// Navigate to SignIn
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => HomeScreen(),
+    ),
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,32 +90,7 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    /// 🔹 Top Horizontal Gradient (Green → Violet)
-                    // Container(
-                    //   decoration: const BoxDecoration(
-                    //     gradient: LinearGradient(
-                    //       colors: [
-                    //         Color(0xFF3AC569), // Green (left)
-                    //         Color(0xFF7B61FF), // Violet (right)
-                    //       ],
-                    //       begin: Alignment.topLeft,
-                    //       end: Alignment.topRight,
-                    //     ),
-                    //   ),
-                    // ),
-
-                    /// 🔹 Fade to White (Vertical Overlay)
-
-                    // Container(
-                    //   decoration: const BoxDecoration(
-                    //     gradient: LinearGradient(
-                    //       colors: [Colors.transparent, Colors.white],
-                    //       begin: Alignment.topCenter,
-                    //       end: Alignment.bottomCenter,
-                    //       stops: [0.25, 0.7], // controls fade depth
-                    //     ),
-                    //   ),
-                    // ),
+                    
                   ],
                 ),
               ),
@@ -146,6 +181,12 @@ class SignUpScreen extends StatelessWidget {
 
                   SizedBox(height: height * 0.03),
 
+                  Form(
+  key: _formKey,
+  autovalidateMode: AutovalidateMode.onUserInteraction,
+  child: Column(
+    children: [
+
                   /// Username Field
                   Container(
                     decoration: BoxDecoration(
@@ -161,7 +202,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                         hintText: "Username",
                         filled: true,
@@ -187,6 +229,21 @@ class SignUpScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Username is required";
+                        }
+
+                        if (value.trim().length < 3) {
+                          return "Minimum 3 characters required";
+                        }
+
+                        if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+                          return "Only letters, numbers, _ allowed";
+                        }
+
+                        return null;
+                      },
                     ),
                   ),
 
@@ -206,7 +263,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         hintText: "Email Address",
                         hintStyle: const TextStyle(
@@ -232,6 +290,19 @@ class SignUpScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
+                      validator: (value) {
+    if (value == null || value.isEmpty) {
+      return "Email is required";
+    }
+
+    if (!RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    ).hasMatch(value)) {
+      return "Enter valid email";
+    }
+
+    return null;
+  },
                     ),
                   ),
 
@@ -251,7 +322,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextField(
+                    child: TextFormField(
+                      controller:passwordController,
                       decoration: InputDecoration(
                         hintText: "Password",
                         hintStyle: const TextStyle(
@@ -277,6 +349,25 @@ class SignUpScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
+                      validator: (value) {
+    if (value == null || value.isEmpty) {
+      return "Password required";
+    }
+
+    if (value.length < 8) {
+      return "Minimum 8 characters";
+    }
+
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return "Need one uppercase letter";
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return "Need one number";
+    }
+
+    return null;
+  },
                     ),
                   ),
 
@@ -297,7 +388,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextField(
+                    child: TextFormField(
+                      controller:confirmPasswordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: "Confirm Password",
@@ -324,6 +416,13 @@ class SignUpScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
+                      validator: (value) {
+    if (value != passwordController.text) {
+      return "Passwords do not match";
+    }
+
+    return null;
+  },
                     ),
                   ),
 
@@ -365,7 +464,12 @@ class SignUpScreen extends StatelessWidget {
                     width: double.infinity,
                     height: height * 0.06,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          signUpUser(context);
+                        }
+                        
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
@@ -383,7 +487,7 @@ class SignUpScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
+    ])),
                   SizedBox(height: height * 0.015),
 
                   /// 🔹 PILL BADGE (overlapping dark section)

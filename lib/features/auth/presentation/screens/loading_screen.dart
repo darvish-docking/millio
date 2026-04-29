@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/onboarding_main.dart';
 import 'dart:math';
 
-import 'package:millio/features/auth/presentation/screens/onboarding_screen_1.dart';
+import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
+import 'package:millio/core/common/main_layout.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -17,20 +21,52 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+    context.read<OnboardingProvider>().loadUserData();
+  });
     _navigateNext();
   }
 
   void _navigateNext() async {
-    await Future.delayed(const Duration(seconds: 2));
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    bool onboardingDone =
+        prefs.getBool("onboardingDone") ?? false;
+
+    bool isLoggedIn =
+        prefs.getBool("isLoggedIn") ?? false;
+
+    await Future.delayed(
+      const Duration(seconds: 2),
+    );
 
     if (!mounted) return;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const OnboardingScreen(), 
-      ),
-    );
+    if (!onboardingDone) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const OnboardingScreen(),
+        ),
+      );
+    } else if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const MainLayout(),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const SignInScreen(),
+        ),
+      );
+    }
+
+
   }
 
   @override

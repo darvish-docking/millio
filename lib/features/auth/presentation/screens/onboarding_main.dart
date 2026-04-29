@@ -7,6 +7,7 @@ import 'package:millio/features/auth/presentation/screens/onboarding_screen_3.da
 import 'package:millio/features/auth/presentation/screens/onboarding_screen_4.dart';
 import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -89,13 +90,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         // SKIP
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignInScreen(), 
-                            ),
-                          );
+                            onTap: () async{
+                              final prefs = await SharedPreferences.getInstance();
+
+                                      await prefs.setBool("onboardingDone", true);
+
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const SignInScreen(),
+                                        ),
+                                      );
                             },
                             child: Center(
                               child: Text(
@@ -113,7 +118,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         // NEXT (GLOW BUTTON)
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async{
                               final provider =
                                   context.read<OnboardingProvider>();
 
@@ -125,12 +130,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 );
                               } else {
                                 // Navigate to Sign In
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SignInScreen(), 
-                                  ),
-                                );
+                                final prefs =
+      await SharedPreferences.getInstance();
+
+  await prefs.setBool(
+      "onboardingDone", true);
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const SignInScreen(),
+    ),
+  );
                               }
                             },
                             child: Container(

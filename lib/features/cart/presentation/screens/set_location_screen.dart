@@ -148,7 +148,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
                         child: Text(
                           "Confirm Location",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.background,
                             fontSize: w * 0.04,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
@@ -180,7 +180,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
           borderRadius: BorderRadius.circular(w * 0.1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: AppColors.textPrimary.withOpacity(0.06),
               blurRadius: 12,
               spreadRadius: 1,
               offset: const Offset(0, 4),
@@ -215,7 +215,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
               ),
             ),
             filled: true,
-            fillColor: Colors.transparent,
+            fillColor: AppColors.transparent,
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
           ),

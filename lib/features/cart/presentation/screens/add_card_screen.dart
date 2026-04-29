@@ -307,7 +307,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                               height: w * 0.048,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _isDefaultCard ? Colors.white : Colors.black,
+                                color: _isDefaultCard ? AppColors.background : AppColors.textPrimary,
                               ),
                             ),
                           ),
@@ -334,7 +334,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         child: Text(
                           "Add Card",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.background,
                             fontSize: w * 0.04,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
@@ -428,7 +428,7 @@ class _FocusableTextFieldState extends State<_FocusableTextField> {
         borderRadius: BorderRadius.circular(widget.w * 0.1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: AppColors.textPrimary.withOpacity(0.06),
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 4),
@@ -467,7 +467,7 @@ class _FocusableTextFieldState extends State<_FocusableTextField> {
             ),
           ),
           filled: true,
-          fillColor: Colors.transparent,
+          fillColor: AppColors.transparent,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
         ),

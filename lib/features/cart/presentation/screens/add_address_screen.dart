@@ -92,7 +92,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                           borderRadius: BorderRadius.circular(25),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
+                              color: AppColors.textPrimary.withOpacity(0.06),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -158,7 +158,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                                   ),
                                   // Bottom Right: Three Dot Menu
                                   Material(
-                                    color: Colors.transparent, 
+                                    color: AppColors.transparent, 
                                     shape: const CircleBorder(),
                                     child: InkWell(
                                       onTap: () {},
@@ -256,7 +256,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                               height: w * 0.048,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _isDefaultAddress ? Colors.white : Colors.black,
+                                color: _isDefaultAddress ? AppColors.background : AppColors.textPrimary,
                               ),
                             ),
                           ),
@@ -282,7 +282,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                         child: Text(
                           "Save Address",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.background,
                             fontSize: w * 0.035,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
@@ -373,7 +373,7 @@ class _TextFieldWithFocusState extends State<_TextFieldWithFocus> {
         borderRadius: BorderRadius.circular(widget.w * 0.1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: AppColors.textPrimary.withOpacity(0.06),
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 4),
@@ -409,7 +409,7 @@ class _TextFieldWithFocusState extends State<_TextFieldWithFocus> {
             ),
           ),
           filled: true,
-          fillColor: Colors.transparent,
+          fillColor: AppColors.transparent,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
         ),

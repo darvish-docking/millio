@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/providers/tab_provider.dart';
+import 'package:provider/provider.dart';
 
 class ChatMessage {
   final String text;
@@ -75,7 +77,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
-                      onTap: () => Navigator.pop(context),
+                      onTap: () => context.read<TabProvider>().goHome(),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
                         child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),

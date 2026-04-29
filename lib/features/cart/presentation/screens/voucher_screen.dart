@@ -143,7 +143,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                             padding: const EdgeInsets.all(14), // Increased padding to reduce icon size
                             child: Image.asset(
                               voucher.imagePath,
-                              color: isSelected ? Colors.white : Colors.black, // Active: white, Inactive: black
+                              color: isSelected ? AppColors.background : AppColors.textPrimary, // Active: white, Inactive: black
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -211,14 +211,14 @@ class _VoucherScreenState extends State<VoucherScreen> {
                       },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    disabledBackgroundColor: Colors.grey.shade300,
+                    disabledBackgroundColor: AppColors.backgroundSecondary3,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     elevation: 0,
                   ),
                   child: Text(
                     "Apply",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.background,
                       fontSize: w * 0.04,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',

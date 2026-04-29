@@ -136,7 +136,7 @@ class _AddressScreenState extends State<AddressScreen> {
                                 color: AppColors.primary,
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.location_on, color: Colors.white, size: w * 0.05),
+                              child: Icon(Icons.location_on, color: AppColors.background, size: w * 0.05),
                             ),
                           ),
                           SizedBox(width: w * 0.04),

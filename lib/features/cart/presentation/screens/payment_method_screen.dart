@@ -4,6 +4,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:millio/features/cart/presentation/screens/payment_success_screen.dart';
 import 'package:millio/features/cart/presentation/screens/payment_failure_screen.dart';
 import 'package:millio/features/cart/presentation/screens/add_card_screen.dart';
+import 'package:millio/features/cart/presentation/screens/qr_scan_screen.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   const PaymentMethodScreen({super.key});
@@ -142,7 +143,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const QrScanScreen(),
+                          ),
+                        );
+                      },
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
                         child: Image.asset(
@@ -188,7 +196,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           BoxShadow(
                             color: isSelected 
                               ? AppColors.primary.withOpacity(0.08)
-                              : Colors.black.withOpacity(0.06),
+                              : AppColors.textPrimary.withOpacity(0.06),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -226,7 +234,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                 color: isSelected ? AppColors.primary : AppColors.backgroundSecondary1,
                                 width: 1.5,
                               ),
-                              color: isSelected ? AppColors.primary : Colors.transparent,
+                              color: isSelected ? AppColors.primary : AppColors.transparent,
                             ),
                           ),
                         ],
@@ -286,7 +294,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       child: Text(
                         "Apply",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.background,
                           fontSize: w * 0.038,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',

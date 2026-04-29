@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/categories.dart';
 import 'package:millio/features/home/presentation/screens/hot_deal_today.dart';
 import 'package:millio/features/home/presentation/screens/special_offers.dart';
 import 'package:millio/features/home/presentation/screens/chat_box_screen.dart';
 import 'package:millio/features/cart/presentation/screens/cart.dart';
+import 'package:millio/features/home/presentation/screens/notification_screen.dart';
 
 class SpecialOffer {
   final String image;
@@ -161,7 +161,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const Spacer(),
 
-                  Icon(Icons.notifications_none, size: w * .07),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotificationScreen()),
+                      );
+                    },
+                    child: Icon(Icons.notifications_none, size: w * .07),
+                  ),
                   SizedBox(width: w * .03),
 
                   GestureDetector(
@@ -680,15 +688,6 @@ AppColors.category5,
         ),
       ),
 
-      /// REUSABLE NAV BAR
-      bottomNavigationBar: CustomBottomNav(
-        index: currentIndex,
-        onTap: (value) {
-          setState(() {
-            currentIndex = value;
-          });
-        },
-      ),
     );
   }
 

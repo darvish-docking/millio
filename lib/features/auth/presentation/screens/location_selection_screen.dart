@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/core/common/main_layout.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
   const LocationSelectionScreen({super.key});
@@ -126,7 +126,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                         Navigator.pushReplacement(
   context,
   MaterialPageRoute(
-    builder: (context) => const HomeScreen(),
+    builder: (context) => const MainLayout(),
   ),
 );
                       },

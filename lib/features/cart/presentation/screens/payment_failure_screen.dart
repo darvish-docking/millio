@@ -44,7 +44,7 @@ class PaymentFailureScreen extends StatelessWidget {
                     ),
                     child: Icon(
                       Icons.close,
-                      color: Colors.white,
+                      color: AppColors.background,
                       size: w * 0.1,
                     ),
                   ),
@@ -121,7 +121,7 @@ class PaymentFailureScreen extends StatelessWidget {
                       child: Text(
                         "Try Again",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.background,
                           fontSize: w * 0.04,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',

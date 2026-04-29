@@ -35,8 +35,15 @@ class AppColors {
   static const Color textPrimary = Colors.black;
   static const Color textPrimarylight87 = Colors.black87;
   static const Color textPrimarylight12 =Colors.black12;
+    static const Color textPrimarylight26 =Colors.black26;
+
   static const Color textSecondary = Color(0xFF7A7A7A);
+
   static const Color textWhite = Color(0xFFFFFFFF);
+  static const Color textWhite30 = Colors.white30;
+  static const Color textWhite60 = Colors.white60;
+  static const Color textWhite24 = Colors.white24;
+
 
   // 🔹 Border & Divider
   static const Color border = Color(0xFFE0E0E0);

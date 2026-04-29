@@ -51,7 +51,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       body: SizedBox(
         height: h,
         width: w,
@@ -81,10 +81,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
               child: Row(
                 children: [
                   Material(
-                    color: Colors.white,
+                    color: AppColors.background,
                     shape: const CircleBorder(),
                     elevation: 4,
-                    shadowColor: Colors.black26,
+                    shadowColor: AppColors.textPrimarylight26,
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
@@ -103,11 +103,11 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     padding: EdgeInsets.symmetric(
                         horizontal: w * 0.04, vertical: h * 0.01),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.background,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.12),
+                          color: AppColors.textPrimary.withOpacity(0.12),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -136,7 +136,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
             child: Container(
               height: h * 0.45,
               decoration: const BoxDecoration(
-                color: Colors.black,
+                color: AppColors.textPrimary,
 
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(28),
@@ -159,7 +159,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             width: w * 0.1,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: Colors.white30,
+                              color: AppColors.textWhite30,
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
@@ -173,7 +173,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             fontSize: w * 0.04,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
-                            color: Colors.white,
+                            color: AppColors.background,
                           ),
                         ),
                         SizedBox(height: h * 0.005),
@@ -183,7 +183,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             fontSize: w * 0.03,
                             fontWeight: FontWeight.w300,
                             fontFamily: 'Montserrat',
-                            color: Colors.white60,
+                            color: AppColors.textWhite60,
                           ),
                         ),
 
@@ -210,16 +210,16 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               ),
                               w: w,
                             ),
-                            Expanded(child: _DashedLine(color: Colors.white)),
+                            Expanded(child: _DashedLine(color: AppColors.background)),
                             // Step 3 — Delivered
                             _buildStepIcon(
                               child: Icon(Icons.check,
-                                  color: Colors.black, size: w * 0.04),
+                                  color: AppColors.textPrimary, size: w * 0.04),
                               w: w,
                               size: w * 0.08,
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8),
-                              bgColor: Colors.white,
+                              bgColor: AppColors.background,
                             ),
                           ],
                         ),
@@ -245,7 +245,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                         // Avatar
                         CircleAvatar(
                           radius: w * 0.06,
-                          backgroundColor: Colors.white24,
+                          backgroundColor: AppColors.textWhite24,
                           child: Icon(Icons.person, color: Colors.white, size: w * 0.06),
                         ),
                         SizedBox(width: w * 0.04),
@@ -258,7 +258,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               Text(
                                 "Serenity Fisher",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.background,
                                   fontFamily: 'Montserrat',
                                   fontWeight: FontWeight.bold,
                                   fontSize: w * 0.04,
@@ -267,7 +267,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                               Text(
                                 "Courier",
                                 style: TextStyle(
-                                  color: Colors.white54,
+                                  color: AppColors.textWhite60,
                                   fontFamily: 'Montserrat',
                                   fontSize: w * 0.03,
                                 ),
@@ -282,7 +282,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Icon(Icons.call, color: Colors.white, size: w * 0.05),
+                          child: Icon(Icons.call, color: AppColors.background, size: w * 0.05),
                         ),
                         SizedBox(width: w * 0.03),
                         // Warning button
@@ -292,7 +292,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Icon(Icons.warning_amber_rounded, color: Colors.white, size: w * 0.05),
+                          child: Icon(Icons.warning_amber_rounded, color: AppColors.background, size: w * 0.05),
                         ),
                       ],
                     ),
@@ -312,7 +312,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     required Widget child,
     required double w,
     double? size,
-    Color bgColor = Colors.transparent,
+    Color bgColor = AppColors.transparent,
     BoxShape shape = BoxShape.circle,
     BorderRadiusGeometry? borderRadius,
     Border? border,
