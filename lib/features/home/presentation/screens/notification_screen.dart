@@ -231,6 +231,35 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 },
               ),
             ),
+          
+            const Spacer(),
+
+            SizedBox(
+                    width: w * 0.8,
+                    height: h * 0.06,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        
+                        
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      child: const Text(
+                        "Mark As Read",
+                        style: TextStyle(
+                          color: AppColors.background,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Montserrat',
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+          
           ],
         ),
       ),
