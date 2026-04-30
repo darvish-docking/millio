@@ -5,6 +5,7 @@ import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
 import 'package:millio/features/home/presentation/screens/notification_screen.dart';
 import 'package:millio/core/providers/tab_provider.dart';
 import 'package:millio/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:millio/features/profile/presentation/screens/preferences_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,16 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               height: h * 0.25,
               child: Stack(
                 children: [
-                  // Curved Green Background
-                  // ClipPath(
-                  //   clipper: _HeaderClipper(),
-                  //   child: Container(
-                  //     height: h * 0.28,
-                  //     width: double.infinity,
-                  //     color: AppColors.primaryLight, // Or Color(0xFFD6EFC7)
-                  //   ),
-                  // ),
-
                   Image.asset('assets/images/profile-bg.png',
                   width: w,
                   fit: BoxFit.cover,),
@@ -132,15 +123,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: const BoxDecoration(
-                            // color: Colors.white,
                             shape: BoxShape.circle,
                           ),
                           child: CircleAvatar(
                             radius: w * 0.11,
-                            // backgroundColor: Colors.pink.shade100, // Background color matching the image style
                             backgroundImage: const AssetImage('assets/images/profile.png'),
                             onBackgroundImageError: (exception, stackTrace) {},
-                            child: null, // If image fails, you can put a fallback here, but AssetImage will handle it
+                            child: null,
                           ),
                         ),
                       ),
@@ -150,11 +139,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            // SizedBox(height: h * 0.001),
-
             // User Info
             Text(
-              '${context.watch<OnboardingProvider>().username}',
+              context.watch<OnboardingProvider>().username,
               style: TextStyle(
                 fontSize: w * 0.055,
                 fontWeight: FontWeight.bold,
@@ -182,10 +169,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildMenuItem(
                     w: w,
                     title: "Preferences",
-                    imagePath: "assets/images/Setting.png", // Fallback image if Settings isn't there
+                    imagePath: "assets/images/Setting.png",
                     fallbackIcon: Icons.settings_outlined,
                     gradientColors: [AppColors.category2, AppColors.background],
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const PreferencesScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     w: w,
@@ -233,21 +225,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     imagePath: "assets/images/Logout.png",
                     fallbackIcon: Icons.logout_outlined,
                     gradientColors: [AppColors.category8, AppColors.background],
-                    onTap: () async{
+                    onTap: () async {
                       final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setBool("isLoggedIn", false);
-  await prefs.remove("password");
-  await prefs.remove("username"); 
-  await prefs.remove("email"); 
+                      await prefs.setBool("isLoggedIn", false);
+                      await prefs.remove("password");
+                      await prefs.remove("username"); 
+                      await prefs.remove("email"); 
 
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const SignInScreen(),
-    ),
-    (route) => false,
-  );
+                      if (!mounted) return;
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SignInScreen(),
+                        ),
+                        (route) => false,
+                      );
                     },
                   ),
                   SizedBox(height: h * 0.02),
@@ -268,56 +261,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required List<Color> gradientColors,
     required VoidCallback onTap,
   }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: w * 0.05),
-      child: Row(
-        children: [
-          // Icon Container
-          Container(
-            width: w * 0.11,
-            height: w * 0.11,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: gradientColors,
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: w * 0.05),
+        child: Row(
+          children: [
+            // Icon Container
+            Container(
+              width: w * 0.11,
+              height: w * 0.11,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: gradientColors,
+                ),
+              ),
+              child: Center(
+                child: Image.asset(
+                  imagePath,
+                  width: w * 0.05,
+                  height: w * 0.05,
+                  color: AppColors.textPrimarylight87,
+                  errorBuilder: (context, error, stackTrace) => Icon(fallbackIcon, color: AppColors.textPrimarylight87, size: w * 0.05),
+                ),
               ),
             ),
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                width: w * 0.05,
-                height: w * 0.05,
-                color: AppColors.textPrimarylight87,
-                errorBuilder: (context, error, stackTrace) => Icon(fallbackIcon, color: AppColors.textPrimarylight87, size: w * 0.05),
+            SizedBox(width: w * 0.05),
+            
+            // Title
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: w * 0.035,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
+                  color: AppColors.textPrimarylight87,
+                ),
               ),
             ),
-          ),
-          SizedBox(width: w * 0.05),
-          
-          // Title
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: w * 0.035,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Montserrat',
-                color: AppColors.textPrimarylight87,
-              ),
+            
+            // Trailing Button
+            IconButton(
+              onPressed: onTap,
+              icon: Icon(Icons.chevron_right, color: AppColors.backgroundSecondary7, size: w * 0.06),
             ),
-          ),
-          
-          // Trailing Button
-          IconButton(
-            onPressed: onTap,
-            icon: Icon(Icons.chevron_right, color: AppColors.backgroundSecondary7, size: w * 0.06),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
-
-

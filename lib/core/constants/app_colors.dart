@@ -31,6 +31,8 @@ class AppColors {
   static  Color backgroundSecondary7 =  Colors.grey.shade700;
   static const Color scaffoldBackground = Color(0xFFF8F9FB);
 
+  static const Color backgroundTertiary =Color(0xFF333333);
+
   // 🔹 Text Colors
   static const Color textPrimary = Colors.black;
   static const Color textPrimarylight87 = Colors.black87;

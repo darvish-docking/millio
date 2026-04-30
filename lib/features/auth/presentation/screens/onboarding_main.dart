@@ -64,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: provider.currentIndex == index ? w * 0.05 : w * 0.015,
                           height: w * 0.015,
                           decoration: BoxDecoration(
-                            color: AppColors.background,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -164,7 +164,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   child: Text(
                                     "Next",
                                     style: TextStyle(
-                                      color: AppColors.primary,
+                                      color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: w * 0.038,
                                       fontFamily: 'Montserrat',

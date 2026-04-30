@@ -23,13 +23,13 @@ class _OnboardingScreenOneState extends State<OnboardingScreenOne> {
         height: double.infinity,
 
         // ✅ BACKGROUND GRADIENT
-        decoration: const BoxDecoration(
+        decoration:  BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.primary, // green
-              AppColors.secondary, // purple
+              Theme.of(context).colorScheme.primary, // green
+              Theme.of(context).colorScheme.secondary, // purple
             ],
           ),
         ),

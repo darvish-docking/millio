@@ -26,10 +26,10 @@ class SignInScreen extends StatelessWidget {
                   children: [
                     /// 🔹 Top Horizontal Gradient (Green → Violet)
                     Container(
-                      decoration: const BoxDecoration(
+                      decoration:  BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.primary, // Green (left)
+                            Theme.of(context).colorScheme.primary, // Green (left)
                             AppColors.secondary, // Violet (right)
                           ],
                           begin: Alignment.topLeft,
@@ -40,9 +40,9 @@ class SignInScreen extends StatelessWidget {
 
                     /// 🔹 Fade to White (Vertical Overlay)
                     Container(
-                      decoration: const BoxDecoration(
+                      decoration:  BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.transparent, AppColors.background],
+                          colors: [AppColors.transparent, Theme.of(context).scaffoldBackgroundColor,],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           stops: [0.25, 0.7], // controls fade depth
@@ -113,21 +113,23 @@ class SignInScreen extends StatelessWidget {
                   SizedBox(height: height * 0.02),
 
                   /// Title
-                  const Text(
+                   Text(
                     "Sign In",
                     style: TextStyle(
                       fontSize: 28,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.outline
                     ),
                   ),
 
                   SizedBox(height: height * 0.001),
 
                   /// Subtitle
-                  const Text(
+                   Text(
                     "Access to your account",
-                    style: TextStyle(fontFamily: 'Montserrat'),
+                    style: TextStyle(fontFamily: 'Montserrat',
+                    color: Theme.of(context).colorScheme.outline),
                   ),
 
                   SizedBox(height: height * 0.02),
@@ -150,16 +152,20 @@ class SignInScreen extends StatelessWidget {
                         ],
                       ),
                       child: TextField(
+                         style: TextStyle(
+    color: Theme.of(context).colorScheme.outline, // 👈 typing text color
+  
+  ),
                         decoration: InputDecoration(
                           hintText: "Username",
-                          hintStyle: const TextStyle(
+                          hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: AppColors.backgroundSecondary,
+                            color: Theme.of(context).colorScheme.outline,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: AppColors.background,
+                          fillColor: Theme.of(context).colorScheme.onSurface,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -168,6 +174,7 @@ class SignInScreen extends StatelessWidget {
                               "assets/images/username.png",
                               width: width * 0.02,
                               height: width * 0.02,
+                              color: Theme.of(context).colorScheme.outline,
                             ),
                           ),
                           border: OutlineInputBorder(
@@ -200,16 +207,20 @@ class SignInScreen extends StatelessWidget {
                       ),
                       child: TextField(
                         obscureText: true,
+                        style: TextStyle(
+    color: Theme.of(context).colorScheme.outline, // 👈 typing text color
+  
+  ),
                         decoration: InputDecoration(
                           hintText: "Password",
-                          hintStyle: const TextStyle(
+                          hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: AppColors.backgroundSecondary,
+                            color: Theme.of(context).colorScheme.outline,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: AppColors.background,
+                          fillColor: Theme.of(context).colorScheme.onSurface,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -218,6 +229,7 @@ class SignInScreen extends StatelessWidget {
                               "assets/images/Lock.png",
                               width: width * 0.02,
                               height: width * 0.02,
+                              color: Theme.of(context).colorScheme.outline
                             ),
                           ),
                           border: OutlineInputBorder(
@@ -246,10 +258,10 @@ class SignInScreen extends StatelessWidget {
                               checkColor: AppColors.background,
                             ),
                           ),
-                          const Text(
+                           Text(
                             "Remember Me",
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: Theme.of(context).colorScheme.outline,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'Montserrat',
                               fontSize: 13,
@@ -266,10 +278,10 @@ class SignInScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           "Forgot Password",
                           style: TextStyle(
-                            color: AppColors.textPrimary,
+                            color: Theme.of(context).colorScheme.outline,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Montserrat',
                             fontSize: 13,
@@ -315,7 +327,7 @@ class SignInScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: height * 0.015),
+                  SizedBox(height: height * 0.05),
 
                   /// 🔹 PILL BADGE (overlapping dark section)
                   Container(

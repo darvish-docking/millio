@@ -87,15 +87,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
       /// 🔹 Base Gradient
       Container(
-        decoration: const BoxDecoration(
+        decoration:  BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.background,        // 🔹 top-left
+              Theme.of(context).scaffoldBackgroundColor,        // 🔹 top-left
               // Color(0xFF6A00F4),   // violet
-              AppColors.primary,   // green
-              AppColors.background,        // 🔹 bottom-right
+              Theme.of(context).colorScheme.primary,   // green
+              Theme.of(context).scaffoldBackgroundColor,        // 🔹 bottom-right
             ],
             stops: [
               0.2,   // white start
@@ -113,7 +113,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         right: -width * 0.2,
         child: _blurCircle(
           size: width * 0.9,
-          color: AppColors.primary.withValues(alpha:  0.3),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha:  0.3),
         ),
       ),
 
@@ -124,7 +124,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   child: eggOvalLine(
     width: width * 1.1,
     height: height * 0.26,
-    color: AppColors.primary.withOpacity(0.4),
+    color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
     angle: 310, // tweak slightly if needed
   ),
 ),
@@ -164,7 +164,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
       /// 🔹 Extra soft white overlay (optional for smoothness)
       Container(
-        color: AppColors.background.withValues(alpha:  0.1),
+        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha:  0.1),
       ),
     
       Positioned(
