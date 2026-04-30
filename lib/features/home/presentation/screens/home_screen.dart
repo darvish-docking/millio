@@ -6,6 +6,7 @@ import 'package:millio/features/home/presentation/screens/special_offers.dart';
 import 'package:millio/features/home/presentation/screens/chat_box_screen.dart';
 import 'package:millio/features/cart/presentation/screens/cart.dart';
 import 'package:millio/features/home/presentation/screens/notification_screen.dart';
+import 'package:millio/features/home/presentation/screens/filter_screen.dart';
 
 class SpecialOffer {
   final String image;
@@ -106,7 +107,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+  
+  String _searchQuery = "";
+  List<String> _recentSearches = ["Buffalo Chicken", "Pasta", "Burgers"];
+  
   int currentIndex = 0;
 
   final categories = [
@@ -125,11 +133,88 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _searchFocusNode.addListener(() {
+      if (_searchFocusNode.hasFocus) {
+        _showOverlay();
+      } else {
+        _hideOverlay();
+      }
+      setState(() {});
+    });
   }
+
+  void _showOverlay() {
+    if (_overlayEntry != null) return;
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(
+      builder: (context) => UnconstrainedBox(
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: Offset(0, h * 0.075), // Dynamic offset based on search bar height
+          child: Material(
+            elevation: 8,
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.white,
+            child: Container(
+              width: w * 0.92, // Matching the screen padding
+              constraints: BoxConstraints(maxHeight: h * 0.4), // Prevent overlay from taking too much space
+              child: StatefulBuilder(
+                builder: (context, setOverlayState) {
+                  if (_recentSearches.isEmpty) return const SizedBox.shrink();
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: _recentSearches.map((search) => ListTile(
+                        leading: const Icon(Icons.history, color: Colors.grey, size: 20),
+                        title: Text(search, style: const TextStyle(fontFamily: 'Montserrat', fontSize: 14)),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () {
+                            setState(() {
+                              _recentSearches.remove(search);
+                            });
+                            setOverlayState(() {});
+                            if (_recentSearches.isEmpty) _hideOverlay();
+                          },
+                        ),
+                        onTap: () {
+                          _searchController.text = search;
+                          setState(() {
+                            _searchQuery = search;
+                          });
+                          _searchFocusNode.unfocus();
+                        },
+                      )).toList(),
+                    ),
+                  );
+                }
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  late double w;
+  late double h;
 
   @override
   void dispose() {
+    _hideOverlay();
     _pageController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -137,8 +222,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     
     final size = MediaQuery.of(context).size;
-    final w = size.width;
-    final h = size.height;
+    w = size.width;
+    h = size.height;
+
+    // Filter categories based on search query
+    final filteredCategories = categories
+        .where((cat) => cat.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+
+    // Filter special offers based on search query
+    final filteredOffers = specialOffers
+        .where((offer) => offer.title.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -210,10 +305,20 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: h * .02),
 
               /// SEARCH BAR
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.background,
+              CompositedTransformTarget(
+                link: _layerLink,
+                child: Container(
+                  decoration: BoxDecoration(
+                  color: (_searchFocusNode.hasFocus || _searchQuery.isNotEmpty) 
+                      ? AppColors.primaryLight 
+                      : AppColors.background,
                   borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                    color: (_searchFocusNode.hasFocus || _searchQuery.isNotEmpty) 
+                        ? AppColors.primary 
+                        : Colors.transparent,
+                    width: 1,
+                  ),
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 10,
@@ -223,17 +328,57 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 child: TextField(
+                  controller: _searchController,
+                  focusNode: _searchFocusNode,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     hintText: "What are you craving?",
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: Icon(Icons.filter_list),
+                    prefixIcon: Icon(
+                      Icons.search, 
+                      color: Colors.grey,
+                    ),
+                    suffixIcon: _searchQuery.isEmpty 
+                        ? IconButton(
+                            icon: Image.asset(
+                              'assets/images/Filter.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const FilterScreen()),
+                              );
+                            },
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _searchQuery = "";
+                              });
+                            },
+                          ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       vertical: h * .02,
                     ),
                   ),
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty && !_recentSearches.contains(value)) {
+                      setState(() {
+                        _recentSearches.insert(0, value);
+                      });
+                    }
+                  },
                 ),
               ),
+            ),
 
               SizedBox(height: h * .025),
 
@@ -359,7 +504,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: categories.length,
+                itemCount: filteredCategories.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   mainAxisSpacing: 16,
@@ -395,14 +540,14 @@ AppColors.category5,
                         ),
                         child: Center(
                           child: Image.asset(
-                            "assets/images/${categories[index]}.png",
+                            "assets/images/${filteredCategories[index]}.png",
                             width: w * .09,
                           ),
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        categories[index],
+                        filteredCategories[index],
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: w * .03),
                         maxLines: 2,
@@ -455,7 +600,7 @@ AppColors.category5,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.4),
+                              color: AppColors.primary.withAlpha(102), // ~0.4 opacity
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
@@ -478,7 +623,7 @@ AppColors.category5,
                               Container(
                                 // width: w * 0.05,
                                 // height: h * 0.05,
-                                color: AppColors.primaryLight.withOpacity(0.6)),
+                                color: AppColors.primaryLight.withAlpha(153)), // ~0.6 opacity
                               Center(
                                 child:Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -537,7 +682,7 @@ AppColors.category5,
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: specialOffers.length,
+                itemCount: filteredOffers.length,
                 gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -546,7 +691,7 @@ AppColors.category5,
                   childAspectRatio: .72,
                 ),
                 itemBuilder: (_, index) {
-                  final offer = specialOffers[index];
+                  final offer = filteredOffers[index];
                   return Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -651,7 +796,7 @@ AppColors.category5,
                           end: Alignment.bottomCenter,
                           colors: [
                             AppColors.transparent,
-                            AppColors.textPrimary.withOpacity(0.8),
+                            AppColors.textPrimary.withAlpha(204), // ~0.8 opacity
                           ],
                         ),
                       ),

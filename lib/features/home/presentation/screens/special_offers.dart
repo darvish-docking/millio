@@ -3,6 +3,7 @@ import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart'; 
 import 'package:millio/features/home/presentation/screens/product_details.dart';
+import 'package:millio/features/home/presentation/screens/filter_screen.dart';
 
 class SpecialOffersScreen extends StatelessWidget {
   final List<SpecialOffer> specialOffers;
@@ -72,7 +73,19 @@ class SpecialOffersScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: "What are you craving?",
                         prefixIcon: const Icon(Icons.search),
-                        suffixIcon: const Icon(Icons.filter_list),
+                        suffixIcon: IconButton(
+                          icon: Image.asset(
+                            'assets/images/Filter.png',
+                            height: 24,
+                            width: 24,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const FilterScreen()),
+                            );
+                          },
+                        ),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(
                           vertical: h * .02,

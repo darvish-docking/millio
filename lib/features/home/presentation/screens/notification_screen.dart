@@ -146,7 +146,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             width: w * 0.04,
                             height: w * 0.04,
                             decoration: BoxDecoration(
-                              color: item.isChecked ? AppColors.primary : Colors.transparent,
+                              color: item.isChecked ? AppColors.primary : AppColors.transparent,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
                                 color: item.isChecked ? AppColors.primary : AppColors.backgroundSecondary4,
@@ -154,7 +154,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                             ),
                             child: item.isChecked
-                                ? const Icon(Icons.check, size: 12, color: Colors.white)
+                                ? const Icon(Icons.check, size: 12, color: AppColors.background)
                                 : null,
                           ),
                         ),
@@ -191,7 +191,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 decoration: BoxDecoration(
                                   color: AppColors.error,
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 1.5),
+                                  border: Border.all(color: AppColors.background, width: 1.5),
                                 ),
                               ),
                             ),
