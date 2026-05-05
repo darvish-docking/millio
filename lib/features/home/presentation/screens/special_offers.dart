@@ -12,18 +12,20 @@ class SpecialOffersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leadingWidth: 48,
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: AppColors.backgroundSecondary3,
+            color: AppColorsLegacy.backgroundSecondary3,
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -43,9 +45,9 @@ class SpecialOffersScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Special Offers",
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+          style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
       ),
@@ -59,12 +61,12 @@ class SpecialOffersScreen extends StatelessWidget {
                   /// SEARCH BAR
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.background,
+                      color: colors.textField,
                       borderRadius: BorderRadius.circular(50),
-                      boxShadow: const [
+                      boxShadow:  [
                         BoxShadow(
                           blurRadius: 10,
-                          color: AppColors.textPrimarylight12,
+                          color: AppColorsLegacy.textPrimarylight12,
                           offset: Offset(0, 4),
                         )
                       ],
@@ -123,11 +125,11 @@ class SpecialOffersScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: AppColors.background,
-                        boxShadow: const [
+                        color: colors.textField,
+                        boxShadow:  [
                           BoxShadow(
                             blurRadius: 8,
-                            color: AppColors.textPrimarylight12,
+                            color: AppColorsLegacy.textPrimarylight12,
                           )
                         ],
                       ),
@@ -142,8 +144,8 @@ class SpecialOffersScreen extends StatelessWidget {
                               fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                color: AppColors.backgroundSecondary2,
-                                child: const Icon(Icons.fastfood, color: AppColors.backgroundSecondary),
+                                color: AppColorsLegacy.backgroundSecondary2,
+                                child:  Icon(Icons.fastfood, color: AppColorsLegacy.backgroundSecondary),
                               ),
                             ),
                           ),
@@ -162,24 +164,24 @@ class SpecialOffersScreen extends StatelessWidget {
                           children: [
                             Text(
                               "${offer.distance} |",
-                              style: const TextStyle(color: AppColors.textSecondary),
+                              style:  TextStyle(color: AppColorsLegacy.textSecondary),
                             ),
-                            const Icon(Icons.star, size: 14, color: AppColors.amber),
+                             Icon(Icons.star, size: 14, color: AppColorsLegacy.amber),
                             Text(
                               offer.rating,
-                              style: const TextStyle(color: AppColors.textSecondary),
+                              style:  TextStyle(color: AppColorsLegacy.textSecondary),
                             ),
                             Text(
                               offer.reviewCount,
-                              style: const TextStyle(color: AppColors.textSecondary),
+                              style:  TextStyle(color: AppColorsLegacy.textSecondary),
                             )
                           ],
                         ),
                         const SizedBox(height: 6),
                         Text(
                           "\$${offer.price.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            color: AppColors.primary,
+                          style:  TextStyle(
+                            color: AppColorsLegacy.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         )

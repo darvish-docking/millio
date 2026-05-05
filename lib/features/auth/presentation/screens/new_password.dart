@@ -6,13 +6,15 @@ class NewPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+            final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -51,12 +53,12 @@ class NewPasswordScreen extends StatelessWidget {
         /// Gradient Overlay 2 (white fade top to transparent)
         Positioned.fill(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration:  BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppColors.background,
+                  colors.background,
                   AppColors.transparent,
                 ],
                 stops: [0.0, 1.0],
@@ -109,7 +111,7 @@ class NewPasswordScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.width * 0.10,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.textPrimary.withOpacity(0.05), // faded background
+                  color: colors.textHint.withOpacity(0.05), // faded background
                 ),
                 child: Center(
                   child: Image.asset(
@@ -151,7 +153,7 @@ class NewPasswordScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: width * 0.035,
-                  color: AppColors.textSecondary,
+                  color: AppColorsLegacy.textSecondary,
                   fontFamily: 'Montserrat'
                 ),
               ),
@@ -168,7 +170,7 @@ class NewPasswordScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textPrimary.withValues(
+                            color: AppColorsLegacy.textPrimary.withValues(
                               alpha: 0.1,
                             ), // shadow color
                             blurRadius: 10, // softness
@@ -180,14 +182,14 @@ class NewPasswordScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: "Password",
-                          hintStyle: const TextStyle(
+                          hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: AppColors.backgroundSecondary,
+                            color: AppColorsLegacy.backgroundSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: AppColors.background,
+                          fillColor: colors.textField,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -217,7 +219,7 @@ class NewPasswordScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textPrimary.withValues(
+                            color: AppColorsLegacy.textPrimary.withValues(
                               alpha: 0.1,
                             ), // shadow color
                             blurRadius: 10, // softness
@@ -230,14 +232,14 @@ class NewPasswordScreen extends StatelessWidget {
                         obscureText: true,
                         decoration: InputDecoration(
                           hintText: "Confirm Password",
-                          hintStyle: const TextStyle(
+                          hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: AppColors.backgroundSecondary,
+                            color: AppColorsLegacy.backgroundSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: AppColors.background,
+                          fillColor: colors.textField,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -268,7 +270,7 @@ class NewPasswordScreen extends StatelessWidget {
               height: height * 0.07,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColorsLegacy.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -278,7 +280,7 @@ class NewPasswordScreen extends StatelessWidget {
                   "Change password",
                   style: TextStyle(
                     fontSize: width * 0.045,
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
                   ),

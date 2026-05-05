@@ -35,12 +35,14 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,14 +53,14 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
               child: Row(
                 children: [
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -69,7 +71,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                 ],
@@ -94,12 +96,12 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
                     onCameraIdle: _onCameraIdle,
                   ),
                   // Center Pin (The "Balloon")
-                  const IgnorePointer(
+                   IgnorePointer(
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.location_on, color: AppColors.primary, size: 48),
+                          Icon(Icons.location_on, color: AppColorsLegacy.primary, size: 48),
                           SizedBox(height: 24), // Offset to put the tip at the center
                         ],
                       ),
@@ -122,7 +124,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
                         fontSize: w * 0.045,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Montserrat',
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                     ),
                     SizedBox(height: h * 0.03),
@@ -141,14 +143,14 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColorsLegacy.primary,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           elevation: 0,
                         ),
                         child: Text(
                           "Confirm Location",
                           style: TextStyle(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             fontSize: w * 0.04,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
@@ -168,6 +170,8 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
   }
 
   Widget _buildAddressField(double w) {
+                final colors = context.colors;
+
     return Focus(
       onFocusChange: (hasFocus) {
         setState(() {
@@ -176,18 +180,18 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: _isFieldFocused ? AppColors.primaryLight : AppColors.background,
+          color: _isFieldFocused ? AppColorsLegacy.primaryLight : colors.textField,
           borderRadius: BorderRadius.circular(w * 0.1),
           boxShadow: [
             BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.06),
+              color: AppColorsLegacy.textPrimary.withOpacity(0.06),
               blurRadius: 12,
               spreadRadius: 1,
               offset: const Offset(0, 4),
             ),
           ],
           border: Border.all(
-            color: _isFieldFocused ? AppColors.primary : AppColors.transparent,
+            color: _isFieldFocused ? AppColorsLegacy.primary : AppColors.transparent,
             width: 1.5,
           ),
         ),
@@ -200,7 +204,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
           decoration: InputDecoration(
             hintText: "Location Address",
             hintStyle: TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColorsLegacy.textSecondary,
               fontSize: w * 0.035,
               fontFamily: 'Montserrat',
             ),
@@ -208,7 +212,7 @@ class _SetLocationScreenState extends State<SetLocationScreen> {
               padding: const EdgeInsets.all(14.0),
               child: Image.asset(
                 "assets/images/Location.png",
-                color: AppColors.textSecondary,
+                color: AppColorsLegacy.textSecondary,
                 width: w * 0.05,
                 height: w * 0.05,
                 fit: BoxFit.contain,

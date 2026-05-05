@@ -38,12 +38,14 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -81,7 +83,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(Icons.arrow_back_ios_new, size: w * 0.04, color: AppColors.textPrimary),
+                          child: Icon(Icons.arrow_back_ios_new, size: w * 0.04, color: AppColorsLegacy.textPrimary),
                         ),
                       ),
                       // Search Button
@@ -93,7 +95,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(Icons.search, size: w * 0.05, color: AppColors.textPrimary),
+                          child: Icon(Icons.search, size: w * 0.05, color: AppColorsLegacy.textPrimary),
                         ),
                       ),
                     ],
@@ -121,7 +123,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                 fontSize: w * 0.06,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Montserrat',
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
             
@@ -132,7 +134,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
               width: w * 0.1,
               height: 3,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: AppColorsLegacy.primary,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -148,7 +150,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                   style: TextStyle(
                     fontSize: w * 0.035,
                     fontFamily: 'Montserrat',
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                     height: 1.5,
                   ),
                   children: [
@@ -172,7 +174,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                 width: double.infinity,
                 padding: EdgeInsets.all(w * 0.05),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
+                  color: AppColorsLegacy.primaryLight,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Column(
@@ -189,14 +191,14 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                             fontSize: w * 0.04,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
-                            color: AppColors.primary, // Brand Green
+                            color: AppColorsLegacy.primary, // Brand Green
                           ),
                         ),
                         SizedBox(height: h * 0.005),
                         Divider(
                          // Fixed width for separator
                           height: 2,
-                          color: AppColors.primary,
+                          color: AppColorsLegacy.primary,
                         ),
                       ],
                     ),
@@ -231,14 +233,14 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColorsLegacy.primary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     elevation: 0,
                   ),
                   child: Text(
                     "Continue Shopping",
                     style: TextStyle(
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                       fontSize: w * 0.04,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
@@ -266,7 +268,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
             style: TextStyle(
               fontSize: w * 0.032,
               fontFamily: 'Montserrat',
-              color: AppColors.textSecondary,
+              color: AppColorsLegacy.textSecondary,
             ),
           ),
           Text(
@@ -275,7 +277,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
               fontSize: w * 0.032,
               fontWeight: FontWeight.w600,
               fontFamily: 'Montserrat',
-              color: AppColors.textPrimary,
+              color: AppColorsLegacy.textPrimary,
             ),
           ),
         ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/auth/presentation/screens/onboarding_screen_4.dart';
 
 class OnboardingScreenThree extends StatefulWidget {
   const OnboardingScreenThree({super.key});
@@ -81,7 +80,7 @@ class _OnboardingScreenThreeState extends State<OnboardingScreenThree> {
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
                       height: 1.1,
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                     ),
                   ),
                 ),

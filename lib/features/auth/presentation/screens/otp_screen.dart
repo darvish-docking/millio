@@ -7,13 +7,15 @@ class OtpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -50,7 +52,7 @@ class OtpScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.width * 0.10,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.textPrimary.withOpacity(0.05), // faded background
+                  color: colors.textHint.withOpacity(0.05), // faded background
                 ),
                 child: Center(
                   child: Image.asset(
@@ -74,6 +76,8 @@ class OtpScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: width * 0.07,
                   fontWeight: FontWeight.bold,
+                  color: colors.textPrimary,
+
                 ),
               ),
             ),
@@ -89,7 +93,7 @@ class OtpScreen extends StatelessWidget {
                 "We have sent the code verification to your Email",
                 style: TextStyle(
                   fontSize: width * 0.035,
-                  color: AppColors.textSecondary,
+                  color: AppColorsLegacy.textSecondary,
                 ),
               ),
             ),
@@ -101,7 +105,7 @@ class OtpScreen extends StatelessWidget {
                 "kenzi.lawson@example.com",
                 style: TextStyle(
                   fontSize: width * 0.035,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                   fontWeight: FontWeight.w700
                 ),
               ),
@@ -121,7 +125,7 @@ class OtpScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.textPrimary.withValues(alpha: 0.08), // soft shadow
+                      color: colors.textPrimary.withValues(alpha: 0.08), // soft shadow
                       blurRadius: 10,
                       spreadRadius: 1,
                       offset: const Offset(0, 4), // downward shadow
@@ -140,9 +144,9 @@ class OtpScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     counterText: "",
                     filled: true,
-                    fillColor: AppColors.background,
+                    fillColor: colors.textField,
                     /// 👇 background when focused
-    focusColor: AppColors.primary.withValues(alpha:  0.2),
+    focusColor: AppColorsLegacy.primary.withValues(alpha:  0.2),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50), // oval shape
                       borderSide: BorderSide.none,
@@ -156,7 +160,7 @@ class OtpScreen extends StatelessWidget {
     /// 👇 border when focused
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(50),
-      borderSide: BorderSide(color: AppColors.primary, width: 2),
+      borderSide: BorderSide(color: AppColorsLegacy.primary, width: 2),
     ),
                     
                   ),
@@ -175,7 +179,7 @@ class OtpScreen extends StatelessWidget {
               height: height * 0.07,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColorsLegacy.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -192,7 +196,7 @@ class OtpScreen extends StatelessWidget {
                   "Confirm",
                   style: TextStyle(
                     fontSize: width * 0.045,
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
                   ),
@@ -211,7 +215,8 @@ class OtpScreen extends StatelessWidget {
                 Text(
                   "Didn't receive code? ",
                   style: TextStyle(fontSize: width * 0.035,
-                  fontFamily: 'Montserrat',),
+                  fontFamily: 'Montserrat',
+                  color: colors.textPrimary),
                 ),
                 GestureDetector(
                   onTap: () {},
@@ -219,7 +224,7 @@ class OtpScreen extends StatelessWidget {
                     "Resend",
                     style: TextStyle(
                       fontSize: width * 0.035,
-                      color: AppColors.primary,
+                      color: AppColorsLegacy.primary,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
                     ),

@@ -61,12 +61,14 @@ late TextEditingController fullNameController;
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
@@ -83,14 +85,14 @@ late TextEditingController fullNameController;
                     height: width * 0.09,
                     width: width * 0.09,
                     decoration: BoxDecoration(
-                      color: AppColors.backgroundSecondary4.withOpacity(0.2),
+                      color: AppColorsLegacy.backgroundSecondary4.withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(
                         Icons.chevron_left,
-                        color: AppColors.textPrimary,
+                        color: AppColorsLegacy.textPrimary,
                         size: width * 0.06,
                       ),
                     ),
@@ -103,7 +105,7 @@ late TextEditingController fullNameController;
                     style: TextStyle(
                       fontSize: width * 0.055,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
 
@@ -113,12 +115,12 @@ late TextEditingController fullNameController;
                     height: width * 0.09,
                     width: width * 0.09,
                     decoration: BoxDecoration(
-                      color: AppColors.backgroundSecondary4.withOpacity(0.2),
+                      color: AppColorsLegacy.backgroundSecondary4.withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
                     child: Image.asset(
                     'assets/images/Edit.png',
-                    color: AppColors.textPrimary,
+                    color: AppColorsLegacy.textPrimary,
                     width: width * 0.085,
                   ),)
                 ],
@@ -144,16 +146,16 @@ late TextEditingController fullNameController;
                         height: width * 0.09,
                         width: width * 0.09,
                         decoration: BoxDecoration(
-                          color: AppColors.primary,
+                          color: AppColorsLegacy.primary,
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             width: 2,
                           ),
                         ),
                         child: Icon(
                           Icons.photo_library_outlined,
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           size: width * 0.045,
                         ),
                       ),
@@ -167,11 +169,11 @@ late TextEditingController fullNameController;
               /// USER NAME
               Center(
                 child: Text(
-                  "${context.watch<OnboardingProvider>().username}",
+                  context.watch<OnboardingProvider>().username,
                   style: TextStyle(
                     fontSize: width * 0.055,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
               ),
@@ -314,7 +316,7 @@ late TextEditingController fullNameController;
                   );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColorsLegacy.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
@@ -325,7 +327,7 @@ late TextEditingController fullNameController;
                     style: TextStyle(
                       fontSize: width * 0.045,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                     ),
                   ),
                 ),
@@ -348,18 +350,21 @@ late TextEditingController fullNameController;
     bool readOnly = false,
   VoidCallback? onTap,
   }) {
+                final colors = context.colors;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.06),
+            color: AppColorsLegacy.textPrimary.withOpacity(0.06),
             blurRadius: 10,
             spreadRadius: 1,
             offset: const Offset(0, 4),
           ),
         ],
       ),
+      
       child: TextField(
         controller: controller,
          readOnly: readOnly,
@@ -367,11 +372,11 @@ late TextEditingController fullNameController;
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
-            color: AppColors.textSecondary,
+            color: AppColorsLegacy.textSecondary,
             fontSize: width * 0.04,
           ),
           filled: true,
-          fillColor: AppColors.background,
+          fillColor: colors.textField,
           contentPadding: EdgeInsets.symmetric(
             horizontal: width * 0.05,
             vertical: height * 0.022,
@@ -379,7 +384,7 @@ late TextEditingController fullNameController;
           suffixIcon: suffix != null
               ? Icon(
                   suffix,
-                  color: AppColors.textSecondary,
+                  color: AppColorsLegacy.textSecondary,
                 )
               : null,
           border: OutlineInputBorder(
@@ -393,7 +398,7 @@ late TextEditingController fullNameController;
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(
-              color: AppColors.primary,
+              color: AppColorsLegacy.primary,
               width: 1.2,
             ),
           ),

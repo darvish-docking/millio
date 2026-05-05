@@ -99,13 +99,15 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -115,14 +117,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               child: Row(
                 children: [
                    Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -133,13 +135,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                   const Spacer(),
                   // QR Scanner Button
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
@@ -186,17 +188,17 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       margin: EdgeInsets.only(bottom: h * 0.02),
                       padding: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.015),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primaryLight : AppColors.background,
+                        color: isSelected ? colors.textField : colors.textField,
                         borderRadius: BorderRadius.circular(w * 0.1), // Pill shaped like textfields
                         border: Border.all(
-                          color: isSelected ? AppColors.primary : AppColors.transparent,
+                          color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                           width: 1.5,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: isSelected 
-                              ? AppColors.primary.withOpacity(0.08)
-                              : AppColors.textPrimary.withOpacity(0.06),
+                              ? AppColorsLegacy.primary.withOpacity(0.08)
+                              : AppColorsLegacy.textPrimary.withOpacity(0.06),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -220,7 +222,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                 fontSize: w * 0.038,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Montserrat',
-                                color: AppColors.textPrimary,
+                                color: colors.textPrimary,
                               ),
                             ),
                           ),
@@ -231,10 +233,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: isSelected ? AppColors.primary : AppColors.backgroundSecondary1,
+                                color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary1,
                                 width: 1.5,
                               ),
-                              color: isSelected ? AppColors.primary : AppColors.transparent,
+                              color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                             ),
                           ),
                         ],
@@ -262,14 +264,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryLight,
+                        backgroundColor: colors.textField,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                       child: Text(
                         "Add new card",
                         style: TextStyle(
-                          color: AppColors.primary,
+                          color: AppColorsLegacy.primary,
                           fontSize: w * 0.035,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
@@ -287,14 +289,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         _openCheckout();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColorsLegacy.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                         elevation: 0,
                       ),
                       child: Text(
                         "Apply",
                         style: TextStyle(
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           fontSize: w * 0.038,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',

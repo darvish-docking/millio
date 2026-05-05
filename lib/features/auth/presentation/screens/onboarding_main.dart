@@ -81,7 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Container(
                     padding: EdgeInsets.all(w * 0.015),
                     decoration: BoxDecoration(
-                      color: AppColors.background.withOpacity(0.2),
+                      color: AppColorsLegacy.background.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(w * 0.1),
                     ),
                     child: Row(
@@ -106,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               child: Text(
                                 "Skip",
                                 style: TextStyle(
-                                  color: AppColors.background,
+                                  color: AppColorsLegacy.background,
                                   fontSize: w * 0.038,
                                   fontFamily: 'Montserrat',
                                 ),
@@ -148,13 +148,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               padding:
                                   EdgeInsets.symmetric(vertical: h * 0.015),
                               decoration: BoxDecoration(
-                                color: AppColors.background,
+                                color: AppColorsLegacy.background,
                                 borderRadius: BorderRadius.circular(w * 0.08),
 
                                 // ✨ GLOW EFFECT
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.boxShadow,
+                                    color: AppColorsLegacy.boxShadow,
                                     blurRadius: w * 0.05,
                                     spreadRadius: w * 0.005,
                                   ),

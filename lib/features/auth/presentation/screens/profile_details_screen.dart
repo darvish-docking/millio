@@ -34,12 +34,15 @@ class _ProfileDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
+
+    final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
@@ -61,7 +64,7 @@ class _ProfileDetailsScreenState
                       height: MediaQuery.of(context).size.width * 0.10,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.textPrimary.withOpacity(0.05), // faded background
+                        color: colors.textHint.withOpacity(0.05), // faded background
                       ),
                       child: Center(
                         child: Image.asset(
@@ -80,7 +83,7 @@ class _ProfileDetailsScreenState
                     style: TextStyle(
                       fontSize: width * 0.055,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                 ],
@@ -97,7 +100,7 @@ class _ProfileDetailsScreenState
                       width: width * 0.32,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.backgroundSecondary1,
+                        color: AppColorsLegacy.backgroundSecondary1,
                         // border: Border.all(
                         //   color: Colors.grey.shade300,
                         //   width: 2,
@@ -106,7 +109,7 @@ class _ProfileDetailsScreenState
                       child: Icon(
                         Icons.person,
                         size: width * 0.15,
-                        color: AppColors.backgroundSecondary5,
+                        color: AppColorsLegacy.backgroundSecondary5,
                       ),
                     ),
 
@@ -118,15 +121,15 @@ class _ProfileDetailsScreenState
                         width: width * 0.09,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.primary,
+                          color: AppColorsLegacy.primary,
                           border: Border.all(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             width: 2,
                           ),
                         ),
                         child: Image.asset(
                           'assets/images/gallery.png',
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           width: width * 0.045,
                         ),
                       ),
@@ -256,7 +259,7 @@ class _ProfileDetailsScreenState
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColorsLegacy.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(width * 0.09),
                     ),
@@ -267,7 +270,7 @@ class _ProfileDetailsScreenState
                     style: TextStyle(
                       fontSize: width * 0.045,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                     ),
                   ),
                 ),
@@ -288,6 +291,9 @@ class _ProfileDetailsScreenState
     String? suffixImage,
     VoidCallback? onSuffixTap,
   }) {
+
+            final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -296,11 +302,11 @@ class _ProfileDetailsScreenState
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(width * 0.09),
 
-      color: AppColors.background,
+      color: colors.textField,
 
       boxShadow: [
         BoxShadow(
-          color: AppColors.textPrimary.withOpacity(0.06),
+          color: AppColorsLegacy.textPrimary.withOpacity(0.06),
           blurRadius: 12,
           spreadRadius: 1,
           offset: Offset(0, 4), // x,y
@@ -312,7 +318,7 @@ class _ProfileDetailsScreenState
         hintText: hint,
         hintStyle: TextStyle(
           fontSize: width * 0.04,
-          color: AppColors.backgroundSecondary5,
+          color: colors.textHint,
           fontFamily: 'Montserrat'
         ),
         // prefixIcon: Icon(
@@ -334,7 +340,7 @@ class _ProfileDetailsScreenState
             ))
             : null,
         filled: true,
-        fillColor: AppColors.background,
+        fillColor: colors.textField,
         contentPadding: EdgeInsets.symmetric(
           vertical: height * 0.022,
         ),
@@ -351,7 +357,7 @@ class _ProfileDetailsScreenState
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(width * 0.09),
           borderSide: BorderSide(
-        color: AppColors.primary,
+        color: AppColorsLegacy.primary,
         width: 2,
       ),
         ),

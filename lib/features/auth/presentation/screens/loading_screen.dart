@@ -136,7 +136,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         left: -width * 0.2,
         child: _blurCircle(
           size: width * 0.77,
-          color: AppColors.purpleAccent.withValues(alpha:  0.3),
+          color: AppColorsLegacy.purpleAccent.withValues(alpha:  0.3),
         ),
       ),
 
@@ -146,7 +146,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         left: -width * 0.2,
         child: _blurCircle(
           size: width * 0.5,
-          color: AppColors.purple.withValues(alpha:  0.4),
+          color: AppColorsLegacy.purple.withValues(alpha:  0.4),
         ),
       ),
 
@@ -157,7 +157,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: eggOvalLine(
           width: width * 1.1,
           height: height * 0.26,
-          color: AppColors.purple.withValues(alpha:  0.3),
+          color: AppColorsLegacy.purple.withValues(alpha:  0.3),
           angle: -40,
         ),
       ),
@@ -201,7 +201,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                   child: Image.asset(
                     "assets/images/Logo.png",
                     fit: BoxFit.contain,
-                    color: AppColors.lightGreenAccent,
+                    color: AppColorsLegacy.lightGreenAccent,
                     // width: width * 0.8,
                   ),
                 ),

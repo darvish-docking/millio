@@ -55,40 +55,43 @@ class ReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+                        final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leadingWidth: 56,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Center(
             child: Material(
-              color: AppColors.backgroundSecondary1,
+              color: AppColorsLegacy.backgroundSecondary1,
               shape: const CircleBorder(),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsets.all(8),
-                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColors.textPrimary),
+                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColorsLegacy.textPrimary),
                 ),
               ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Reviews",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             fontFamily: 'Montserrat',
-            color: AppColors.textPrimary,
+            color: colors.textPrimary,
           ),
         ),
         centerTitle: false,
@@ -121,7 +124,7 @@ class ReviewsScreen extends StatelessWidget {
                           double r = double.tryParse(offer.rating) ?? 0.0;
                           return Icon(
                             index < r.floor() ? Icons.star : Icons.star_border,
-                            color: AppColors.amber,
+                            color: AppColorsLegacy.amber,
                             size: w * 0.05,
                           );
                         }),
@@ -130,7 +133,7 @@ class ReviewsScreen extends StatelessWidget {
                       Text(
                         "${offer.reviewCount} Reviews",
                         style: TextStyle(
-                          color: AppColors.backgroundSecondary,
+                          color: AppColorsLegacy.backgroundSecondary,
                           fontSize: w * 0.035,
                           fontFamily: 'Montserrat',
                         ),
@@ -143,7 +146,7 @@ class ReviewsScreen extends StatelessWidget {
                 Container(
                   height: h * 0.12,
                   width: 1.5,
-                  color: AppColors.backgroundSecondary2,
+                  color: AppColorsLegacy.backgroundSecondary2,
                   margin: EdgeInsets.symmetric(horizontal: w * 0.04),
                 ),
 
@@ -198,7 +201,7 @@ class ReviewsScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: h * 0.025),
                         child: Divider(
-                          color: AppColors.primary.withOpacity(0.4),
+                          color: AppColorsLegacy.primary.withOpacity(0.4),
                           thickness: 1,
                         ),
                       ),
@@ -221,7 +224,7 @@ class ReviewsScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColorsLegacy.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(w * 0.08),
                   ),
@@ -230,7 +233,7 @@ class ReviewsScreen extends StatelessWidget {
                 child: Text(
                   "Add A Review",
                   style: TextStyle(
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     fontSize: w * 0.042,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Montserrat',
@@ -267,8 +270,8 @@ class ReviewsScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(w * 0.02),
               child: LinearProgressIndicator(
                 value: value,
-                backgroundColor: AppColors.backgroundSecondary1,
-                color: AppColors.amber,
+                backgroundColor: AppColorsLegacy.backgroundSecondary1,
+                color: AppColorsLegacy.amber,
                 minHeight: w * 0.015,
               ),
             ),
@@ -283,16 +286,16 @@ class ReviewsScreen extends StatelessWidget {
       margin: EdgeInsets.only(right: w * 0.03),
       padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: w * 0.015),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColorsLegacy.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(w * 0.05),
         border: Border.all(
-          color: isSelected ? AppColors.primary : AppColors.primary.withOpacity(0.1)
+          color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.primary.withOpacity(0.1)
         ),
       ),
       child: Text(
         label,
         style: TextStyle(
-          color: AppColors.primary,
+          color: AppColorsLegacy.primary,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           fontSize: w * 0.035,
           fontFamily: 'Montserrat',
@@ -311,12 +314,12 @@ class ReviewsScreen extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.backgroundSecondary1, width: 2),
+                border: Border.all(color: AppColorsLegacy.backgroundSecondary1, width: 2),
               ),
               child: CircleAvatar(
                 radius: w * 0.06,
                 backgroundImage: AssetImage(review.userImage),
-                backgroundColor: AppColors.backgroundSecondary2,
+                backgroundColor: AppColorsLegacy.backgroundSecondary2,
               ),
             ),
             SizedBox(width: w * 0.04),
@@ -334,7 +337,7 @@ class ReviewsScreen extends StatelessWidget {
               children: List.generate(5, (index) {
                 return Icon(
                   index < review.rating.floor() ? Icons.star : Icons.star_border,
-                  color: AppColors.amber,
+                  color: AppColorsLegacy.amber,
                   size: w * 0.045,
                 );
               }),
@@ -348,7 +351,7 @@ class ReviewsScreen extends StatelessWidget {
         Text(
           review.comment,
           style: TextStyle(
-            color: AppColors.backgroundSecondary7,
+            color: AppColorsLegacy.backgroundSecondary7,
             fontSize: w * 0.036,
             height: 1.6,
             fontFamily: 'Montserrat',
@@ -360,7 +363,7 @@ class ReviewsScreen extends StatelessWidget {
         // Footer Row: Heart icon | Timestamp
         Row(
           children: [
-            Icon(Icons.favorite, color: AppColors.buttonFavourites, size: w * 0.05),
+            Icon(Icons.favorite, color: AppColorsLegacy.buttonFavourites, size: w * 0.05),
             SizedBox(width: w * 0.02),
             Text(
               review.likes.toString(),
@@ -373,13 +376,13 @@ class ReviewsScreen extends StatelessWidget {
             Container(
               height: h * 0.02,
               width: 1.5,
-              color: AppColors.backgroundSecondary3,
+              color: AppColorsLegacy.backgroundSecondary3,
               margin: EdgeInsets.symmetric(horizontal: w * 0.04),
             ),
             Text(
               review.date,
               style: TextStyle(
-                color: AppColors.backgroundSecondary, 
+                color: AppColorsLegacy.backgroundSecondary, 
                 fontSize: w * 0.035, 
                 fontFamily: 'Montserrat'
               ),

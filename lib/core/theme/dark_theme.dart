@@ -5,17 +5,17 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
 
   colorScheme: ColorScheme.dark(
-    primary: AppColors.primary,
-    secondary: AppColors.secondary,
-    surface: AppColors.background,
-    outline: AppColors.background,
-    onSurface: AppColors.backgroundTertiary,
-    error: Colors.redAccent,
+    primary: AppColors.dark.primary,
+    secondary: AppColors.dark.secondary,
+    surface: AppColors.dark.surface,
+    outline: AppColors.dark.border,
+    onSurface: AppColors.dark.textPrimary,
+    error: AppColors.dark.error,
   ),
 
-  scaffoldBackgroundColor: AppColors.textPrimary,
+  scaffoldBackgroundColor: AppColors.dark.scaffoldBackground,
 
   // textTheme: const TextTheme(
-  //   bodyMedium: TextStyle(color: AppColors.darkText),
+  //   bodyMedium: TextStyle(color: AppColors.dark.textSecondary),
   // ),
 );

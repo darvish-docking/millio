@@ -54,13 +54,15 @@ class _VoucherScreenState extends State<VoucherScreen> {
 
   @override
   Widget build(BuildContext context) {
+                    final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -70,14 +72,14 @@ class _VoucherScreenState extends State<VoucherScreen> {
               child: Row(
                 children: [
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -88,7 +90,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                 ],
@@ -114,17 +116,17 @@ class _VoucherScreenState extends State<VoucherScreen> {
                       margin: EdgeInsets.only(bottom: h * 0.02),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primaryLight : AppColors.background,
+                        color: isSelected ? AppColorsLegacy.primaryLight : colors.textField,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isSelected ? AppColors.primary : AppColors.transparent,
+                          color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: isSelected 
-                              ? AppColors.primary.withValues(alpha: .05) 
-                              : AppColors.textPrimary.withValues(alpha: .04),
+                              ? AppColorsLegacy.primary.withValues(alpha: .05) 
+                              : AppColorsLegacy.textPrimary.withValues(alpha: .04),
                             blurRadius: 10,
                             offset: const Offset(0, 8),
                           ),
@@ -137,13 +139,13 @@ class _VoucherScreenState extends State<VoucherScreen> {
                             width: w * 0.12,
                             height: w * 0.12,
                             decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary : AppColors.backgroundSecondary1,
+                              color: isSelected ? AppColorsLegacy.primary : colors.textHint,
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(14), // Increased padding to reduce icon size
                             child: Image.asset(
                               voucher.imagePath,
-                              color: isSelected ? AppColors.background : AppColors.textPrimary, // Active: white, Inactive: black
+                              color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.textPrimary, // Active: white, Inactive: black
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -166,7 +168,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                 Text(
                                   voucher.details,
                                   style: TextStyle(
-                                    color: AppColors.textSecondary,
+                                    color: AppColorsLegacy.textSecondary,
                                     fontSize: w * 0.03,
                                     fontFamily: 'Montserrat',
                                   ),
@@ -181,9 +183,9 @@ class _VoucherScreenState extends State<VoucherScreen> {
                             height: 12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: isSelected ? AppColors.primary : AppColors.transparent,
+                              color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                               border: Border.all(
-                                color: isSelected ? AppColors.primary : AppColors.backgroundSecondary3,
+                                color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary3,
                                 width: 1.5,
                               ),
                             ),
@@ -210,15 +212,15 @@ class _VoucherScreenState extends State<VoucherScreen> {
                         Navigator.pop(context, _vouchers.firstWhere((v) => v.id == _selectedVoucherId));
                       },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    disabledBackgroundColor: AppColors.backgroundSecondary3,
+                    backgroundColor: AppColorsLegacy.primary,
+                    disabledBackgroundColor: AppColorsLegacy.backgroundSecondary3,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     elevation: 0,
                   ),
                   child: Text(
                     "Apply",
                     style: TextStyle(
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                       fontSize: w * 0.04,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',

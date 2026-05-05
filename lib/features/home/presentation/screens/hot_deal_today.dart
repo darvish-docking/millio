@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
 
 class HotDealTodayScreen extends StatefulWidget {
@@ -21,19 +20,21 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
 
   @override
   Widget build(BuildContext context) {
+            final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leadingWidth: 48,
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: AppColors.backgroundSecondary3,
+            color: AppColorsLegacy.backgroundSecondary3,
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -53,9 +54,9 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Hot Deal Today",
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+          style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
       ),
@@ -95,11 +96,11 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppColorsLegacy.primary,
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withOpacity(0.4),
+                                color: AppColorsLegacy.primary.withOpacity(0.4),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
@@ -111,7 +112,7 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                               fit: StackFit.expand,
                               children: [
                                 Container(
-                                  color: AppColors.primaryLight.withOpacity(0.6),
+                                  color: colors.textField.withOpacity(0.6),
                                 ),
                                 Center(
                                   child: Image.asset(
@@ -143,8 +144,8 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                           height: 6,
                           decoration: BoxDecoration(
                             color: _currentIndex == index
-                                ? AppColors.primary
-                                : AppColors.primaryLight,
+                                ? AppColorsLegacy.primary
+                                : AppColorsLegacy.primaryLight,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -157,21 +158,21 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
             SizedBox(height: h * 0.03),
             SizedBox(height: h * 0.02),
             // Text Details Section outside the carousel
-            const Text(
+             Text(
               'Seafood Som Tum',
               maxLines: 2,
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: h * 0.01),
-            const Text(
+             Text(
               '\$ 3.99 - \$ 2.59',
               maxLines: 2,
               style: TextStyle(
-                color: AppColors.primary,
+                color: AppColorsLegacy.primary,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
@@ -179,11 +180,11 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
             SizedBox(height: h * 0.02),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: w * 0.1),
-              child: const Text(
+              child:  Text(
                 'A delicious and healthy seafood salad with a perfect blend of spicy, sour, and sweet flavors to tantalize your tastebuds.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.backgroundSecondary,
+                  color: AppColorsLegacy.backgroundSecondary,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -201,15 +202,15 @@ class _HotDealTodayScreenState extends State<HotDealTodayScreen> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary, // The standard green
+                    backgroundColor: AppColorsLegacy.primary, // The standard green
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  child: const Text(
+                  child:  Text(
                     "Add to cart",
                     style: TextStyle(
-                      color: AppColors.background, // Should be white based on AppColors
+                      color: AppColorsLegacy.background, // Should be white based on AppColors
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Montserrat',
                       fontSize: 16,

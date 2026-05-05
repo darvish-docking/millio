@@ -23,40 +23,42 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+                            final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leadingWidth: 56,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Center(
             child: Material(
-              color: AppColors.backgroundSecondary1,
+              color: AppColorsLegacy.backgroundSecondary1,
               shape: const CircleBorder(),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsets.all(8),
-                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColors.textPrimary,),
+                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColorsLegacy.textPrimary,),
                 ),
               ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Add A Review",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             fontFamily: 'Montserrat',
-            color: AppColors.textPrimary,
+            color: colors.textPrimary,
           ),
         ),
         centerTitle: false,
@@ -80,7 +82,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                         borderRadius: BorderRadius.circular(w * 0.05),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textPrimary.withOpacity(0.08),
+                            color: AppColorsLegacy.textPrimary.withOpacity(0.08),
                             blurRadius: 15,
                             offset: const Offset(0, 8),
                           )
@@ -122,7 +124,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                           padding: EdgeInsets.symmetric(horizontal: w * 0.015),
                           child: Icon(
                             index < _selectedRating ? Icons.star : Icons.star_border,
-                            color: AppColors.amber,
+                            color: AppColorsLegacy.amber,
                             size: w * 0.12,
                           ),
                         ),
@@ -154,30 +156,30 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                     decoration: InputDecoration(
                       hintText: "Message",
                       hintStyle: TextStyle(
-                        color: AppColors.backgroundSecondary4,
+                        color: AppColorsLegacy.backgroundSecondary4,
                         fontFamily: 'Montserrat',
                         fontSize: w * 0.038,
                       ),
                       filled: true,
-                      fillColor: AppColors.backgroundSecondary1,
+                      fillColor: colors.textField,
                       contentPadding: EdgeInsets.all(w * 0.04),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(w * 0.04),
-                        borderSide: BorderSide(color: AppColors.backgroundSecondary1),
+                        borderSide: BorderSide(color: AppColorsLegacy.backgroundSecondary1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(w * 0.04),
-                        borderSide: BorderSide(color: AppColors.backgroundSecondary1),
+                        borderSide: BorderSide(color: colors.textField),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(w * 0.04),
-                        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                        borderSide:  BorderSide(color: AppColorsLegacy.primary, width: 1.5),
                       ),
                     ),
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: w * 0.04,
-                      color: AppColors.textPrimarylight87,
+                      color: AppColorsLegacy.textPrimarylight87,
                     ),
                   ),
                   
@@ -199,7 +201,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColorsLegacy.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(w * 0.08),
                   ),
@@ -208,7 +210,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                 child: Text(
                   "Submit",
                   style: TextStyle(
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     fontSize: w * 0.045,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Montserrat',

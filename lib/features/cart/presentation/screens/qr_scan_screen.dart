@@ -59,7 +59,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               child: Container(
-                color: AppColors.textPrimary.withOpacity(0.6),
+                color: AppColorsLegacy.textPrimary.withOpacity(0.6),
               ),
             ),
           ),
@@ -74,7 +74,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                   child: Row(
                     children: [
                       Material(
-                        color: AppColors.textWhite24,
+                        color: AppColorsLegacy.textWhite24,
                         shape: const CircleBorder(),
                         clipBehavior: Clip.hardEdge,
                         child: InkWell(
@@ -84,7 +84,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                             child: Icon(
                               Icons.arrow_back_ios_new,
                               size: w * 0.045,
-                              color: AppColors.background,
+                              color: AppColorsLegacy.background,
                             ),
                           ),
                         ),
@@ -96,7 +96,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                           fontSize: w * 0.055,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                         ),
                       ),
                     ],
@@ -122,7 +122,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                             width: w * 0.7,
                             height: w * 0.9,
                             decoration: BoxDecoration(
-                              color: AppColors.textPrimary,
+                              color: AppColorsLegacy.textPrimary,
                               borderRadius: BorderRadius.circular(24),
                             ),
                             child: ClipRRect(
@@ -135,11 +135,11 @@ class _QrScanScreenState extends State<QrScanScreen> {
                               ),
                               if (_hasScanned)
                                 Container(
-                                  color: AppColors.buttonPrimary.withOpacity(0.3),
-                                  child: const Center(
+                                  color: AppColorsLegacy.primary.withOpacity(0.3),
+                                  child:  Center(
                                     child: Icon(
                                       Icons.check_circle,
-                                      color: AppColors.background,
+                                      color: AppColorsLegacy.background,
                                       size: 80,
                                     ),
                                   ),
@@ -173,7 +173,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Material(
-                        color: _isFlashOn ? AppColors.background : AppColors.textWhite24,
+                        color: _isFlashOn ? AppColorsLegacy.background : AppColorsLegacy.textWhite24,
                         shape: const CircleBorder(),
                         clipBehavior: Clip.hardEdge,
                         child: InkWell(
@@ -187,7 +187,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                             padding: EdgeInsets.all(w * 0.04),
                             child: Icon(
                               _isFlashOn ? Icons.flash_on : Icons.flash_off,
-                              color: _isFlashOn ? AppColors.textPrimary : AppColors.background,
+                              color: _isFlashOn ? AppColorsLegacy.textPrimary : AppColorsLegacy.background,
                               size: w * 0.08,
                             ),
                           ),
@@ -197,7 +197,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                       Text(
                         _isFlashOn ? "Flash On" : "Flash Off",
                         style: TextStyle(
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           fontFamily: 'Montserrat',
                           fontSize: w * 0.035,
                         ),
@@ -218,7 +218,7 @@ class _ScannerOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.background
+      ..color = AppColorsLegacy.background
       ..strokeWidth = 4.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;

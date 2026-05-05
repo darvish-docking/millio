@@ -15,12 +15,15 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+        final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -41,7 +44,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       height: width * 0.10,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.textPrimary.withOpacity(0.05),
+                        color: colors.textHint.withOpacity(0.05),
                       ),
                       child: Center(
                         child: Image.asset(
@@ -58,7 +61,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     style: TextStyle(
                       fontSize: width * 0.055,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                 ],
@@ -102,7 +105,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     style: TextStyle(
                       fontSize: width * 0.045,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimarylight87,
+                      color: colors.textPrimary,
                     ),
                   ),
                   
@@ -131,7 +134,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary, // As requested
+                        backgroundColor: AppColorsLegacy.primary, // As requested
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(width * 0.09),
                         ),
@@ -142,7 +145,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                         style: TextStyle(
                           fontSize: width * 0.045,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                         ),
                       ),
                     ),
@@ -163,6 +166,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     required String hint,
     required TextEditingController controller,
   }) {
+
+            final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -170,10 +176,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(width * 0.09),
-        color: AppColors.background,
+        color: colors.textField,
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.06),
+            color: AppColorsLegacy.textPrimary.withOpacity(0.06),
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 4), // x,y
@@ -187,11 +193,11 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           hintText: hint,
           hintStyle: TextStyle(
             fontSize: width * 0.04,
-            color: AppColors.backgroundSecondary5,
+            color: AppColorsLegacy.backgroundSecondary5,
             fontFamily: 'Montserrat',
           ),
           filled: true,
-          fillColor: AppColors.background,
+          fillColor: colors.textField,
           contentPadding: EdgeInsets.symmetric(
             vertical: height * 0.022,
             horizontal: width * 0.05,
@@ -206,8 +212,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(width * 0.09),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
+            borderSide:  BorderSide(
+              color: AppColorsLegacy.primary,
               width: 2,
             ),
           ),

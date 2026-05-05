@@ -35,6 +35,9 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+                    final colors = context.colors;
+
     final cart = context.watch<CartProvider>();
     final size = MediaQuery.of(context).size;
     final w = size.width;
@@ -42,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -52,14 +55,14 @@ class _CartScreenState extends State<CartScreen> {
               child: Row(
                 children: [
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -70,11 +73,11 @@ class _CartScreenState extends State<CartScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                   const Spacer(),
-                  Icon(Icons.search, size: w * 0.07, color: AppColors.textPrimary),
+                  Icon(Icons.search, size: w * 0.07, color: colors.textPrimary),
                 ],
               ),
             ),
@@ -96,7 +99,7 @@ class _CartScreenState extends State<CartScreen> {
                               style: TextStyle(
                                 fontSize: w * 0.038,
                                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                                color: isActive ? AppColors.textPrimary : AppColors.textSecondary,
+                                color: isActive ? colors.textPrimary : colors.textSecondary,
                                 fontFamily: 'Montserrat',
                               ),
                             ),
@@ -116,7 +119,7 @@ class _CartScreenState extends State<CartScreen> {
                         height: 2.5,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundSecondary3,
+                          color: AppColorsLegacy.backgroundSecondary3,
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
@@ -130,7 +133,7 @@ class _CartScreenState extends State<CartScreen> {
                           height: 4.5,
                           width: (w - (padding * 2)) / _tabs.length,
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppColorsLegacy.primary,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -167,7 +170,7 @@ class _CartScreenState extends State<CartScreen> {
           
           Padding(
             padding: EdgeInsets.symmetric(vertical: h * 0.02),
-            child: const DashedDivider(color: AppColors.divider),
+            child:  DashedDivider(color: AppColorsLegacy.divider),
           ),
           
           // Cart Items Display (Static)
@@ -182,7 +185,7 @@ class _CartScreenState extends State<CartScreen> {
           
           Padding(
             padding: EdgeInsets.symmetric(vertical: h * 0.01),
-            child: const DashedDivider(color: AppColors.divider),
+            child:  DashedDivider(color: AppColorsLegacy.divider),
           ),
           
           SizedBox(height: h * 0.02),
@@ -210,14 +213,14 @@ class _CartScreenState extends State<CartScreen> {
                 // Finalize order
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: AppColorsLegacy.primary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 elevation: 0,
               ),
               child: Text(
                 "Order now",
                 style: TextStyle(
-                  color: AppColors.background,
+                  color: AppColorsLegacy.background,
                   fontSize: w * 0.04,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Montserrat',
@@ -240,15 +243,15 @@ class _CartScreenState extends State<CartScreen> {
           height: w * 0.12,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 2),
+            border: Border.all(color: AppColorsLegacy.primary.withOpacity(0.3), width: 2),
           ),
           padding: const EdgeInsets.all(4),
           child: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
+            decoration:  BoxDecoration(
+              color: AppColorsLegacy.primary,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.location_on, color: AppColors.background, size: 20),
+            child:  Icon(Icons.location_on, color: AppColorsLegacy.background, size: 20),
           ),
         ),
         SizedBox(width: w * 0.04),
@@ -270,7 +273,7 @@ class _CartScreenState extends State<CartScreen> {
               Text(
                 _selectedAddress?.details ?? "23rd Street, New York, USA",
                 style: TextStyle(
-                  color: AppColors.textSecondary,
+                  color: AppColorsLegacy.textSecondary,
                   fontSize: w * 0.03,
                   fontFamily: 'Montserrat',
                 ),
@@ -293,7 +296,7 @@ class _CartScreenState extends State<CartScreen> {
               });
             }
           },
-          icon: const Icon(Icons.chevron_right, color: AppColors.textPrimary),
+          icon:  Icon(Icons.chevron_right, color: AppColorsLegacy.textPrimary),
         ),
       ],
     );
@@ -310,26 +313,26 @@ class _CartScreenState extends State<CartScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.primaryLight,
+          color: AppColorsLegacy.primaryLight,
           borderRadius: BorderRadius.circular(30), // Rounded semi-circle type
         ),
         child: Row(
           children: [
-            // Icon(Icons.local_offer, color: AppColors.primary, size: w * 0.05),
+            // Icon(Icons.local_offer, color: AppColorsLegacy.primary, size: w * 0.05),
                         Image.asset('assets/images/Discount.png'),
             SizedBox(width: w * 0.03),
-            const Expanded(
+             Expanded(
               child: Text(
                 "Use voucher",
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Montserrat',
-                  color: AppColors.primary, // Green text
+                  color: AppColorsLegacy.primary, // Green text
                 ),
               ),
             ),
-            Icon(Icons.chevron_right, color: AppColors.primary, size: w * 0.06), // Green chevron
+            Icon(Icons.chevron_right, color: AppColorsLegacy.primary, size: w * 0.06), // Green chevron
           ],
         ),
       ),
@@ -352,12 +355,12 @@ class _CartScreenState extends State<CartScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.primaryLight, // Matched with voucher color
+          color: AppColorsLegacy.primaryLight, // Matched with voucher color
           borderRadius: BorderRadius.circular(30), // Rounded semi-circle type
         ),
         child: Row(
           children: [
-            // Icon(Icons.payment, color: AppColors.primary, size: w * 0.05),
+            // Icon(Icons.payment, color: AppColorsLegacy.primary, size: w * 0.05),
             Image.asset('assets/images/Wallet.png'),
             SizedBox(width: w * 0.03),
             Expanded(
@@ -365,15 +368,15 @@ class _CartScreenState extends State<CartScreen> {
                 _selectedPaymentMethodId != null 
                   ? _getPaymentMethodName(_selectedPaymentMethodId!) 
                   : "Payment method",
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Montserrat',
-                  color: AppColors.primary, // Green text
+                  color: AppColorsLegacy.primary, // Green text
                 ),
               ),
             ),
-            Icon(Icons.chevron_right, color: AppColors.primary, size: w * 0.06), // Green chevron
+            Icon(Icons.chevron_right, color: AppColorsLegacy.primary, size: w * 0.06), // Green chevron
           ],
         ),
       ),
@@ -384,7 +387,7 @@ class _CartScreenState extends State<CartScreen> {
     return Center(
       child: Text(
         "Section $title Under Development",
-        style: const TextStyle(fontFamily: 'Montserrat', color: AppColors.textSecondary),
+        style:  TextStyle(fontFamily: 'Montserrat', color: AppColorsLegacy.textSecondary),
       ),
     );
   }
@@ -409,7 +412,7 @@ class _CartScreenState extends State<CartScreen> {
         // Dashed Divider
         Padding(
           padding: EdgeInsets.symmetric(horizontal: padding),
-          child: const DashedDivider(color: AppColors.divider),
+          child:  DashedDivider(color: AppColorsLegacy.divider),
         ),
 
         // Bottom Half: Vouchers, Offers, Total Summary
@@ -422,6 +425,8 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartCheckoutDetails(double w, double h, double padding, CartProvider cart) {
+                    final colors = context.colors;
+
     double subtotal = cart.subtotal;
     double deliveryFee = cart.deliveryFee;
     double discount = cart.discount;
@@ -429,14 +434,14 @@ class _CartScreenState extends State<CartScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: colors.background,
         // borderRadius: const BorderRadius.only(
         //   topLeft: Radius.circular(35),
         //   topRight: Radius.circular(35),
         // ),
         // boxShadow: [
         //   BoxShadow(
-        //     color: AppColors.textPrimary.withOpacity(0.05),
+        //     color: AppColorsLegacy.textPrimary.withOpacity(0.05),
         //     blurRadius: 20,
         //     offset: const Offset(0, -5),
         //   ),
@@ -459,7 +464,7 @@ class _CartScreenState extends State<CartScreen> {
             
             Padding(
               padding: EdgeInsets.symmetric(vertical: h * 0.02),
-              child: Divider(color: AppColors.backgroundSecondary3, thickness: 1),
+              child: Divider(color: AppColorsLegacy.backgroundSecondary3, thickness: 1),
             ),
             
             _buildSummaryRow("Total", "\$${total.toStringAsFixed(2)}", false, isTotal: true),
@@ -477,7 +482,7 @@ class _CartScreenState extends State<CartScreen> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColorsLegacy.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -486,7 +491,7 @@ class _CartScreenState extends State<CartScreen> {
                 child: Text(
                   "Proceed To Checkout",
                   style: TextStyle(
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     fontSize: w * 0.04,
                     fontWeight: FontWeight.w500,
                     fontFamily: 'Montserrat',
@@ -501,6 +506,8 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildSummaryRow(String label, String value, bool isDiscount, {bool isTotal = false}) {
+                    final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -510,7 +517,7 @@ class _CartScreenState extends State<CartScreen> {
           style: TextStyle(
             fontSize: isTotal ? w * 0.045 : w * 0.035,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.w500,
-            color: isTotal ? AppColors.textPrimary : AppColors.textSecondary,
+            color: isTotal ? colors.textPrimary : AppColorsLegacy.textSecondary,
             fontFamily: 'Montserrat',
           ),
         ),
@@ -519,7 +526,7 @@ class _CartScreenState extends State<CartScreen> {
           style: TextStyle(
             fontSize: isTotal ? w * 0.05 : w * 0.035,
             fontWeight: FontWeight.bold,
-            color: isDiscount ? AppColors.primary : (isTotal ? AppColors.textPrimary : AppColors.textPrimarylight87),
+            color: isDiscount ? colors.textPrimary : (isTotal ? colors.primary : AppColorsLegacy.textPrimarylight87),
             fontFamily: 'Montserrat',
           ),
         ),
@@ -552,8 +559,8 @@ class _CartScreenState extends State<CartScreen> {
                         shape: BoxShape.circle,
                         gradient: RadialGradient(
                           colors: [
-                            AppColors.secondary.withOpacity(0.4), // Stronger purple
-                            AppColors.background.withOpacity(0),
+                            AppColorsLegacy.secondary.withOpacity(0.4), // Stronger purple
+                            AppColorsLegacy.background.withOpacity(0),
                           ],
                         ),
                       ),
@@ -571,8 +578,8 @@ class _CartScreenState extends State<CartScreen> {
                         shape: BoxShape.circle,
                         gradient: RadialGradient(
                           colors: [
-                            AppColors.primary.withOpacity(0.25),
-                            AppColors.background.withOpacity(0),
+                            AppColorsLegacy.primary.withOpacity(0.25),
+                            AppColorsLegacy.background.withOpacity(0),
                           ],
                         ),
                       ),
@@ -603,7 +610,7 @@ class _CartScreenState extends State<CartScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: padding * 2),
             child: Divider(
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColorsLegacy.primary.withOpacity(0.3),
               thickness: 2,
               indent: w * 0.25,
               endIndent: w * 0.25,
@@ -619,7 +626,7 @@ class _CartScreenState extends State<CartScreen> {
               "Explore our top-rated restaurants and special offers to find your next favorite meal. Your cart is waiting for something delicious!",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.backgroundSecondary6,
+                color: AppColorsLegacy.backgroundSecondary6,
                 fontSize: w * 0.032,
                 height: 1.6,
                 fontFamily: 'Montserrat',
@@ -671,15 +678,17 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartItemCard(double w, double h, double padding, CartItem item, CartProvider cart, {bool isStatic = false}) {
+                    final colors = context.colors;
+
     return Container(
       margin: EdgeInsets.only(bottom: h * 0.015),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: colors.textField,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.04),
+            color: AppColorsLegacy.textPrimary.withOpacity(0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -698,8 +707,8 @@ class _CartScreenState extends State<CartScreen> {
               errorBuilder: (context, error, stackTrace) => Container(
                 width: w * 0.22,
                 height: w * 0.22,
-                color: AppColors.backgroundSecondary1,
-                child: const Icon(Icons.fastfood, color: AppColors.backgroundSecondary),
+                color: AppColorsLegacy.backgroundSecondary1,
+                child:  Icon(Icons.fastfood, color: AppColorsLegacy.backgroundSecondary),
               ),
             ),
           ),
@@ -727,12 +736,12 @@ class _CartScreenState extends State<CartScreen> {
                     Text(
                       "${item.product.distance} | ",
                       style: TextStyle(
-                        color: AppColors.textSecondary, 
+                        color: AppColorsLegacy.textSecondary, 
                         fontSize: w * 0.028,
                         fontFamily: 'Montserrat'
                       ),
                     ),
-                    const Icon(Icons.star, size: 12, color: AppColors.amber),
+                     Icon(Icons.star, size: 12, color: AppColorsLegacy.amber),
                     Text(
                       " ${item.product.rating}",
                       style: TextStyle(
@@ -748,7 +757,7 @@ class _CartScreenState extends State<CartScreen> {
                 Text(
                   "\$${item.product.price.toStringAsFixed(2)}", 
                   style: TextStyle(
-                    color: AppColors.primary, 
+                    color: AppColorsLegacy.primary, 
                     fontWeight: FontWeight.bold,
                     fontSize: w * 0.04,
                     fontFamily: 'Montserrat',
@@ -767,7 +776,7 @@ class _CartScreenState extends State<CartScreen> {
                   children: [
                     // Minus Button
                     Material(
-                      color: AppColors.primary,
+                      color: AppColorsLegacy.primary,
                       borderRadius: BorderRadius.circular(6),
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
@@ -775,7 +784,7 @@ class _CartScreenState extends State<CartScreen> {
                         child: SizedBox(
                           width: w * 0.07,
                           height: w * 0.07,
-                          child: Icon(Icons.remove, size: w * 0.04, color: AppColors.background),
+                          child: Icon(Icons.remove, size: w * 0.04, color: AppColorsLegacy.background),
                         ),
                       ),
                     ),
@@ -794,7 +803,7 @@ class _CartScreenState extends State<CartScreen> {
                     
                     // Plus Button
                     Material(
-                      color: AppColors.primary,
+                      color: AppColorsLegacy.primary,
                       borderRadius: BorderRadius.circular(6),
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
@@ -802,7 +811,7 @@ class _CartScreenState extends State<CartScreen> {
                         child: SizedBox(
                           width: w * 0.07,
                           height: w * 0.07,
-                          child: Icon(Icons.add, size: w * 0.04, color: AppColors.background),
+                          child: Icon(Icons.add, size: w * 0.04, color: AppColorsLegacy.background),
                         ),
                       ),
                     ),
@@ -816,17 +825,19 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildSuggestedProductCard(double w, double h, SpecialOffer offer) {
+                    final colors = context.colors;
+
     return Container(
       width: w * 0.48,
       margin: EdgeInsets.only(right: w * 0.05),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: colors.textField,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
+        boxShadow:  [
           BoxShadow(
             blurRadius: 8,
-            color: AppColors.textPrimarylight12,
+            color: AppColorsLegacy.textPrimarylight12,
             offset: Offset(0, 4),
           )
         ],
@@ -843,8 +854,8 @@ class _CartScreenState extends State<CartScreen> {
                 fit: BoxFit.cover,
                 width: double.infinity,
                 errorBuilder: (context, error, stackTrace) => Container(
-                  color: AppColors.backgroundSecondary2,
-                  child: const Icon(Icons.fastfood, color: AppColors.backgroundSecondary),
+                  color: AppColorsLegacy.backgroundSecondary2,
+                  child:  Icon(Icons.fastfood, color: AppColorsLegacy.backgroundSecondary),
                 ),
               ),
             ),
@@ -868,12 +879,12 @@ class _CartScreenState extends State<CartScreen> {
               Text(
                 "${offer.distance} | ",
                 style: TextStyle(
-                  color: AppColors.textSecondary, 
+                  color: AppColorsLegacy.textSecondary, 
                   fontSize: w * 0.028,
                   fontFamily: 'Montserrat'
                 ),
               ),
-              const Icon(Icons.star, size: 14, color: AppColors.amber),
+               Icon(Icons.star, size: 14, color: AppColorsLegacy.amber),
               Text(
                 " ${offer.rating}",
                 style: TextStyle(
@@ -888,8 +899,8 @@ class _CartScreenState extends State<CartScreen> {
           
           Text(
             "\$${offer.price.toStringAsFixed(2)}",
-            style: const TextStyle(
-              color: AppColors.primary,
+            style:  TextStyle(
+              color: AppColorsLegacy.primary,
               fontWeight: FontWeight.bold,
               fontSize: 16,
               fontFamily: 'Montserrat',
@@ -908,7 +919,7 @@ class DashedDivider extends StatelessWidget {
 
   const DashedDivider({
     this.height = 1,
-    this.color = AppColors.backgroundSecondary,
+    this.color = Colors.grey,
     this.dashWidth = 5.0,
     super.key,
   });

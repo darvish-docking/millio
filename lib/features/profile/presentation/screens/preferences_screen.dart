@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferencesScreen extends StatefulWidget {
@@ -10,7 +12,6 @@ class PreferencesScreen extends StatefulWidget {
 }
 
 class _PreferencesScreenState extends State<PreferencesScreen> {
-  bool _isDarkTheme = false;
   bool _pushNotifications = true;
   String _selectedLanguage = "English";
 
@@ -23,7 +24,6 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _isDarkTheme = prefs.getBool("isDarkMode") ?? false;
       _pushNotifications = prefs.getBool("pushNotifications") ?? true;
       _selectedLanguage = prefs.getString("language") ?? "English";
     });
@@ -40,20 +40,24 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkTheme = themeProvider.themeMode == ThemeMode.dark;
+    final colors = context.colors;
+    
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leadingWidth: 48,
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: AppColors.backgroundSecondary3,
+            color: colors.border.withAlpha(50),
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -66,6 +70,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     'assets/images/left-arrow.png',
                     width: 18,
                     height: 18,
+                    color: colors.textPrimary,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -76,7 +81,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         title: Text(
           "Preferences",
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: colors.textPrimary,
             fontWeight: FontWeight.bold,
             fontSize: w * 0.05,
             fontFamily: 'Montserrat',
@@ -89,21 +94,24 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         child: Column(
           children: [
             _buildPreferenceSection(
+              context: context,
               title: "App Theme",
               children: [
                 _buildToggleItem(
+                  context: context,
                   title: "Dark Theme",
-                  value: _isDarkTheme,
+                  value: isDarkTheme,
                   onChanged: (val) {
-                    setState(() => _isDarkTheme = val);
+                    themeProvider.setTheme(val);
                     _savePreference("isDarkMode", val);
                   },
                 ),
                 _buildToggleItem(
+                  context: context,
                   title: "Light Theme",
-                  value: !_isDarkTheme,
+                  value: !isDarkTheme,
                   onChanged: (val) {
-                    setState(() => _isDarkTheme = !val);
+                    themeProvider.setTheme(!val);
                     _savePreference("isDarkMode", !val);
                   },
                 ),
@@ -111,9 +119,11 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             ),
             SizedBox(height: h * 0.03),
             _buildPreferenceSection(
+              context: context,
               title: "Notifications",
               children: [
                 _buildToggleItem(
+                  context: context,
                   title: "Push Notifications",
                   value: _pushNotifications,
                   onChanged: (val) {
@@ -125,9 +135,11 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             ),
             SizedBox(height: h * 0.03),
             _buildPreferenceSection(
+              context: context,
               title: "General",
               children: [
                 _buildDropdownItem(
+                  context: context,
                   title: "Language",
                   value: _selectedLanguage,
                   items: ["English", "Spanish", "French", "German"],
@@ -144,7 +156,12 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     );
   }
 
-  Widget _buildPreferenceSection({required String title, required List<Widget> children}) {
+  Widget _buildPreferenceSection({
+    required BuildContext context,
+    required String title,
+    required List<Widget> children,
+  }) {
+    final colors = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -152,10 +169,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           padding: const EdgeInsets.only(left: 10, bottom: 10),
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
               fontFamily: 'Montserrat',
             ),
           ),
@@ -163,16 +180,16 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: colors.cardBackground,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: AppColors.textPrimary.withAlpha(13),
+                color: colors.boxShadow,
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
             ],
-            border: Border.all(color: AppColors.backgroundSecondary2, width: 1),
+            border: Border.all(color: colors.border, width: 1),
           ),
           child: Column(children: children),
         ),
@@ -180,7 +197,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     );
   }
 
-  Widget _buildToggleItem({required String title, required bool value, required ValueChanged<bool> onChanged}) {
+  Widget _buildToggleItem({
+    required BuildContext context,
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -188,15 +211,15 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Montserrat', 
               fontSize: 14,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           Switch.adaptive(
             value: value,
-            activeTrackColor: AppColors.primary,
+            activeTrackColor: colors.primary,
             onChanged: onChanged,
           ),
         ],
@@ -205,11 +228,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   Widget _buildDropdownItem({
+    required BuildContext context,
     required String title,
     required String value,
     required List<String> items,
     required ValueChanged<String?> onChanged,
   }) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -217,18 +242,18 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Montserrat', 
               fontSize: 14,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           DropdownButton<String>(
             value: value,
             underline: const SizedBox(),
-            dropdownColor: AppColors.background,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            dropdownColor: colors.cardBackground,
+            style: TextStyle(
+              color: colors.textPrimary,
               fontFamily: 'Montserrat',
               fontSize: 14,
             ),

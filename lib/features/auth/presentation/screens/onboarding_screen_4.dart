@@ -80,7 +80,7 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
                       height: 1.1,
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                     ),
                   ),
                 ),

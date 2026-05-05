@@ -28,13 +28,15 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -44,14 +46,14 @@ class _AddCardScreenState extends State<AddCardScreen> {
               child: Row(
                 children: [
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -62,7 +64,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                 ],
@@ -97,7 +99,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                       //     borderRadius: BorderRadius.circular(24),
                       //     boxShadow: [
                       //       BoxShadow(
-                      //         color: AppColors.primary.withOpacity(0.35),
+                      //         color: AppColorsLegacy.primary.withOpacity(0.35),
                       //         blurRadius: 24,
                       //         offset: const Offset(0, 10),
                       //       ),
@@ -287,7 +289,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                             fontSize: w * 0.035,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'Montserrat',
-                            color: AppColors.textPrimarylight87,
+                            color: colors.textPrimary,
                           ),
                         ),
                         GestureDetector(
@@ -298,7 +300,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                             height: w * 0.062,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: _isDefaultCard ? AppColors.primary : AppColors.backgroundSecondary,
+                              color: _isDefaultCard ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary,
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 2.5),
                             alignment: _isDefaultCard ? Alignment.centerRight : Alignment.centerLeft,
@@ -307,7 +309,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                               height: w * 0.048,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _isDefaultCard ? AppColors.background : AppColors.textPrimary,
+                                color: _isDefaultCard ? AppColorsLegacy.background : AppColorsLegacy.textPrimary,
                               ),
                             ),
                           ),
@@ -327,14 +329,14 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColorsLegacy.primary,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           elevation: 0,
                         ),
                         child: Text(
                           "Add Card",
                           style: TextStyle(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             fontSize: w * 0.04,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
@@ -422,20 +424,22 @@ class _FocusableTextFieldState extends State<_FocusableTextField> {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     return Container(
       decoration: BoxDecoration(
-        color: _isFocused ? AppColors.primaryLight : AppColors.background,
+        color: _isFocused ? AppColorsLegacy.primaryLight : colors.textField,
         borderRadius: BorderRadius.circular(widget.w * 0.1),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.06),
+            color: AppColorsLegacy.textPrimary.withOpacity(0.06),
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: _isFocused ? AppColors.primary : AppColors.transparent,
+          color: _isFocused ? AppColorsLegacy.primary : AppColors.transparent,
           width: 1.5,
         ),
       ),
@@ -452,7 +456,7 @@ class _FocusableTextFieldState extends State<_FocusableTextField> {
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle(
-            color: AppColors.textSecondary,
+            color: AppColorsLegacy.textSecondary,
             fontSize: widget.w * 0.035,
             fontFamily: 'Montserrat',
           ),
@@ -460,7 +464,7 @@ class _FocusableTextFieldState extends State<_FocusableTextField> {
             padding: const EdgeInsets.all(14.0),
             child: Image.asset(
               widget.imagePath,
-              color: AppColors.textSecondary,
+              color: AppColorsLegacy.textSecondary,
               width: widget.w * 0.05,
               height: widget.w * 0.05,
               fit: BoxFit.contain,

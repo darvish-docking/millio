@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
   OverlayEntry? _overlayEntry;
   
   String _searchQuery = "";
-  List<String> _recentSearches = ["Buffalo Chicken", "Pasta", "Burgers"];
+  final List<String> _recentSearches = ["Buffalo Chicken", "Pasta", "Burgers"];
   
   int currentIndex = 0;
 
@@ -221,6 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     
+    final colors = context.colors;
     final size = MediaQuery.of(context).size;
     w = size.width;
     h = size.height;
@@ -236,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -299,6 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: w * .08,
                   fontWeight: FontWeight.bold,
                   fontFamily:  'Montserrat',
+                  color: colors.textPrimary,
                 ),
               ),
 
@@ -310,19 +312,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                   color: (_searchFocusNode.hasFocus || _searchQuery.isNotEmpty) 
-                      ? AppColors.primaryLight 
-                      : AppColors.background,
+                      ? colors.primaryLight 
+                      : colors.background,
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(
                     color: (_searchFocusNode.hasFocus || _searchQuery.isNotEmpty) 
-                        ? AppColors.primary 
-                        : Colors.transparent,
+                        ? colors.primary 
+                        : AppColors.transparent,
                     width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 10,
-                      color: AppColors.textPrimarylight12,
+                      color: colors.boxShadow,
                       offset: Offset(0, 4),
                     )
                   ],
@@ -388,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     height: h * .18,
                     decoration: BoxDecoration(
-                      color: AppColors.home,
+                      color: colors.homeBanner,
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
@@ -409,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     top: 20,
                     child: Text('Sale Off 30%',
                     style: TextStyle(
-                      color: AppColors.background,
+                      color: Colors.white,
                       fontFamily:  'Montserrat',
                     ),)
                   ),
@@ -420,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Divider(
                       height: 2,          // total space occupied vertically
                       thickness: 2,        // actual line thickness
-                      color: AppColors.backgroundSecondary,
+                      color: Colors.white24,
                       indent: 20,          // left spacing
                       endIndent: 20,       // right spacing
                     ),
@@ -433,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text('Special',
                     maxLines: 2,
                     style: TextStyle(
-                      color: AppColors.background,
+                      color: Colors.white,
                       fontFamily:  'Montserrat',
                       fontSize: 40,
                       fontWeight: FontWeight.bold
@@ -447,7 +449,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text('Offers',
                     maxLines: 2,
                     style: TextStyle(
-                      color: AppColors.background,
+                      color: Colors.white,
                       fontFamily:  'Montserrat',
                       fontSize: 40,
                       fontWeight: FontWeight.bold
@@ -463,11 +465,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: h * 0.01,
                     width: w * 0.08,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: colors.primary,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimarylight12,
+                          color: colors.boxShadow,
                           blurRadius: 8,
                           offset: Offset(0, 4),
                         ),
@@ -476,7 +478,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const Center(
                       child: Icon(
                         Icons.chevron_right,
-                        color: AppColors.background,
+                        color: Colors.white,
                         size: 30,
                       ),
                     ),
@@ -534,7 +536,7 @@ AppColors.category5,
                             end: Alignment.bottomCenter,
                             colors: [
                               bgColors[index % bgColors.length],
-                              AppColors.background,
+                              colors.background,
                             ],
                           ),
                         ),
@@ -596,11 +598,11 @@ AppColors.category5,
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary,
+                          color: colors.primary,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withAlpha(102), // ~0.4 opacity
+                              color: colors.primary.withAlpha(102), // ~0.4 opacity
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
@@ -623,7 +625,7 @@ AppColors.category5,
                               Container(
                                 // width: w * 0.05,
                                 // height: h * 0.05,
-                                color: AppColors.primaryLight.withAlpha(153)), // ~0.6 opacity
+                                color: colors.primaryLight.withAlpha(153)), // ~0.6 opacity
                               Center(
                                 child:Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -637,8 +639,8 @@ AppColors.category5,
                                 ),
                                 Text('Seafood Som Tum',
                                 maxLines: 2,
-                                style: const TextStyle(
-                                    color: AppColors.textPrimary,
+                                style: TextStyle(
+                                    color: colors.textPrimary,
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -646,8 +648,8 @@ AppColors.category5,
                                 
                                   Text('\$ 3.99 - \$ 2.59',
                                 maxLines: 2,
-                                style: const TextStyle(
-                                    color: AppColors.primary,
+                                style: TextStyle(
+                                    color: colors.primary,
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -694,16 +696,16 @@ AppColors.category5,
                   final offer = filteredOffers[index];
                   return Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: AppColors.background,
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 8,
-                          color: AppColors.textPrimarylight12,
-                        )
-                      ],
-                    ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: colors.background,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8,
+                            color: colors.boxShadow,
+                          )
+                        ],
+                      ),
                     child: Column(
                       crossAxisAlignment:
                           CrossAxisAlignment.start,
@@ -718,7 +720,7 @@ AppColors.category5,
                               fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) =>
-                                  Container(color: AppColors.backgroundSecondary2, child: const Icon(Icons.fastfood, color: AppColors.backgroundSecondary)),
+                                  Container(color: colors.border, child: Icon(Icons.fastfood, color: colors.textSecondary)),
                             ),
                           ),
                         ),
@@ -739,34 +741,34 @@ AppColors.category5,
                         Row(
                           children: [
                             Text("${offer.distance} |",
-                            style: const TextStyle(
-                              color: AppColors.textSecondary
-                            ),),
+                             style: TextStyle(
+                               color: colors.textSecondary
+                             ),),
 
                             const Icon(Icons.star,
                                 size: 14,
                                 color: Colors.amber),
 
                             Text(offer.rating,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary
-                            ),),
+                             style: TextStyle(
+                               color: colors.textSecondary
+                             ),),
                             Text(offer.reviewCount,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary
+                            style:  TextStyle(
+                              color: colors.textSecondary
                             ),)
                           ],
                         ),
 
                         const SizedBox(height: 6),
 
-                        Text(
-                          "\$${offer.price.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
+                         Text(
+                           "\$${offer.price.toStringAsFixed(2)}",
+                           style: TextStyle(
+                             color: colors.primary,
+                             fontWeight: FontWeight.bold,
+                           ),
+                         )
                       ],
                     ),
                   );
@@ -796,12 +798,12 @@ AppColors.category5,
                           end: Alignment.bottomCenter,
                           colors: [
                             AppColors.transparent,
-                            AppColors.textPrimary.withAlpha(204), // ~0.8 opacity
+                            colors.textPrimary.withAlpha(204), // ~0.8 opacity
                           ],
                         ),
                       ),
                     ),
-                    const Positioned(
+                     Positioned(
                       left: 16,
                       bottom: 16,
                       child: Row(
@@ -809,13 +811,13 @@ AppColors.category5,
                           Icon(
                             Icons.play_circle_fill,
                             size: 40,
-                            color: AppColors.background,
+                            color: colors.background,
                           ),
                           SizedBox(width: 10),
                           Text(
                             "Video promotion",
                             style: TextStyle(
-                              color: AppColors.background,
+                              color: colors.background,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -837,6 +839,7 @@ AppColors.category5,
   }
 
   Widget sectionHeader(String title, {VoidCallback? onSeeAllTap}) {
+    final colors = context.colors;
     return Row(
       children: [
         Text(
@@ -844,14 +847,15 @@ AppColors.category5,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
+            color: colors.textPrimary,
           ),
         ),
         Spacer(),
         TextButton(
           onPressed: onSeeAllTap ?? () {},
           style: TextButton.styleFrom(
-            backgroundColor: AppColors.primaryLight05,
-            foregroundColor: AppColors.primary,
+            backgroundColor: colors.primaryLight,
+            foregroundColor: colors.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),

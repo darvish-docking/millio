@@ -10,6 +10,7 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -20,7 +21,7 @@ class SignInScreen extends StatelessWidget {
           Column(
             children: [
               /// Top 3/4 Gradient → White
-              Container(
+              SizedBox(
                 height: height * 0.75,
                 child: Stack(
                   children: [
@@ -29,8 +30,8 @@ class SignInScreen extends StatelessWidget {
                       decoration:  BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Theme.of(context).colorScheme.primary, // Green (left)
-                            AppColors.secondary, // Violet (right)
+                            colors.primary, // Green (left)
+                            AppColorsLegacy.secondary, // Violet (right)
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.topRight,
@@ -58,7 +59,7 @@ class SignInScreen extends StatelessWidget {
                 children: [
                   Container(
                     height: height * 0.25,
-                    color: AppColors.indigo.withValues(alpha: 0.85),
+                    color: AppColorsLegacy.indigo.withValues(alpha: 0.85),
                   ),
 
                   /// Glow effect at center
@@ -71,7 +72,7 @@ class SignInScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.lightPurple.withOpacity(0.4),
+                              color: AppColorsLegacy.lightPurple.withOpacity(0.4),
                               blurRadius: 80,
                               spreadRadius: 4,
                             ),
@@ -119,7 +120,7 @@ class SignInScreen extends StatelessWidget {
                       fontSize: 28,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.outline
+                      color: colors.textPrimary
                     ),
                   ),
 
@@ -129,7 +130,7 @@ class SignInScreen extends StatelessWidget {
                    Text(
                     "Access to your account",
                     style: TextStyle(fontFamily: 'Montserrat',
-                    color: Theme.of(context).colorScheme.outline),
+                    color: colors.textPrimary),
                   ),
 
                   SizedBox(height: height * 0.02),
@@ -142,7 +143,7 @@ class SignInScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textPrimary.withOpacity(
+                            color: AppColorsLegacy.textPrimary.withOpacity(
                               0.1,
                             ), // shadow color
                             blurRadius: 10, // softness
@@ -161,11 +162,11 @@ class SignInScreen extends StatelessWidget {
                           hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: Theme.of(context).colorScheme.outline,
+                            color: colors.hintText,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.onSurface,
+                          fillColor: colors.surface,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -174,7 +175,7 @@ class SignInScreen extends StatelessWidget {
                               "assets/images/username.png",
                               width: width * 0.02,
                               height: width * 0.02,
-                              color: Theme.of(context).colorScheme.outline,
+                              color: colors.hintText,
                             ),
                           ),
                           border: OutlineInputBorder(
@@ -196,7 +197,7 @@ class SignInScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textPrimary.withOpacity(
+                            color: AppColorsLegacy.textPrimary.withOpacity(
                               0.1,
                             ), // shadow color
                             blurRadius: 10, // softness
@@ -208,7 +209,7 @@ class SignInScreen extends StatelessWidget {
                       child: TextField(
                         obscureText: true,
                         style: TextStyle(
-    color: Theme.of(context).colorScheme.outline, // 👈 typing text color
+    color: colors.hintText, // 👈 typing text color
   
   ),
                         decoration: InputDecoration(
@@ -216,11 +217,11 @@ class SignInScreen extends StatelessWidget {
                           hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: Theme.of(context).colorScheme.outline,
+                            color: colors.hintText,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.onSurface,
+                          fillColor: colors.surface,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -229,7 +230,7 @@ class SignInScreen extends StatelessWidget {
                               "assets/images/Lock.png",
                               width: width * 0.02,
                               height: width * 0.02,
-                              color: Theme.of(context).colorScheme.outline
+                              color: colors.hintText
                             ),
                           ),
                           border: OutlineInputBorder(
@@ -254,14 +255,14 @@ class SignInScreen extends StatelessWidget {
                             child: Checkbox(
                               value: true,
                               onChanged: (v) {},
-                              activeColor: AppColors.primary,
-                              checkColor: AppColors.background,
+                              activeColor: AppColorsLegacy.primary,
+                              checkColor: AppColorsLegacy.background,
                             ),
                           ),
                            Text(
                             "Remember Me",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.outline,
+                              color:colors.textPrimary,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'Montserrat',
                               fontSize: 13,
@@ -281,7 +282,7 @@ class SignInScreen extends StatelessWidget {
                         child: Text(
                           "Forgot Password",
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: colors.textPrimary,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Montserrat',
                             fontSize: 13,
@@ -309,15 +310,15 @@ class SignInScreen extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColorsLegacy.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),
                         ),
-                        child: const Text(
+                        child:  Text(
                           "Sign In",
                           style: TextStyle(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'Montserrat',
                             fontSize: 13,
@@ -336,14 +337,14 @@ class SignInScreen extends StatelessWidget {
                       vertical: height * 0.01,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.indigo,
+                      color: AppColorsLegacy.indigo,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: const Text(
+                    child:  Text(
                       "Or Sign In With",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.background,
+                        color: AppColorsLegacy.background,
                       ),
                     ),
                   ),
@@ -370,7 +371,7 @@ class SignInScreen extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Montserrat',
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                         ),
                       ),
                       GestureDetector(
@@ -380,12 +381,12 @@ class SignInScreen extends StatelessWidget {
                             MaterialPageRoute(builder: (_) => SignUpScreen()),
                           );
                         },
-                        child: const Text(
+                        child:  Text(
                           "Sign Up",
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontFamily: 'Montserrat',
-                            color: AppColors.primary, // 👈 green text
+                            color: AppColorsLegacy.primary, // 👈 green text
                           ),
                         ),
                       ),
@@ -410,8 +411,8 @@ class SignInScreen extends StatelessWidget {
         Container(
           width: width * 0.1,
           height: width * 0.1,
-          decoration: const BoxDecoration(
-            color: AppColors.background,
+          decoration:  BoxDecoration(
+            color: AppColorsLegacy.background,
             shape: BoxShape.circle,
           ),
           child: Padding(

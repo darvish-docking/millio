@@ -68,6 +68,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+        final colors = context.colors;
+
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -82,7 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: height * 0.75,
 
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
+                  color: colors.surface,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(25),
                     bottomRight: Radius.circular(25),
@@ -100,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Container(
                     height: height * 0.25,
-                    color: AppColors.indigo.withValues(alpha: 0.85),
+                    color: AppColorsLegacy.indigo.withValues(alpha: 0.85),
                   ),
 
                   /// Glow effect at center
@@ -113,7 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.lightPurple.withOpacity(0.4),
+                              color: AppColorsLegacy.lightPurple.withOpacity(0.4),
                               blurRadius: 80,
                               spreadRadius: 4,
                             ),
@@ -151,18 +153,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       width: width * 0.1,
                       height: height * 0.05,
                       fit: BoxFit.contain,
+                      
                     ),
                   ),
 
                   SizedBox(height: height * 0.02),
 
                   /// Title
-                  const Text(
+                   Text(
                     "Create An Account",
                     style: TextStyle(
                       fontSize: 28,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.bold,
+                      color: colors.textPrimary
                     ),
                   ),
 
@@ -171,11 +175,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   /// Subtitle
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: width * 0.12),
-                    child: const Text(
+                    child:  Text(
                       "Create a commitment-free profile to explore products",
                       maxLines: 2,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: 'Montserrat'),
+                      style: TextStyle(fontFamily: 'Montserrat',
+                      color: colors.textPrimary,),
+                      
                     ),
                   ),
 
@@ -193,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: BorderRadius.circular(25),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimary.withValues(
+                          color: AppColorsLegacy.textPrimary.withValues(
                             alpha: 0.1,
                           ), // shadow color
                           blurRadius: 10, // softness
@@ -207,13 +213,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       decoration: InputDecoration(
                         hintText: "Username",
                         filled: true,
-                        hintStyle: const TextStyle(
+                        hintStyle:  TextStyle(
                           fontSize: 14,
                           fontFamily: "Montserrat", // 👈 your custom font
-                          color: AppColors.backgroundSecondary,
+                          color: AppColorsLegacy.backgroundSecondary,
                           fontWeight: FontWeight.w500,
                         ),
-                        fillColor: AppColors.background,
+                        fillColor: colors.textField,
                         prefixIcon: Padding(
                           padding: EdgeInsets.all(
                             width * 0.02,
@@ -254,7 +260,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: BorderRadius.circular(25),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimary.withValues(
+                          color: AppColorsLegacy.textPrimary.withValues(
                             alpha: 0.1,
                           ), // shadow color
                           blurRadius: 10, // softness
@@ -267,14 +273,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: emailController,
                       decoration: InputDecoration(
                         hintText: "Email Address",
-                        hintStyle: const TextStyle(
+                        hintStyle:  TextStyle(
                           fontSize: 14,
                           fontFamily: "Montserrat", // 👈 your custom font
-                          color: AppColors.backgroundSecondary,
+                          color: AppColorsLegacy.backgroundSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                         filled: true,
-                        fillColor: AppColors.background,
+                        fillColor: colors.textField,
                         prefixIcon: Padding(
                           padding: EdgeInsets.all(
                             width * 0.02,
@@ -313,7 +319,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: BorderRadius.circular(25),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimary.withValues(
+                          color: AppColorsLegacy.textPrimary.withValues(
                             alpha: 0.1,
                           ), // shadow color
                           blurRadius: 10, // softness
@@ -326,14 +332,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller:passwordController,
                       decoration: InputDecoration(
                         hintText: "Password",
-                        hintStyle: const TextStyle(
+                        hintStyle:  TextStyle(
                           fontSize: 14,
                           fontFamily: "Montserrat", // 👈 your custom font
-                          color: AppColors.backgroundSecondary,
+                          color: AppColorsLegacy.backgroundSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                         filled: true,
-                        fillColor: AppColors.background,
+                        fillColor: colors.textField,
                         prefixIcon: Padding(
                           padding: EdgeInsets.all(
                             width * 0.02,
@@ -379,7 +385,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: BorderRadius.circular(25),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimary.withValues(
+                          color: AppColorsLegacy.textPrimary.withValues(
                             alpha: 0.1,
                           ), // shadow color
                           blurRadius: 10, // softness
@@ -393,14 +399,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: "Confirm Password",
-                        hintStyle: const TextStyle(
+                        hintStyle:  TextStyle(
                           fontSize: 14,
                           fontFamily: "Montserrat", // 👈 your custom font
-                          color: AppColors.backgroundSecondary,
+                          color: AppColorsLegacy.backgroundSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                         filled: true,
-                        fillColor: AppColors.background,
+                        fillColor: colors.textField,
                         prefixIcon: Padding(
                           padding: EdgeInsets.all(
                             width * 0.02,
@@ -439,14 +445,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             child: Checkbox(
                               value: true,
                               onChanged: (v) {},
-                              activeColor: AppColors.primary,
-                              checkColor: AppColors.background,
+                              activeColor: AppColorsLegacy.primary,
+                              checkColor: AppColorsLegacy.background,
                             ),
                           ),
-                          const Text(
+                           Text(
                             "I agree with the Terms of Services & Privacy Policy",
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: colors.textPrimary,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'Montserrat',
                               fontSize: 10,
@@ -471,15 +477,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColorsLegacy.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
-                      child: const Text(
+                      child:  Text(
                         "Sign Up",
                         style: TextStyle(
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Montserrat',
                           fontSize: 13,
@@ -497,14 +503,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       vertical: height * 0.01,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.textPrimary,
+                      color: AppColorsLegacy.textPrimary,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: const Text(
+                    child:  Text(
                       "Or Sign Up With",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.background,
+                        color: AppColorsLegacy.background,
                       ),
                     ),
                   ),
@@ -531,7 +537,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Montserrat',
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                         ),
                       ),
                       GestureDetector(
@@ -541,12 +547,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             MaterialPageRoute(builder: (_) => SignInScreen()),
                           );
                         },
-                        child: const Text(
+                        child:  Text(
                           "Sign In",
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontFamily: 'Montserrat',
-                            color: AppColors.primary, // 👈 green text
+                            color: AppColorsLegacy.primary, // 👈 green text
                           ),
                         ),
                       ),
@@ -570,8 +576,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Container(
           width: width * 0.1,
           height: height * 0.1,
-          decoration: const BoxDecoration(
-            color: AppColors.background,
+          decoration:  BoxDecoration(
+            color: AppColorsLegacy.background,
             shape: BoxShape.circle,
           ),
           child: Padding(

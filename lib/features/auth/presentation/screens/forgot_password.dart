@@ -7,13 +7,16 @@ class ForgotPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+        final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -52,12 +55,12 @@ class ForgotPasswordScreen extends StatelessWidget {
         /// Gradient Overlay 2 (white fade top to transparent)
         Positioned.fill(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration:  BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppColors.background,
+                  colors.background,
                   AppColors.transparent,
                 ],
                 stops: [0.0, 1.0],
@@ -110,7 +113,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.width * 0.10,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.textPrimary.withOpacity(0.05), // faded background
+                  color: colors.textHint.withOpacity(0.05), // faded background
                 ),
                 child: Center(
                   child: Image.asset(
@@ -150,7 +153,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 "Enter Your E-Mail To Recover Password",
                 style: TextStyle(
                   fontSize: width * 0.035,
-                  color: AppColors.textSecondary,
+                  color: AppColorsLegacy.textSecondary,
                   fontFamily: 'Montserrat'
                 ),
               ),
@@ -168,7 +171,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.textPrimary.withValues(
+                            color: AppColorsLegacy.textPrimary.withValues(
                               alpha: 0.1,
                             ), // shadow color
                             blurRadius: 10, // softness
@@ -180,14 +183,14 @@ class ForgotPasswordScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: "Email Address",
-                          hintStyle: const TextStyle(
+                          hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font
-                            color: AppColors.backgroundSecondary,
+                            color: AppColorsLegacy.backgroundSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                           filled: true,
-                          fillColor: AppColors.background,
+                          fillColor: colors.textField,
                           prefixIcon: Padding(
                             padding: EdgeInsets.all(
                               width * 0.02,
@@ -217,7 +220,7 @@ class ForgotPasswordScreen extends StatelessWidget {
               height: height * 0.07,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColorsLegacy.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -234,7 +237,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   "Reset Password",
                   style: TextStyle(
                     fontSize: width * 0.045,
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
                   ),
@@ -256,11 +259,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                       //   vertical: height * 0.02,
                       // ),
                       decoration: BoxDecoration(
-                        color: AppColors.background,
+                        color:  colors.textField,
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimary.withOpacity(0.1),
+                          color: AppColorsLegacy.textPrimary.withOpacity(0.1),
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
@@ -277,8 +280,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                         horizontal: width * 0.01,
                         vertical: height * 0.01,
                       ),
-                      decoration: const BoxDecoration(
-            color: AppColors.primary,
+                      decoration:  BoxDecoration(
+            color: AppColorsLegacy.primary,
             shape: BoxShape.circle,
           ),
           child: Padding(
@@ -289,11 +292,11 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                           SizedBox(width: width * 0.03),
 
-                          const Text(
+                           Text(
                             "Need Help?",
                             style: TextStyle(
                               fontWeight: FontWeight.w300,
-                              color: AppColors.textPrimary,
+                              color: colors.textPrimary,
                             ),
                           ),
                         ],

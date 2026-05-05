@@ -9,40 +9,42 @@ class ProductDescriptionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+                    final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leadingWidth: 56,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Center(
             child: Material(
-              color: AppColors.backgroundSecondary1,
+              color: AppColorsLegacy.backgroundSecondary1,
               shape: const CircleBorder(),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsets.all(8),
-                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColors.textPrimary),
+                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColorsLegacy.textPrimary),
                 ),
               ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Description",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             fontFamily: 'Montserrat',
-            color: AppColors.textPrimary,
+            color: colors.textPrimary,
           ),
         ),
         centerTitle: false,
@@ -103,7 +105,7 @@ class ProductDescriptionScreen extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.textPrimary.withOpacity(0.05),
+                        color: AppColorsLegacy.textPrimary.withOpacity(0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
@@ -112,13 +114,13 @@ class ProductDescriptionScreen extends StatelessWidget {
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.all(12),
-                        decoration: const BoxDecoration(
-                          color: AppColors.background,
+                        decoration:  BoxDecoration(
+                          color: AppColorsLegacy.background,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child:  Icon(
                           Icons.play_arrow,
-                          color: AppColors.textPrimary,
+                          color: AppColorsLegacy.textPrimary,
                           size: 30,
                         ),
                       ),
@@ -127,13 +129,13 @@ class ProductDescriptionScreen extends StatelessWidget {
                 SizedBox(height: h * 0.04),
 
                 // ℹ️ Information Section
-                const Text(
+                 Text(
                   "Information",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 SizedBox(height: h * 0.015),
@@ -141,7 +143,7 @@ class ProductDescriptionScreen extends StatelessWidget {
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna. Etiam tempor orci eu lobortis elementum. Et tortor at risus viverra",
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.backgroundSecondary6,
+                    color: AppColorsLegacy.backgroundSecondary6,
                     height: 1.6,
                     fontFamily: 'Montserrat',
                   ),
@@ -149,13 +151,13 @@ class ProductDescriptionScreen extends StatelessWidget {
                 SizedBox(height: h * 0.04),
 
                 // 🥗 Ingredients Section
-                const Text(
+                 Text(
                   "Ingredients",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 SizedBox(height: h * 0.02),
@@ -184,7 +186,7 @@ class ProductDescriptionScreen extends StatelessWidget {
             name,
             style: TextStyle(
               fontSize: 15,
-              color: AppColors.backgroundSecondary6,
+              color: AppColorsLegacy.backgroundSecondary6,
               fontFamily: 'Montserrat',
             ),
           ),
@@ -192,7 +194,7 @@ class ProductDescriptionScreen extends StatelessWidget {
             weight,
             style: TextStyle(
               fontSize: 15,
-              color: AppColors.backgroundSecondary5,
+              color: AppColorsLegacy.backgroundSecondary5,
               fontFamily: 'Montserrat',
             ),
           ),

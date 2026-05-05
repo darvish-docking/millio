@@ -14,13 +14,15 @@ class PaymentFailureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
     final padding = w * 0.08;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -31,20 +33,20 @@ class PaymentFailureScreen extends StatelessWidget {
                 width: w * 0.25,
                 height: w * 0.25,
                 decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.1),
+                  color: AppColorsLegacy.error.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Container(
                     width: w * 0.18,
                     height: w * 0.18,
-                    decoration: const BoxDecoration(
-                      color: AppColors.error,
+                    decoration:  BoxDecoration(
+                      color: AppColorsLegacy.error,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.close,
-                      color: AppColors.background,
+                      color: AppColorsLegacy.background,
                       size: w * 0.1,
                     ),
                   ),
@@ -59,7 +61,7 @@ class PaymentFailureScreen extends StatelessWidget {
                 fontSize: w * 0.065,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Montserrat',
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
             SizedBox(height: h * 0.01),
@@ -71,7 +73,7 @@ class PaymentFailureScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: w * 0.035,
                   fontFamily: 'Montserrat',
-                  color: AppColors.textSecondary,
+                  color: AppColorsLegacy.textSecondary,
                 ),
               ),
             ),
@@ -83,7 +85,7 @@ class PaymentFailureScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(w * 0.05),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundSecondary1,
+                  color: AppColorsLegacy.backgroundSecondary1,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
@@ -114,14 +116,14 @@ class PaymentFailureScreen extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColorsLegacy.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                         elevation: 0,
                       ),
                       child: Text(
                         "Try Again",
                         style: TextStyle(
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           fontSize: w * 0.04,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
@@ -137,7 +139,7 @@ class PaymentFailureScreen extends StatelessWidget {
                     child: Text(
                       "Back to Cart",
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: AppColorsLegacy.textSecondary,
                         fontSize: w * 0.035,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Montserrat',
@@ -162,7 +164,7 @@ class PaymentFailureScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: w * 0.035,
             fontFamily: 'Montserrat',
-            color: AppColors.textSecondary,
+            color: AppColorsLegacy.textSecondary,
           ),
         ),
         Expanded(
@@ -173,7 +175,7 @@ class PaymentFailureScreen extends StatelessWidget {
               fontSize: w * 0.035,
               fontWeight: FontWeight.w600,
               fontFamily: 'Montserrat',
-              color: AppColors.textPrimary,
+              color: AppColorsLegacy.textPrimary,
             ),
           ),
         ),

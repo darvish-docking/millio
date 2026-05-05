@@ -6,17 +6,17 @@ final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
 
   colorScheme: ColorScheme.light(
-    primary: AppColors.primary,
-    secondary: AppColors.secondary,
-    surface: AppColors.background,
-    outline: AppColors.textPrimary,
-    onSurface: AppColors.background,
-    error: Colors.red,
+    primary: AppColors.light.primary,
+    secondary: AppColors.light.secondary,
+    surface: AppColors.light.surface,
+    outline: AppColors.light.textPrimary,
+    onSurface: AppColors.light.textPrimary,
+    error: AppColors.light.error,
   ),
 
-  scaffoldBackgroundColor: AppColors.background,
+  scaffoldBackgroundColor: AppColors.light.scaffoldBackground,
 
   // textTheme: const TextTheme(
-  //   bodyMedium: TextStyle(color: AppColors.lightText),
+  //   bodyMedium: TextStyle(color: AppColors.light.textSecondary),
   // ),
 );

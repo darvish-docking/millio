@@ -20,12 +20,14 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
+                    final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: Stack(
         children: [
           // Background Image at bottom
@@ -55,10 +57,10 @@ class _FilterScreenState extends State<FilterScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundSecondary2,
+                            color: colors.textField,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(Icons.close, size: w * 0.045, color: AppColors.textPrimary),
+                          child: Icon(Icons.close, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                         ),
                       ),
                       SizedBox(width: w * 0.04),
@@ -69,6 +71,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           fontSize: w * 0.05,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
+                          color: colors.textPrimary
                         ),
                       ),
                     ],
@@ -104,6 +107,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                     style: TextStyle(
                                       fontFamily: 'Montserrat',
                                       fontSize: w * 0.03,
+                                      color: colors.background
                                     )
                                   ),
                                   GestureDetector(
@@ -123,20 +127,20 @@ class _FilterScreenState extends State<FilterScreen> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                          color: AppColors.backgroundSecondary3, 
+                                          color: AppColorsLegacy.backgroundSecondary3, 
                                           width: 1.5
                                         ),
                                       ),
                                       child: _selectedCategories.contains(category) 
                                           ? Container(
-                                              decoration: const BoxDecoration(
+                                              decoration:  BoxDecoration(
                                                 shape: BoxShape.circle,
-                                                color: AppColors.primary,
+                                                color: AppColorsLegacy.primary,
                                               ),
                                               child: Icon(
                                                 Icons.check, 
                                                 size: w * 0.025, 
-                                                color: AppColors.background
+                                                color: AppColorsLegacy.background
                                               ),
                                             )
                                           : null,
@@ -158,9 +162,9 @@ class _FilterScreenState extends State<FilterScreen> {
                             children: [
                               SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: AppColors.primary,
-                                  thumbColor: AppColors.primary,
-                                  overlayColor: AppColors.primary.withAlpha(32),
+                                  activeTrackColor: AppColorsLegacy.primary,
+                                  thumbColor: AppColorsLegacy.primary,
+                                  overlayColor: AppColorsLegacy.primary.withAlpha(32),
                                   trackHeight: 1.5, // Even thinner track
                                   rangeThumbShape: const RoundRangeSliderThumbShapeWithInnerCircle(enabledThumbRadius: 8.0, innerRadius: 3.0),
                                   overlayShape: const RoundSliderOverlayShape(overlayRadius: 8.0),
@@ -181,7 +185,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 child: RichText(
                                   text: TextSpan(
                                     style: TextStyle(
-                                      color: AppColors.backgroundSecondary6,
+                                      color: AppColorsLegacy.backgroundSecondary6,
                                       fontFamily: 'Montserrat',
                                       fontSize: 11,
                                     ),
@@ -189,7 +193,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       const TextSpan(text: "Distance: "),
                                       TextSpan(
                                         text: "${_distanceRange.start.toInt()}km - ${_distanceRange.end.toInt()}km",
-                                        style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+                                        style:  TextStyle(color: AppColorsLegacy.textPrimary, fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -209,9 +213,9 @@ class _FilterScreenState extends State<FilterScreen> {
                             children: [
                               SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: AppColors.primary,
-                                  inactiveTrackColor: AppColors.backgroundSecondary2,
-                                  thumbColor: AppColors.primary,
+                                  activeTrackColor: AppColorsLegacy.primary,
+                                  inactiveTrackColor: AppColorsLegacy.backgroundSecondary2,
+                                  thumbColor: AppColorsLegacy.primary,
                                   trackHeight: 1.5, // Even thinner track
                                   rangeThumbShape: const RoundRangeSliderThumbShapeWithInnerCircle(enabledThumbRadius: 8.0, innerRadius: 3.0),
                                   overlayShape: const RoundSliderOverlayShape(overlayRadius: 8.0),
@@ -232,7 +236,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 child: RichText(
                                   text: TextSpan(
                                     style: TextStyle(
-                                      color: AppColors.backgroundSecondary6,
+                                      color: AppColorsLegacy.backgroundSecondary6,
                                       fontFamily: 'Montserrat',
                                       fontSize: 11,
                                     ),
@@ -240,7 +244,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       const TextSpan(text: "Price: "),
                                       TextSpan(
                                         text: "\$${_priceRange.start.toInt()} - \$${_priceRange.end.toInt()}",
-                                        style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+                                        style:  TextStyle(color: AppColorsLegacy.textPrimary, fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -268,11 +272,11 @@ class _FilterScreenState extends State<FilterScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: AppColorsLegacy.background,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withAlpha(13),
+            color: AppColorsLegacy.textPrimary.withAlpha(13),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -328,13 +332,13 @@ class RoundRangeSliderThumbShapeWithInnerCircle extends RangeSliderThumbShape {
     final Canvas canvas = context.canvas;
 
     final Paint outerPaint = Paint()
-      ..color = sliderTheme.thumbColor ?? AppColors.primary
+      ..color = sliderTheme.thumbColor ?? AppColorsLegacy.primary
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, enabledThumbRadius, outerPaint);
 
     final Paint innerPaint = Paint()
-      ..color = AppColors.background
+      ..color = AppColorsLegacy.background
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, innerRadius, innerPaint);

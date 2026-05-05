@@ -61,12 +61,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+                    final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -77,14 +79,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 children: [
                   // Back Button
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -96,20 +98,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                   const Spacer(),
                   // More Menu
                    Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child:  Icon(Icons.more_horiz, color: AppColors.textPrimary),
+                        child:  Icon(Icons.more_horiz, color: AppColorsLegacy.textPrimary),
                       ))
                   ),
 
@@ -123,8 +125,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
               child: ListView.separated(
                 itemCount: _notifications.length,
                 padding: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.01),
-                separatorBuilder: (context, index) => const Divider(
-                  color: AppColors.primary,
+                separatorBuilder: (context, index) =>  Divider(
+                  color: AppColorsLegacy.primary,
                   thickness: 0.5,
                   height: 30,
                 ),
@@ -146,15 +148,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             width: w * 0.04,
                             height: w * 0.04,
                             decoration: BoxDecoration(
-                              color: item.isChecked ? AppColors.primary : AppColors.transparent,
+                              color: item.isChecked ? AppColorsLegacy.primary : AppColors.transparent,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
-                                color: item.isChecked ? AppColors.primary : AppColors.backgroundSecondary4,
+                                color: item.isChecked ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary4,
                                 width: 1.5,
                               ),
                             ),
                             child: item.isChecked
-                                ? const Icon(Icons.check, size: 12, color: AppColors.background)
+                                ?  Icon(Icons.check, size: 12, color: AppColorsLegacy.background)
                                 : null,
                           ),
                         ),
@@ -167,17 +169,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           Container(
                             width: w * 0.13,
                             height: w * 0.13,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryLight,
+                            decoration:  BoxDecoration(
+                              color: colors.textField,
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(15),
                             child: Image.asset(
                               item.imagePath,
                               fit: BoxFit.contain,
-                              color: AppColors.textSecondary,
+                              color: AppColorsLegacy.textSecondary,
                               errorBuilder: (context, error, stackTrace) => 
-                                  const Icon(Icons.notifications, color: AppColors.textSecondary),
+                                   Icon(Icons.notifications, color: AppColorsLegacy.textSecondary),
                             ),
                           ),
                           // Unread Red Dot
@@ -189,9 +191,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 width: 10,
                                 height: 10,
                                 decoration: BoxDecoration(
-                                  color: AppColors.error,
+                                  color: AppColorsLegacy.error,
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: AppColors.background, width: 1.5),
+                                  border: Border.all(color: AppColorsLegacy.background, width: 1.5),
                                 ),
                               ),
                             ),
@@ -210,7 +212,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 fontSize: w * 0.03,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: 'Montserrat',
-                                color: AppColors.textPrimarylight87,
+                                color: colors.textPrimary,
                                 height: 1.4,
                               ),
                             ),
@@ -219,7 +221,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               item.time,
                               style: TextStyle(
                                 fontSize: w * 0.03,
-                                color: AppColors.textSecondary,
+                                color: AppColorsLegacy.textSecondary,
                                 fontFamily: 'Montserrat',
                               ),
                             ),
@@ -243,15 +245,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColorsLegacy.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
-                      child: const Text(
+                      child:  Text(
                         "Mark As Read",
                         style: TextStyle(
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Montserrat',
                           fontSize: 13,

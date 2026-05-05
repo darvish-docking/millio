@@ -56,13 +56,16 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+                                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
     final padding = w * 0.04;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -73,14 +76,14 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 children: [
                   // Back Button
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => context.read<TabProvider>().goHome(),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -102,14 +105,14 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon: Icon(Icons.call_outlined, color: AppColors.textPrimary, size: w * 0.06),
+                    icon: Icon(Icons.call_outlined, color: AppColorsLegacy.textPrimary, size: w * 0.06),
                     onPressed: () {},
                   ),
                   SizedBox(width: w * 0.04),
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon: Icon(Icons.warning_amber_rounded, color: AppColors.textPrimary, size: w * 0.06),
+                    icon: Icon(Icons.warning_amber_rounded, color: AppColorsLegacy.textPrimary, size: w * 0.06),
                     onPressed: () {},
                   ),
                 ],
@@ -135,7 +138,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                             child: Text(
                               msg.date!,
                               style: TextStyle(
-                                color: AppColors.backgroundSecondary4,
+                                color: AppColorsLegacy.backgroundSecondary4,
                                 fontSize: w * 0.035,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Montserrat',
@@ -156,7 +159,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: w * 0.045, vertical: h * 0.002),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: colors.textField,
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
@@ -165,7 +168,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                       offset: const Offset(0, 5),
                     ),
                   ],
-                  border: Border.all(color: AppColors.backgroundSecondary1),
+                  border: Border.all(color: colors.textField),
                 ),
                 child: Row(
                   children: [
@@ -175,7 +178,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                         decoration: InputDecoration(
                           hintText: "Write a message...",
                           hintStyle: TextStyle(
-                            color: AppColors.backgroundSecondary4,
+                            color: AppColorsLegacy.backgroundSecondary4,
                             fontFamily: 'Montserrat',
                             fontSize: w * 0.038,
                           ),
@@ -189,7 +192,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     Container(
                       height: 18,
                       width: 1,
-                      color: AppColors.backgroundSecondary2,
+                      color: AppColorsLegacy.backgroundSecondary2,
                       margin: EdgeInsets.symmetric(horizontal: w * 0.01),
                     ),
 
@@ -199,7 +202,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                       child: _isTyping
                           ? IconButton(
                               key: const ValueKey("send"),
-                              icon: const Icon(Icons.send, color: AppColors.primary),
+                              icon:  Icon(Icons.send, color: AppColorsLegacy.primary),
                               onPressed: () {
                                 _messageController.clear();
                               },
@@ -209,11 +212,11 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.camera_alt_outlined, color: AppColors.backgroundSecondary4, size: w * 0.055),
+                                  icon: Icon(Icons.camera_alt_outlined, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
                                   onPressed: () {},
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.grid_view_sharp, color: AppColors.backgroundSecondary4, size: w * 0.055),
+                                  icon: Icon(Icons.grid_view_sharp, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
                                   onPressed: () {},
                                 ),
                               ],
@@ -230,6 +233,8 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
   }
 
   Widget _buildMessageBubble(ChatMessage msg, double w, double h) {
+                                final colors = context.colors;
+
     return Align(
       alignment: msg.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
@@ -250,7 +255,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               constraints: BoxConstraints(maxWidth: w * 0.72),
               padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: h * 0.014),
               decoration: BoxDecoration(
-                color: msg.isSentByMe ? AppColors.primary : AppColors.backgroundSecondary1,
+                color: msg.isSentByMe ? AppColorsLegacy.primary : colors.textField,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(w * 0.045),
                   topRight: Radius.circular(w * 0.045),
@@ -259,7 +264,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.textPrimary.withOpacity(0.03),
+                    color: AppColorsLegacy.textPrimary.withOpacity(0.03),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -271,7 +276,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                   Text(
                     msg.text,
                     style: TextStyle(
-                      color: msg.isSentByMe ? AppColors.background : AppColors.textPrimarylight87,
+                      color: msg.isSentByMe ? AppColorsLegacy.background : colors.hintText,
                       fontFamily: 'Montserrat',
                       fontSize: w * 0.038,
                       height: 1.45,
@@ -283,7 +288,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     child: Text(
                       msg.time,
                       style: TextStyle(
-                        color: msg.isSentByMe ? AppColors.background07 : AppColors.backgroundSecondary5,
+                        color: msg.isSentByMe ? AppColorsLegacy.background07 : AppColorsLegacy.backgroundSecondary5,
                         fontSize: w * 0.025,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Montserrat',
@@ -303,16 +308,16 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: AppColorsLegacy.background,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.textPrimary.withOpacity(0.12),
+                        color: AppColorsLegacy.textPrimary.withOpacity(0.12),
                         blurRadius: 6,
                         offset: const Offset(0, 3),
                       ),
                     ],
-                    border: Border.all(color: AppColors.backgroundSecondary1),
+                    border: Border.all(color: AppColorsLegacy.backgroundSecondary1),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

@@ -9,6 +9,8 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     
@@ -26,16 +28,16 @@ AppColors.category5,
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
 
         leadingWidth: 48,
         leading: Align(
           alignment: Alignment.centerRight,
           child: Material(
-            color: AppColors.backgroundSecondary3,
+            color: AppColorsLegacy.backgroundSecondary3,
             shape: const CircleBorder(),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
@@ -55,9 +57,9 @@ AppColors.category5,
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Categories",
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+          style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
       ),
@@ -73,7 +75,7 @@ AppColors.category5,
                   if (index >= categories.length) return const SizedBox();
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
-                    child: _buildCategoryItem(index, bgColors, w),
+                    child: _buildCategoryItem(index, bgColors, w, context),
                   );
                 }),
               ),
@@ -86,7 +88,7 @@ AppColors.category5,
                   if (index >= categories.length) return const SizedBox();
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
-                    child: _buildCategoryItem(index, bgColors, w),
+                    child: _buildCategoryItem(index, bgColors, w, context),
                   );
                 }),
               ),
@@ -105,7 +107,8 @@ AppColors.category5,
     );
   }
 
-  Widget _buildCategoryItem(int index, List<Color> bgColors, double w) {
+  Widget _buildCategoryItem(int index, List<Color> bgColors, double w, BuildContext context) {
+    
     bool isLarge = false;
     // Creates a staggered height pattern
     if (index % 2 == 0) {
@@ -129,7 +132,7 @@ AppColors.category5,
               end: Alignment.bottomCenter,
               colors: [
                 bgColors[index % bgColors.length],
-                AppColors.background,
+                context.colors.background,
               ],
             ),
             borderRadius: BorderRadius.circular(16),

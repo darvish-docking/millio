@@ -20,12 +20,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+                final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -48,14 +50,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           // Back Button
                           Material(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             shape: const CircleBorder(),
                             clipBehavior: Clip.hardEdge,
                             child: InkWell(
                               onTap: () => context.read<TabProvider>().goHome(),
                               child: Padding(
                                 padding: EdgeInsets.all(w * 0.025),
-                                child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                                child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                               ),
                             ),
                           ),
@@ -69,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontSize: w * 0.06,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Montserrat',
-                              color: AppColors.textPrimary,
+                              color: AppColorsLegacy.textPrimary,
                             ),
                           ),
 
@@ -77,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           
                           // Notification Icon
                           Material(
-                            color: AppColors.background,
+                            color: AppColorsLegacy.background,
                             shape: const CircleBorder(),
                             clipBehavior: Clip.hardEdge,
                             child: InkWell(
@@ -93,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   'assets/images/Notification.png',
                                   width: w * 0.06,
                                   height: w * 0.06,
-                                  errorBuilder: (context, error, stackTrace) => Icon(Icons.notifications_none, size: w * 0.06, color: AppColors.textPrimary),
+                                  errorBuilder: (context, error, stackTrace) => Icon(Icons.notifications_none, size: w * 0.06, color: AppColorsLegacy.textPrimary),
                                 ),
                               ),
                             ),
@@ -146,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fontSize: w * 0.055,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Montserrat',
-                color: AppColors.textPrimary,
+                color: AppColorsLegacy.textPrimary,
               ),
             ),
             SizedBox(height: h * 0.005),
@@ -155,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(
                 fontSize: w * 0.035,
                 fontFamily: 'Montserrat',
-                color: AppColors.backgroundSecondary6,
+                color: AppColorsLegacy.backgroundSecondary6,
               ),
             ),
 
@@ -171,7 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Preferences",
                     imagePath: "assets/images/Setting.png",
                     fallbackIcon: Icons.settings_outlined,
-                    gradientColors: [AppColors.category2, AppColors.background],
+                    gradientColors: [AppColors.category2, colors.background],
                     onTap: () {
                       Navigator.push(
                         context,
@@ -184,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Payment",
                     imagePath: "assets/images/Wallet.png",
                     fallbackIcon: Icons.account_balance_wallet_outlined,
-                    gradientColors: [AppColors.category3, AppColors.background],
+                    gradientColors: [AppColors.category3, colors.background],
                     onTap: () {},
                   ),
                   _buildMenuItem(
@@ -192,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Wishlist",
                     imagePath: "assets/images/Bookmark.png",
                     fallbackIcon: Icons.bookmark_border,
-                    gradientColors: [AppColors.category4, AppColors.background],
+                    gradientColors: [AppColors.category4, colors.background],
                     onTap: () {},
                   ),
                   _buildMenuItem(
@@ -200,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Addresses",
                     imagePath: "assets/images/Location.png",
                     fallbackIcon: Icons.location_on_outlined,
-                    gradientColors: [AppColors.category5, AppColors.background],
+                    gradientColors: [AppColors.category5, colors.background],
                     onTap: () {},
                   ),
                   _buildMenuItem(
@@ -208,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Privacy Setting",
                     imagePath: "assets/images/Lock.png",
                     fallbackIcon: Icons.lock_outline,
-                    gradientColors: [AppColors.category6, AppColors.background],
+                    gradientColors: [AppColors.category6, colors.background],
                     onTap: () {},
                   ),
                   _buildMenuItem(
@@ -216,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Change Password",
                     imagePath: "assets/images/Password.png",
                     fallbackIcon: Icons.password_outlined,
-                    gradientColors: [AppColors.category7, AppColors.background],
+                    gradientColors: [AppColors.category7, colors.background],
                     onTap: () {},
                   ),
                   _buildMenuItem(
@@ -224,7 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Sign Out",
                     imagePath: "assets/images/Logout.png",
                     fallbackIcon: Icons.logout_outlined,
-                    gradientColors: [AppColors.category8, AppColors.background],
+                    gradientColors: [AppColors.category8, colors.background],
                     onTap: () async {
                       final prefs = await SharedPreferences.getInstance();
 
@@ -261,6 +263,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required List<Color> gradientColors,
     required VoidCallback onTap,
   }) {
+                final colors = context.colors;
+
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -284,8 +288,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   imagePath,
                   width: w * 0.05,
                   height: w * 0.05,
-                  color: AppColors.textPrimarylight87,
-                  errorBuilder: (context, error, stackTrace) => Icon(fallbackIcon, color: AppColors.textPrimarylight87, size: w * 0.05),
+                  color: AppColorsLegacy.textPrimarylight87,
+                  errorBuilder: (context, error, stackTrace) => Icon(fallbackIcon, color: AppColorsLegacy.textPrimarylight87, size: w * 0.05),
                 ),
               ),
             ),
@@ -299,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fontSize: w * 0.035,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Montserrat',
-                  color: AppColors.textPrimarylight87,
+                  color: colors.textPrimary,
                 ),
               ),
             ),
@@ -307,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Trailing Button
             IconButton(
               onPressed: onTap,
-              icon: Icon(Icons.chevron_right, color: AppColors.backgroundSecondary7, size: w * 0.06),
+              icon: Icon(Icons.chevron_right, color: AppColorsLegacy.backgroundSecondary7, size: w * 0.06),
             ),
           ],
         ),

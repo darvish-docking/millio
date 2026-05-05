@@ -21,6 +21,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+                    final colors = context.colors;
+
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
@@ -28,7 +31,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final offer = widget.offer;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: Stack(
         children: [
           /// 🖼️ LAYER 1: Background Image (Static)
@@ -41,8 +44,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               offer.image,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
-                color: AppColors.backgroundSecondary2,
-                child: Icon(Icons.fastfood, size: w * 0.2, color: AppColors.backgroundSecondary),
+                color: AppColorsLegacy.backgroundSecondary2,
+                child: Icon(Icons.fastfood, size: w * 0.2, color: AppColorsLegacy.backgroundSecondary),
               ),
             ),
           ),
@@ -59,15 +62,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 Container(
                   width: w,
                   padding: EdgeInsets.fromLTRB(padding, h * 0.02, padding, padding),
-                  decoration: const BoxDecoration(
-                    color: AppColors.background,
+                  decoration:  BoxDecoration(
+                    color: colors.background,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(40),
                       topRight: Radius.circular(40),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.textPrimarylight12,
+                        color: AppColorsLegacy.textPrimarylight12,
                         blurRadius: 10,
                         offset: Offset(0, -5),
                       ),
@@ -84,7 +87,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           height: 4,
                           margin: EdgeInsets.only(bottom: h * 0.02),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundSecondary3,
+                            color: AppColorsLegacy.backgroundSecondary3,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -94,13 +97,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: w * 0.03, vertical: h * 0.006),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColorsLegacy.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           "Popular",
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: AppColorsLegacy.primary,
                             fontSize: w * 0.03,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Montserrat',
@@ -116,7 +119,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         style: TextStyle(
                           fontSize: w * 0.06,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: colors.textPrimary,
                           fontFamily: 'Montserrat',
                         ),
                         maxLines: 2,
@@ -131,7 +134,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         style: TextStyle(
                           fontSize: w * 0.06,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: AppColorsLegacy.primary,
                           fontFamily: 'Montserrat',
                         ),
                       ),
@@ -154,14 +157,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             SizedBox(width: w * 0.01),
                             Text(
                               offer.distance,
-                              style: TextStyle(color: AppColors.backgroundSecondary, fontSize: w * 0.035, fontFamily: 'Montserrat'),
+                              style: TextStyle(color: AppColorsLegacy.backgroundSecondary, fontSize: w * 0.035, fontFamily: 'Montserrat'),
                             ),
                             SizedBox(width: w * 0.04),
-                            Icon(Icons.star, size: w * 0.04, color: AppColors.amber),
+                            Icon(Icons.star, size: w * 0.04, color: AppColorsLegacy.amber),
                             SizedBox(width: w * 0.01),
                             Text(
                               "${offer.rating} ${offer.reviewCount}",
-                              style: TextStyle(color: AppColors.backgroundSecondary, fontSize: w * 0.035, fontFamily: 'Montserrat'),
+                              style: TextStyle(color: AppColorsLegacy.backgroundSecondary, fontSize: w * 0.035, fontFamily: 'Montserrat'),
                             ),
                           ],
                         ),
@@ -175,7 +178,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         style: TextStyle(
                           fontSize: w * 0.045,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: colors.textPrimary,
                           fontFamily: 'Montserrat',
                         ),
                       ),
@@ -184,7 +187,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         "Experience the amazing taste of our freshly prepared ${offer.title}. Masterfully cooked with the best ingredients carefully sourced by top chefs in town. Serve hot to get the perfect joy of its blend of flavors and aroma.",
                         style: TextStyle(
                           fontSize: w * 0.035,
-                          color: AppColors.textSecondary,
+                          color: AppColorsLegacy.textSecondary,
                           height: 1.6,
                           fontFamily: 'Montserrat',
                         ),
@@ -205,7 +208,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           child: Text(
                             "Read more",
                             style: TextStyle(
-                              color: AppColors.primary,
+                              color: AppColorsLegacy.primary,
                               fontWeight: FontWeight.bold,
                               fontSize: w * 0.035,
                               fontFamily: 'Montserrat',
@@ -223,14 +226,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Container(
                             padding: const EdgeInsets.all(8), // Added padding as requested
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColorsLegacy.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
                                 /// Minus Button (Dark Green Square)
                                 Material(
-                                  color: AppColors.primaryDark, // Darker green
+                                  color: AppColorsLegacy.primaryDark, // Darker green
                                   borderRadius: BorderRadius.circular(8),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
@@ -242,7 +245,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     child: SizedBox(
                                       width: w * 0.08,
                                       height: w * 0.08,
-                                      child: Icon(Icons.remove, size: w * 0.05, color: AppColors.background),
+                                      child: Icon(Icons.remove, size: w * 0.05, color: AppColorsLegacy.background),
                                     ),
                                   ),
                                 ),
@@ -256,14 +259,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       fontSize: w * 0.045,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'Montserrat',
-                                      color: AppColors.primaryDark,
+                                      color: AppColorsLegacy.primaryDark,
                                     ),
                                   ),
                                 ),
 
                                 /// Plus Button (Dark Green Square)
                                 Material(
-                                  color: AppColors.primaryDark, // Darker green
+                                  color: AppColorsLegacy.primaryDark, // Darker green
                                   borderRadius: BorderRadius.circular(8),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
@@ -273,7 +276,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     child: SizedBox(
                                       width: w * 0.08,
                                       height: w * 0.08,
-                                      child: Icon(Icons.add, size: w * 0.05, color: AppColors.background),
+                                      child: Icon(Icons.add, size: w * 0.05, color: AppColorsLegacy.background),
                                     ),
                                   ),
                                 ),
@@ -290,13 +293,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text("${offer.title} added to cart"),
-                                      backgroundColor: AppColors.primary,
+                                      backgroundColor: AppColorsLegacy.primary,
                                       duration: const Duration(seconds: 2),
                                     ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
+                                  backgroundColor: AppColorsLegacy.primary,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
@@ -305,7 +308,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 child: Text(
                                   "Add to cart",
                                   style: TextStyle(
-                                    color: AppColors.background,
+                                    color: AppColorsLegacy.background,
                                     fontSize: w * 0.045,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Montserrat',
@@ -333,7 +336,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 children: [
                   /// Back Button
                   Material(
-                    color: AppColors.backgroundSecondary3,
+                    color: AppColorsLegacy.backgroundSecondary3,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
@@ -365,14 +368,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             height: iconSize,
                             width: iconSize,
                             child: Center(
-                              child: Icon(Icons.search, size: iconSize * 0.55, color: AppColors.textPrimarylight87),
+                              child: Icon(Icons.search, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
                             ),
                           ),
                         ),
                       ),
                       SizedBox(width: padding * 0.6),
                       Material(
-                        color: AppColors.background.withOpacity(0.9),
+                        color: AppColorsLegacy.background.withOpacity(0.9),
                         shape: const CircleBorder(),
                         clipBehavior: Clip.hardEdge,
                         child: InkWell(
@@ -381,7 +384,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             height: iconSize,
                             width: iconSize,
                             child: Center(
-                              child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: AppColors.textPrimarylight87),
+                              child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
                             ),
                           ),
                         ),

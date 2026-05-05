@@ -44,13 +44,15 @@ class _AddressScreenState extends State<AddressScreen> {
 
   @override
   Widget build(BuildContext context) {
+                    final colors = context.colors;
+
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
     final padding = w * 0.05;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -60,14 +62,14 @@ class _AddressScreenState extends State<AddressScreen> {
               child: Row(
                 children: [
                   Material(
-                    color: AppColors.backgroundSecondary1,
+                    color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
-                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColors.textPrimary),
+                        child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
                       ),
                     ),
                   ),
@@ -78,7 +80,7 @@ class _AddressScreenState extends State<AddressScreen> {
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                 ],
@@ -104,17 +106,17 @@ class _AddressScreenState extends State<AddressScreen> {
                       margin: EdgeInsets.only(bottom: h * 0.02),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primaryLight : AppColors.background,
+                        color: isSelected ? colors.hintText : colors.textField,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isSelected ? AppColors.primary : AppColors.transparent,
+                          color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: isSelected 
-                              ? AppColors.primary.withValues(alpha: .05) 
-                              : AppColors.textPrimary.withValues(alpha: .04),
+                              ? AppColorsLegacy.primary.withValues(alpha: .05) 
+                              : AppColorsLegacy.textPrimary.withValues(alpha: .04),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -128,15 +130,15 @@ class _AddressScreenState extends State<AddressScreen> {
                             height: w * 0.12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.primary, width: 1.5),
+                              border: Border.all(color: AppColorsLegacy.primary, width: 1.5),
                             ),
                             padding: const EdgeInsets.all(4),
                             child: Container(
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
+                              decoration:  BoxDecoration(
+                                color: isSelected ? colors.hintText : colors.textField,
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.location_on, color: AppColors.background, size: w * 0.05),
+                              child: Icon(Icons.location_on, color: AppColorsLegacy.background, size: w * 0.05),
                             ),
                           ),
                           SizedBox(width: w * 0.04),
@@ -152,13 +154,14 @@ class _AddressScreenState extends State<AddressScreen> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: w * 0.04,
                                     fontFamily: 'Montserrat',
+                                    color: colors.textPrimary,
                                   ),
                                 ),
                                 SizedBox(height: h * 0.005),
                                 Text(
                                   address.details,
                                   style: TextStyle(
-                                    color: AppColors.textSecondary,
+                                    color: AppColorsLegacy.textSecondary,
                                     fontSize: w * 0.032,
                                     fontFamily: 'Montserrat',
                                     height: 1.3,
@@ -173,7 +176,7 @@ class _AddressScreenState extends State<AddressScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.more_horiz, color: AppColors.textSecondary),
+                                icon:  Icon(Icons.more_horiz, color: AppColorsLegacy.textSecondary),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
                                 onPressed: () {
@@ -187,9 +190,9 @@ class _AddressScreenState extends State<AddressScreen> {
                                 height: 12,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: isSelected ? AppColors.primary : AppColors.transparent,
+                                  color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                                   border: Border.all(
-                                    color: isSelected ? AppColors.primary : AppColors.backgroundSecondary3,
+                                    color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary3,
                                     width: 1.5,
                                   ),
                                 ),
@@ -220,14 +223,14 @@ class _AddressScreenState extends State<AddressScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryLight,
+                        backgroundColor: AppColorsLegacy.primaryLight,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                         elevation: 0,
                       ),
                       child: Text(
                         "Add New Address",
                         style: TextStyle(
-                          color: AppColors.primary,
+                          color: AppColorsLegacy.primary,
                           fontSize: w * 0.04,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
@@ -247,14 +250,14 @@ class _AddressScreenState extends State<AddressScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColorsLegacy.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                         elevation: 0,
                       ),
                       child: Text(
                         "Apply",
                         style: TextStyle(
-                          color: AppColors.background,
+                          color: AppColorsLegacy.background,
                           fontSize: w * 0.04,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
