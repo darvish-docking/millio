@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/theme/app_images.dart';
 import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
 import 'package:millio/features/home/presentation/screens/notification_screen.dart';
@@ -42,7 +43,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               height: h * 0.25,
               child: Stack(
                 children: [
-                  Image.asset('assets/images/profile-bg.png',
+                  Image.asset(
+                    // 'assets/images/profile-bg.png',
+                    AppImages.profile_bg(context),
                   width: w,
                   fit: BoxFit.cover,),
                   
