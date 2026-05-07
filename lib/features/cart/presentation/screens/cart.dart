@@ -526,7 +526,7 @@ class _CartScreenState extends State<CartScreen> {
           style: TextStyle(
             fontSize: isTotal ? w * 0.05 : w * 0.035,
             fontWeight: FontWeight.bold,
-            color: isDiscount ? colors.textPrimary : (isTotal ? colors.primary : AppColorsLegacy.textPrimarylight87),
+            color: isDiscount ? colors.textPrimary : (isTotal ? colors.primary : colors.textPrimary),
             fontFamily: 'Montserrat',
           ),
         ),

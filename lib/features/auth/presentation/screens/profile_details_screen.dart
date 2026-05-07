@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/location_selection_screen.dart';
 
@@ -31,6 +34,22 @@ class _ProfileDetailsScreenState
 
   final TextEditingController regionController =
       TextEditingController();
+
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,31 +125,45 @@ class _ProfileDetailsScreenState
                         //   width: 2,
                         // ),
                       ),
-                      child: Icon(
-                        Icons.person,
-                        size: width * 0.15,
-                        color: AppColorsLegacy.backgroundSecondary5,
-                      ),
+                      child: _image != null
+                          ? ClipOval(
+                              child: Image.file(
+                                _image!,
+                                height: width * 0.32,
+                                width: width * 0.32,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: width * 0.15,
+                              color: AppColorsLegacy.backgroundSecondary5,
+                            ),
                     ),
 
                     Positioned(
                       bottom: 0,
                       right: 0,
-                      child: Container(
-                        height: width * 0.09,
-                        width: width * 0.09,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColorsLegacy.primary,
-                          border: Border.all(
-                            color: AppColorsLegacy.background,
-                            width: 2,
+                      child: GestureDetector(
+                        onTap: _pickImage,
+                        child: Container(
+                          height: width * 0.09,
+                          width: width * 0.09,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColorsLegacy.primary,
+                            border: Border.all(
+                              color: AppColorsLegacy.background,
+                              width: 2,
+                            ),
                           ),
-                        ),
-                        child: Image.asset(
-                          'assets/images/gallery.png',
-                          color: AppColorsLegacy.background,
-                          width: width * 0.045,
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/gallery.png',
+                              color: AppColorsLegacy.background,
+                              width: width * 0.045,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -144,7 +177,7 @@ class _ProfileDetailsScreenState
               _buildTextField(
                 context,
                 hint: "Full Name",
-                // icon: Icons.person_outline,
+                controller: nameController,
               ),
 
               SizedBox(height: height * 0.02),
@@ -152,7 +185,7 @@ class _ProfileDetailsScreenState
               _buildTextField(
                 context,
                 hint: "Nick Name",
-                // icon: Icons.badge_outlined,
+                controller: nickNameController,
               ),
 
               SizedBox(height: height * 0.02),
@@ -160,7 +193,7 @@ class _ProfileDetailsScreenState
               _buildTextField(
                 context,
                 hint: "Email",
-                // icon: Icons.email_outlined,
+                controller: emailController,
               ),
 
               SizedBox(height: height * 0.02),
@@ -168,16 +201,21 @@ class _ProfileDetailsScreenState
               _buildTextField(
                 context,
                 hint: "Date of Birth",
-                // icon: Icons.cake_outlined,
+                controller: dobController,
                 suffixImage: 'assets/images/Calendar.png',
-                onSuffixTap: () {
-    showDatePicker(
-      context: context,
-      firstDate: DateTime(1950),
-      lastDate: DateTime.now(),
-      initialDate: DateTime.now(),
-    );
-  },
+                onSuffixTap: () async {
+                  final DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime(1950),
+                    lastDate: DateTime.now(),
+                    initialDate: DateTime.now(),
+                  );
+                  if (pickedDate != null) {
+                    setState(() {
+                      dobController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+                    });
+                  }
+                },
               ),
 
               SizedBox(height: height * 0.02),
@@ -185,44 +223,53 @@ class _ProfileDetailsScreenState
               _buildTextField(
                 context,
                 hint: "Gender",
-                // icon: Icons.person_2_outlined,
+                controller: genderController,
                 suffixImage: 'assets/images/down-arrow.png',
                 onSuffixTap: () {
-                    showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(20),
-      ),
-    ),
-    builder: (context) {
-      return SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              title: const Text("Male"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text("Female"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text("Other"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      );
-    },
-  );
-  },
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    builder: (context) {
+                      return SafeArea(
+                        child: Wrap(
+                          children: [
+                            ListTile(
+                              title: const Text("Male"),
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = "Male";
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text("Female"),
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = "Female";
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text("Other"),
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = "Other";
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
 
               SizedBox(height: height * 0.02),
@@ -230,17 +277,19 @@ class _ProfileDetailsScreenState
               _buildTextField(
                 context,
                 hint: "Region",
-                // icon: Icons.location_on_outlined,
+                controller: regionController,
                 suffixImage: 'assets/images/down-arrow.png',
                 onSuffixTap: () {
-                    showCountryPicker(
-    context: context,
-    showPhoneCode: false,
-    onSelect: (Country country) {
-      regionController.text = country.name;
-    },
-  );
-  },
+                  showCountryPicker(
+                    context: context,
+                    showPhoneCode: false,
+                    onSelect: (Country country) {
+                      setState(() {
+                        regionController.text = country.name;
+                      });
+                    },
+                  );
+                },
               ),
 
               SizedBox(height: height * 0.05),
@@ -287,7 +336,7 @@ class _ProfileDetailsScreenState
   Widget _buildTextField(
     BuildContext context, {
     required String hint,
-    // required IconData icon,
+    TextEditingController? controller,
     String? suffixImage,
     VoidCallback? onSuffixTap,
   }) {
@@ -314,6 +363,7 @@ class _ProfileDetailsScreenState
       ],
     ),
     child: TextField(
+      controller: controller,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(
@@ -343,6 +393,7 @@ class _ProfileDetailsScreenState
         fillColor: colors.textField,
         contentPadding: EdgeInsets.symmetric(
           vertical: height * 0.022,
+          horizontal: width * 0.06,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(width * 0.09),

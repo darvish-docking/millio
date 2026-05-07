@@ -6,6 +6,7 @@ import 'package:millio/features/home/presentation/screens/special_offers.dart';
 import 'package:millio/features/home/presentation/screens/chat_box_screen.dart';
 import 'package:millio/features/cart/presentation/screens/cart.dart';
 import 'package:millio/features/home/presentation/screens/notification_screen.dart';
+import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/presentation/screens/filter_screen.dart';
 
 class SpecialOffer {
@@ -175,10 +176,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: _recentSearches.map((search) => ListTile(
+                        tileColor: const Color.fromARGB(255, 222, 221, 221),
                         leading: const Icon(Icons.history, color: Colors.grey, size: 20),
-                        title: Text(search, style: const TextStyle(fontFamily: 'Montserrat', fontSize: 14)),
+                        title: Text(search, style: const TextStyle(fontFamily: 'Montserrat', fontSize: 14, color: Colors.black)),
                         trailing: IconButton(
-                          icon: const Icon(Icons.close, size: 18),
+                          icon: const Icon(Icons.close, size: 18, color: Colors.grey,),
                           onPressed: () {
                             setState(() {
                               _recentSearches.remove(search);
@@ -627,35 +629,40 @@ AppColors.category5,
                                 // height: h * 0.05,
                                 color: colors.primaryLight.withAlpha(153)), // ~0.6 opacity
                               Center(
-                                child:Column(
+                                child: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                  Image.asset(
-                                  "assets/images/food-1.png",
-                                  width: w * 0.2,
-                                  height: h * 0.2,
-                                  
+                                    Image.asset(
+                                      "assets/images/food-1.png",
+                                      width: w * 0.25,
+                                      height: h * 0.16,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Seafood Som Tum',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: colors.textPrimary,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Montserrat',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '\$ 3.99 - \$ 2.59',
+                                      style: TextStyle(
+                                        color: colors.primary,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Montserrat',
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text('Seafood Som Tum',
-                                maxLines: 2,
-                                style: TextStyle(
-                                    color: colors.textPrimary,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                
-                                  Text('\$ 3.99 - \$ 2.59',
-                                maxLines: 2,
-                                style: TextStyle(
-                                    color: colors.primary,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                  ]
-                                )
                                  
                               ),
                             ],
@@ -694,8 +701,17 @@ AppColors.category5,
                 ),
                 itemBuilder: (_, index) {
                   final offer = filteredOffers[index];
-                  return Container(
-                    padding: const EdgeInsets.all(10),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsScreen(offer: offer),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: colors.background,
@@ -706,70 +722,61 @@ AppColors.category5,
                           )
                         ],
                       ),
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                      children: [
-
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(18),
-                            child: Image.asset(
-                              offer.image,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(color: colors.border, child: Icon(Icons.fastfood, color: colors.textSecondary)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Image.asset(
+                                offer.image,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                    color: colors.border,
+                                    child: Icon(Icons.fastfood,
+                                        color: colors.textSecondary)),
+                              ),
                             ),
                           ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-                          offer.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(height: 8),
+                          Text(
+                            offer.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-
-                        const SizedBox(height: 5),
-
-                        Row(
-                          children: [
-                            Text("${offer.distance} |",
-                             style: TextStyle(
-                               color: colors.textSecondary
-                             ),),
-
-                            const Icon(Icons.star,
-                                size: 14,
-                                color: Colors.amber),
-
-                            Text(offer.rating,
-                             style: TextStyle(
-                               color: colors.textSecondary
-                             ),),
-                            Text(offer.reviewCount,
-                            style:  TextStyle(
-                              color: colors.textSecondary
-                            ),)
-                          ],
-                        ),
-
-                        const SizedBox(height: 6),
-
-                         Text(
-                           "\$${offer.price.toStringAsFixed(2)}",
-                           style: TextStyle(
-                             color: colors.primary,
-                             fontWeight: FontWeight.bold,
-                           ),
-                         )
-                      ],
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Text(
+                                "${offer.distance} |",
+                                style: TextStyle(color: colors.textSecondary),
+                              ),
+                              const Icon(Icons.star,
+                                  size: 14, color: Colors.amber),
+                              Text(
+                                offer.rating,
+                                style: TextStyle(color: colors.textSecondary),
+                              ),
+                              Text(
+                                offer.reviewCount,
+                                style: TextStyle(color: colors.textSecondary),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            "\$${offer.price.toStringAsFixed(2)}",
+                            style: TextStyle(
+                              color: colors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 },

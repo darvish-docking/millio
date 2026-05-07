@@ -162,6 +162,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: w * 0.04,
                                     fontFamily: 'Montserrat',
+                                    color: colors.textTertiary
                                   ),
                                 ),
                                 SizedBox(height: h * 0.005),

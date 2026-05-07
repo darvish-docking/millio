@@ -19,6 +19,7 @@ class AppColors {
   final Color textSecondary;
   final Color textWhite;
   final Color textHint;
+  final Color textTertiary;
   
   // 🔹 Functional Colors
   final Color error;
@@ -59,7 +60,8 @@ class AppColors {
     required this.cardBackground,
     required this.homeBanner, 
     required this.hintText,
-    required this.textField
+    required this.textField,
+    required this.textTertiary,
   });
 
   static const AppColors light = AppColors(
@@ -74,6 +76,7 @@ class AppColors {
     hintText: Color(0xff999999),
     textPrimary: Colors.black,
     textSecondary: Color(0xFF7A7A7A),
+    textTertiary:Colors.white,
     textWhite: Colors.white,
     textHint: Colors.black26,
     error: Color(0xFFF44336),
@@ -100,6 +103,7 @@ class AppColors {
     hintText: Colors.white,
     textPrimary: Colors.white,
     textSecondary: Color(0xFFB0B0B0),
+    textTertiary:Colors.black,
     textWhite: Colors.white,
     textHint: Colors.white30,
     error: Color(0xFFEF5350),

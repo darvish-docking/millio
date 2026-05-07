@@ -21,7 +21,7 @@ class PaymentSuccessScreen extends StatefulWidget {
 }
 
 class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
-  String _userEmail = "Tim.jennings@example.com"; // Default fallback
+  String _userEmail = "your email"; // Default fallback
 
   @override
   void initState() {
@@ -31,9 +31,12 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
 
   Future<void> _loadUserEmail() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userEmail = prefs.getString("email") ?? _userEmail;
-    });
+    final savedEmail = prefs.getString("email");
+    if (savedEmail != null && savedEmail.isNotEmpty) {
+      setState(() {
+        _userEmail = savedEmail;
+      });
+    }
   }
 
   @override
@@ -159,7 +162,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                       text: _userEmail,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const TextSpan(text: ' once your order is confirm'),
+                    const TextSpan(text: ' once your order is confirmed'),
                   ],
                 ),
               ),

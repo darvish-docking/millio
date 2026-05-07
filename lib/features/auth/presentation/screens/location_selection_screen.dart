@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:millio/core/common/main_layout.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
@@ -12,6 +13,44 @@ class LocationSelectionScreen extends StatefulWidget {
 
 class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   final TextEditingController locationController = TextEditingController();
+  
+  LatLng _lastMapPosition = const LatLng(37.42796133580664, -122.085749655962);
+  bool _isGettingAddress = false;
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
+  }
+
+  Future<void> _getAddressFromLatLng() async {
+    try {
+      setState(() {
+        _isGettingAddress = true;
+        locationController.text = "Getting address...";
+      });
+      
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        _lastMapPosition.latitude,
+        _lastMapPosition.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        setState(() {
+          locationController.text = 
+            "${place.name}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      setState(() {
+        locationController.text = "Unknown Location";
+      });
+    } finally {
+      setState(() {
+        _isGettingAddress = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,18 +116,38 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                   borderRadius: BorderRadius.circular(width * 0.06),
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(37.42796133580664, -122.085749655962),
-                    zoom: 14.4746,
-                  ),
-                  onMapCreated: (GoogleMapController controller) {
-                    // map interaction controller
-                  },
-                  myLocationEnabled: false, // Turn on if permissions are handled
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
+                child: Stack(
+                  children: [
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: CameraPosition(
+                        target: _lastMapPosition,
+                        zoom: 14.4746,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {
+                        _getAddressFromLatLng();
+                      },
+                      onCameraMove: _onCameraMove,
+                      onCameraIdle: () {
+                        _getAddressFromLatLng();
+                      },
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                    ),
+                    
+                    /// Fixed Center Marker
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 35),
+                        child: Icon(
+                          Icons.location_on,
+                          color: colors.primary,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

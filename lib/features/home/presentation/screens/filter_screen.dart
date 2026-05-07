@@ -268,11 +268,13 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   Widget _buildFilterCard({required String title, required Widget content}) {
+        final colors = context.colors;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColorsLegacy.background,
+        color: colors.textHint,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -287,10 +289,11 @@ class _FilterScreenState extends State<FilterScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style:  TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
               fontFamily: 'Montserrat',
+              color: colors.background
             ),
           ),
           const SizedBox(height: 8),

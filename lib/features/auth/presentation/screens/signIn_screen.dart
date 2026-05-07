@@ -154,7 +154,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                       child: TextField(
                          style: TextStyle(
-    color: Theme.of(context).colorScheme.outline, // 👈 typing text color
+    color: colors.hintText, // 👈 typing text color
   
   ),
                         decoration: InputDecoration(

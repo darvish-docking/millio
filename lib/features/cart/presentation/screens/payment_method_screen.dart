@@ -286,7 +286,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     height: h * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
-                        _openCheckout();
+                        if (_selectedMethodId == 'payondelivery') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PaymentSuccessScreen(
+                                transactionId: "POD-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}",
+                                amount: "₹50.00", 
+                                dateTime: DateTime.now(),
+                              ),
+                            ),
+                          );
+                        } else {
+                          _openCheckout();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColorsLegacy.primary,

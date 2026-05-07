@@ -19,11 +19,143 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int quantity = 1;
   bool isDescriptionExpanded = false;
 
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+  
+  String _searchQuery = "";
+  final List<String> _recentSearches = ["Buffalo Chicken", "Pasta", "Burgers"];
+  bool _isSearchActive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchFocusNode.addListener(() {
+      if (_searchFocusNode.hasFocus) {
+        _showOverlay();
+      } else {
+        _hideOverlay();
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _hideOverlay();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _showOverlay() {
+    if (_overlayEntry != null) return;
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
+    return OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Semi-transparent background to help visibility and handle clicks outside
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                _searchFocusNode.unfocus();
+                setState(() {
+                  _isSearchActive = false;
+                });
+              },
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+          UnconstrainedBox(
+            child: CompositedTransformFollower(
+              link: _layerLink,
+              showWhenUnlinked: false,
+              offset: const Offset(0, 45), // Fixed offset below the search bar
+              child: Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+                child: Container(
+                  width: w * 0.85,
+                  constraints: BoxConstraints(maxHeight: h * 0.4),
+                  child: StatefulBuilder(
+                    builder: (context, setOverlayState) {
+                      if (_recentSearches.isEmpty) return const SizedBox.shrink();
+                      return SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Recent Searches", 
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12)
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _recentSearches.clear();
+                                      });
+                                      setOverlayState(() {});
+                                      _hideOverlay();
+                                    },
+                                    child: const Text("Clear All", style: TextStyle(fontSize: 12)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ..._recentSearches.map((search) => ListTile(
+                              leading: const Icon(Icons.history, color: Colors.grey, size: 20),
+                              title: Text(search, style: const TextStyle(fontFamily: 'Montserrat', fontSize: 14, color: Colors.black)),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.close, size: 18),
+                                onPressed: () {
+                                  setState(() {
+                                    _recentSearches.remove(search);
+                                  });
+                                  setOverlayState(() {});
+                                  if (_recentSearches.isEmpty) _hideOverlay();
+                                },
+                              ),
+                              onTap: () {
+                                _searchController.text = search;
+                                setState(() {
+                                  _searchQuery = search;
+                                });
+                                _searchFocusNode.unfocus();
+                              },
+                            )),
+                          ],
+                        ),
+                      );
+                    }
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
-                    final colors = context.colors;
-
+    final colors = context.colors;
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
@@ -39,7 +171,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             top: 0,
             left: 0,
             right: 0,
-            height: h * 0.55, // Covers slightly more than half for consistent background
+            height: h * 0.55,
             child: Image.asset(
               offer.image,
               fit: BoxFit.cover,
@@ -55,16 +187,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
-                /// Transparent spacer to allow the image layer to be seen
                 SizedBox(height: h * 0.48),
-
-                /// White Details Container
                 Container(
                   width: w,
                   padding: EdgeInsets.fromLTRB(padding, h * 0.02, padding, padding),
-                  decoration:  BoxDecoration(
+                  decoration: BoxDecoration(
                     color: colors.background,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(40),
                       topRight: Radius.circular(40),
                     ),
@@ -72,14 +201,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       BoxShadow(
                         color: AppColorsLegacy.textPrimarylight12,
                         blurRadius: 10,
-                        offset: Offset(0, -5),
+                        offset: const Offset(0, -5),
                       ),
                     ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// Handle bar for visual cue
                       Align(
                         alignment: Alignment.center,
                         child: Container(
@@ -92,8 +220,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         ),
                       ),
-
-                      /// Category placeholder/Badge
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: w * 0.03, vertical: h * 0.006),
                         decoration: BoxDecoration(
@@ -110,10 +236,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         ),
                       ),
-
                       SizedBox(height: h * 0.01),
-
-                      /// Name
                       Text(
                         offer.title,
                         style: TextStyle(
@@ -125,10 +248,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-
                       SizedBox(height: h * 0.005),
-
-                      /// Price directly below Name
                       Text(
                         "\$${offer.price.toStringAsFixed(2)}",
                         style: TextStyle(
@@ -138,10 +258,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           fontFamily: 'Montserrat',
                         ),
                       ),
-
                       SizedBox(height: h * 0.01),
-
-                      /// Metrics (Clickable for Reviews)
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -169,10 +286,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ],
                         ),
                       ),
-
                       SizedBox(height: h * 0.02),
-
-                      /// Description
                       Text(
                         "Description",
                         style: TextStyle(
@@ -217,23 +331,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                       ),
                       SizedBox(height: h * 0.03),
-
-                      /// Quantity Controls & Add to Cart
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          /// Add/Reduce Controls (Squared & Light Green background)
                           Container(
-                            padding: const EdgeInsets.all(8), // Added padding as requested
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: AppColorsLegacy.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                /// Minus Button (Dark Green Square)
                                 Material(
-                                  color: AppColorsLegacy.primaryDark, // Darker green
+                                  color: AppColorsLegacy.primaryDark,
                                   borderRadius: BorderRadius.circular(8),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
@@ -249,8 +359,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ),
                                   ),
                                 ),
-
-                                /// Quantity Text
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: w * 0.04),
                                   child: Text(
@@ -263,10 +371,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ),
                                   ),
                                 ),
-
-                                /// Plus Button (Dark Green Square)
                                 Material(
-                                  color: AppColorsLegacy.primaryDark, // Darker green
+                                  color: AppColorsLegacy.primaryDark,
                                   borderRadius: BorderRadius.circular(8),
                                   clipBehavior: Clip.hardEdge,
                                   child: InkWell(
@@ -327,7 +433,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
           ),
 
-          /// 🏗️ LAYER 3: Fixed Action Buttons
+          /// 🏗️ LAYER 3: Fixed Action Buttons (with Search functionality)
           SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: padding, vertical: h * 0.01),
@@ -335,61 +441,136 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   /// Back Button
-                  Material(
-                    color: AppColorsLegacy.backgroundSecondary3,
-                    shape: const CircleBorder(),
-                    clipBehavior: Clip.hardEdge,
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: SizedBox(
-                        height: iconSize,
-                        width: iconSize,
-                        child: Center(
-                          child: Image.asset(
-                            'assets/images/left-arrow.png',
-                            width: iconSize * 0.45,
-                            height: iconSize * 0.45,
+                  if (!_isSearchActive)
+                    Material(
+                      color: AppColorsLegacy.backgroundSecondary3,
+                      shape: const CircleBorder(),
+                      clipBehavior: Clip.hardEdge,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: SizedBox(
+                          height: iconSize,
+                          width: iconSize,
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/left-arrow.png',
+                              width: iconSize * 0.45,
+                              height: iconSize * 0.45,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  /// Search & Save Buttons
-                  Row(
-                    children: [
-                      Material(
-                        color: Colors.white.withOpacity(0.9),
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.hardEdge,
-                        child: InkWell(
-                          onTap: () {},
-                          child: SizedBox(
-                            height: iconSize,
-                            width: iconSize,
-                            child: Center(
-                              child: Icon(Icons.search, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
+                  /// Search Field / Buttons
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (_isSearchActive)
+                          Expanded(
+                            child: CompositedTransformTarget(
+                              link: _layerLink,
+                              child: Container(
+                                height: iconSize,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  controller: _searchController,
+                                  focusNode: _searchFocusNode,
+                                  autofocus: true,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Montserrat',
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _searchQuery = value;
+                                    });
+                                  },
+                                  onSubmitted: (value) {
+                                    if (value.isNotEmpty && !_recentSearches.contains(value)) {
+                                      setState(() {
+                                        _recentSearches.insert(0, value);
+                                      });
+                                    }
+                                    setState(() {
+                                      _isSearchActive = false;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: "Search...",
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontFamily: 'Montserrat',
+                                    ),
+                                    border: InputBorder.none,
+                                    prefixIcon: const Icon(Icons.search, size: 20),
+                                    suffixIcon: IconButton(
+                                      icon: const Icon(Icons.close, size: 20),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isSearchActive = false;
+                                          _searchQuery = "";
+                                          _searchController.clear();
+                                        });
+                                      },
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(width: padding * 0.6),
-                      Material(
-                        color: AppColorsLegacy.background.withOpacity(0.9),
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.hardEdge,
-                        child: InkWell(
-                          onTap: () {},
-                          child: SizedBox(
-                            height: iconSize,
-                            width: iconSize,
-                            child: Center(
-                              child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
+                        if (!_isSearchActive)
+                          Material(
+                            color: Colors.white.withOpacity(0.9),
+                            shape: const CircleBorder(),
+                            clipBehavior: Clip.hardEdge,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _isSearchActive = true;
+                                });
+                              },
+                              child: SizedBox(
+                                height: iconSize,
+                                width: iconSize,
+                                child: Center(
+                                  child: Icon(Icons.search, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
+                        if (!_isSearchActive) ...[
+                          SizedBox(width: padding * 0.6),
+                          Material(
+                            color: AppColorsLegacy.background.withOpacity(0.9),
+                            shape: const CircleBorder(),
+                            clipBehavior: Clip.hardEdge,
+                            child: InkWell(
+                              onTap: () {},
+                              child: SizedBox(
+                                height: iconSize,
+                                width: iconSize,
+                                child: Center(
+                                  child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ],
               ),
