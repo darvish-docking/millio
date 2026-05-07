@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "146928850049",
+    "project_id": "millio-22528",
+    "storage_bucket": "millio-22528.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146928850049:android:082aa103621b7635f46980",
+        "android_client_info": {
+          "package_name": "com.example.millio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwesUD1LfrKqoEMj0Pmsl0rKvAasx8cgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

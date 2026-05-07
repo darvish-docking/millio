@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/forgot_password.dart';
 import 'package:millio/features/auth/presentation/screens/signup_screen.dart';
+import 'package:millio/features/auth/presentation/screens/otp_screen.dart';
 import 'package:millio/core/common/main_layout.dart';
 import 'package:millio/features/auth/presentation/providers/onboarding.dart';
+import 'package:millio/core/services/auth_service.dart';
+import 'package:millio/core/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,52 +19,72 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final DatabaseService _dbService = DatabaseService();
+  final TextEditingController _emailController = TextEditingController(); 
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _signInUser() async {
-    String enteredUsername = _usernameController.text.trim();
-    String enteredPassword = _passwordController.text.trim();
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
-    if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill all fields")),
       );
       return;
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    String? savedUsername = prefs.getString("username");
-    String? savedPassword = prefs.getString("password");
+    try {
+      final userCredential = await _authService.signIn(email, password);
 
-    if (enteredUsername == savedUsername && enteredPassword == savedPassword) {
-      await prefs.setBool("isLoggedIn", true);
-      
-      // Refresh the provider data so ProfileScreen sees it
-      if (!mounted) return;
-      await context.read<OnboardingProvider>().loadUserData();
+      if (userCredential != null && userCredential.user != null) {
+        // Fetch user profile to check if it's the first sign-in
+        final userDoc = await _dbService.getUserProfile(userCredential.user!.uid);
+        bool isFirstSignIn = true;
+        
+        if (userDoc.exists) {
+          final data = userDoc.data() as Map<String, dynamic>;
+          isFirstSignIn = data['isFirstSignIn'] ?? true;
+        }
 
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool("isLoggedIn", true);
+        
+        if (!mounted) return;
+        await context.read<OnboardingProvider>().loadUserData();
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login Successful!")),
+        );
+
+        if (isFirstSignIn) {
+          // Update isFirstSignIn to false (or do it after profile setup is fully complete)
+          // For now, navigating to OTP screen as requested
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const OtpScreen()),
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainLayout()),
+            (route) => false,
+          );
+        }
+      }
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login Successful!")),
-      );
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const MainLayout()),
-        (route) => false,
-      );
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid username or password")),
+        SnackBar(content: Text(e.toString())),
       );
     }
   }
@@ -208,13 +231,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                       child: TextField(
-                        controller: _usernameController,
+                        controller: _emailController,
                          style: TextStyle(
     color: colors.hintText, // 👈 typing text color
   
   ),
                         decoration: InputDecoration(
-                          hintText: "Username",
+                          hintText: "Email",
                           hintStyle:  TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat", // 👈 your custom font

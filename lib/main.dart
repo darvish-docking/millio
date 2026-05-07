@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,6 +9,7 @@ import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/loading_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/core/providers/tab_provider.dart';
+import 'package:millio/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +26,10 @@ Future<void> main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final isDarkMode = prefs.getBool('isDarkMode') ?? false;
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   
   runApp(
     MultiProvider(

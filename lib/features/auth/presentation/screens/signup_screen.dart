@@ -2,7 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/core/services/auth_service.dart';
+import 'package:millio/core/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -13,53 +14,64 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
+  final AuthService _authService = AuthService();
+  final DatabaseService _dbService = DatabaseService();
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-    final _formKey = GlobalKey<FormState>();
-
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
   Future<void> signUpUser(BuildContext context) async {
-  String username = usernameController.text.trim();
-  String email = emailController.text.trim();
-  String password = passwordController.text.trim();
-  String confirmPassword =
-      confirmPasswordController.text.trim();
+    String username = usernameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
 
+    try {
+      // 1. Create user in Firebase Auth
+      final userCredential = await _authService.signUp(email, password);
 
-  /// Save to SharedPreferences
-  final prefs = await SharedPreferences.getInstance();
+      if (userCredential != null && userCredential.user != null) {
+        // 2. Save additional profile info to Firestore
+        await _dbService.saveUserProfile(
+          uid: userCredential.user!.uid,
+          username: username,
+          email: email,
+        );
 
-  await prefs.setString("username", username);
-  await prefs.setString("email", email);
-  await prefs.setString("password", password);
+        // 3. Save to SharedPreferences for offline/quick access
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("username", username);
+        await prefs.setString("email", email);
 
-  if (!mounted) return;
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text("Signup Successful! Please Sign In."),
-    ),
-  );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Signup Successful! Please Sign In.")),
+        );
 
-  /// Navigate to SignIn
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const SignInScreen(),
-    ),
-  );
-}
+        // 4. Navigate to SignIn
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const SignInScreen()),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
 
 
 

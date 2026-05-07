@@ -4,39 +4,50 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/location_selection_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProfileDetailsScreen extends StatefulWidget {
   const ProfileDetailsScreen({super.key});
 
   @override
-  State<ProfileDetailsScreen> createState() =>
-      _ProfileDetailsScreenState();
+  State<ProfileDetailsScreen> createState() => _ProfileDetailsScreenState();
 }
 
-class _ProfileDetailsScreenState
-    extends State<ProfileDetailsScreen> {
-
-  final TextEditingController nameController =
-      TextEditingController();
-
-  final TextEditingController nickNameController =
-      TextEditingController();
-
-  final TextEditingController emailController =
-      TextEditingController();
-
-  final TextEditingController dobController =
-      TextEditingController();
-
-  final TextEditingController genderController =
-      TextEditingController();
-
-  final TextEditingController regionController =
-      TextEditingController();
+class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
+  late TextEditingController nameController;
+  late TextEditingController nickNameController;
+  late TextEditingController emailController;
+  late TextEditingController dobController;
+  late TextEditingController genderController;
+  late TextEditingController regionController;
 
   File? _image;
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    final onboarding = context.read<OnboardingProvider>();
+    nameController = TextEditingController(text: onboarding.username);
+    emailController = TextEditingController(text: onboarding.email);
+    nickNameController = TextEditingController(text: onboarding.nickname);
+    dobController = TextEditingController(text: onboarding.dob);
+    genderController = TextEditingController(text: onboarding.gender);
+    regionController = TextEditingController(text: onboarding.region);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    nickNameController.dispose();
+    emailController.dispose();
+    dobController.dispose();
+    genderController.dispose();
+    regionController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickImage() async {
     final XFile? pickedFile = await _picker.pickImage(
@@ -53,9 +64,7 @@ class _ProfileDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
-
     final colors = context.colors;
-
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -75,28 +84,24 @@ class _ProfileDetailsScreenState
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: Container(
-                      width: MediaQuery.of(context).size.width * 0.10,
-                      height: MediaQuery.of(context).size.width * 0.10,
+                      width: width * 0.10,
+                      height: width * 0.10,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: colors.hintText.withOpacity(0.05), // faded background
+                        color: colors.hintText.withOpacity(0.05),
                       ),
                       child: Center(
                         child: Image.asset(
                           "assets/images/left-arrow.png",
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          height: MediaQuery.of(context).size.width * 0.05,
+                          width: width * 0.05,
+                          height: width * 0.05,
                         ),
                       ),
                     ),
                   ),
-
                   SizedBox(width: width * 0.04),
-
                   Text(
                     "Setup Profile",
                     style: TextStyle(
@@ -120,10 +125,6 @@ class _ProfileDetailsScreenState
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColorsLegacy.backgroundSecondary1,
-                        // border: Border.all(
-                        //   color: Colors.grey.shade300,
-                        //   width: 2,
-                        // ),
                       ),
                       child: _image != null
                           ? ClipOval(
@@ -140,7 +141,6 @@ class _ProfileDetailsScreenState
                               color: AppColorsLegacy.backgroundSecondary5,
                             ),
                     ),
-
                     Positioned(
                       bottom: 0,
                       right: 0,
@@ -174,30 +174,12 @@ class _ProfileDetailsScreenState
               SizedBox(height: height * 0.05),
 
               /// Fields
-              _buildTextField(
-                context,
-                hint: "Full Name",
-                controller: nameController,
-              ),
-
+              _buildTextField(context, hint: "Full Name", controller: nameController),
               SizedBox(height: height * 0.02),
-
-              _buildTextField(
-                context,
-                hint: "Nick Name",
-                controller: nickNameController,
-              ),
-
+              _buildTextField(context, hint: "Nick Name", controller: nickNameController),
               SizedBox(height: height * 0.02),
-
-              _buildTextField(
-                context,
-                hint: "Email",
-                controller: emailController,
-              ),
-
+              _buildTextField(context, hint: "Email", controller: emailController),
               SizedBox(height: height * 0.02),
-
               _buildTextField(
                 context,
                 hint: "Date of Birth",
@@ -217,9 +199,7 @@ class _ProfileDetailsScreenState
                   }
                 },
               ),
-
               SizedBox(height: height * 0.02),
-
               _buildTextField(
                 context,
                 hint: "Gender",
@@ -229,51 +209,25 @@ class _ProfileDetailsScreenState
                   showModalBottomSheet(
                     context: context,
                     shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (context) => SafeArea(
+                      child: Wrap(
+                        children: ["Male", "Female", "Other"]
+                            .map((g) => ListTile(
+                                  title: Text(g),
+                                  onTap: () {
+                                    setState(() => genderController.text = g);
+                                    Navigator.pop(context);
+                                  },
+                                ))
+                            .toList(),
                       ),
                     ),
-                    builder: (context) {
-                      return SafeArea(
-                        child: Wrap(
-                          children: [
-                            ListTile(
-                              title: const Text("Male"),
-                              onTap: () {
-                                setState(() {
-                                  genderController.text = "Male";
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Text("Female"),
-                              onTap: () {
-                                setState(() {
-                                  genderController.text = "Female";
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Text("Other"),
-                              onTap: () {
-                                setState(() {
-                                  genderController.text = "Other";
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
                   );
                 },
               ),
-
               SizedBox(height: height * 0.02),
-
               _buildTextField(
                 context,
                 hint: "Region",
@@ -284,9 +238,7 @@ class _ProfileDetailsScreenState
                     context: context,
                     showPhoneCode: false,
                     onSelect: (Country country) {
-                      setState(() {
-                        regionController.text = country.name;
-                      });
+                      setState(() => regionController.text = country.name);
                     },
                   );
                 },
@@ -300,10 +252,23 @@ class _ProfileDetailsScreenState
                 height: height * 0.07,
                 child: ElevatedButton(
                   onPressed: () {
+                    // Navigate to Location screen and pass data via constructor or Provider
+                    // User wants to save everything at the end, so we can pass these details 
+                    // to the next screen or store them in the provider's temp variables.
+                    
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LocationSelectionScreen(),
+                        builder: (context) => LocationSelectionScreen(
+                          tempProfile: {
+                            'username': nameController.text,
+                            'nickname': nickNameController.text,
+                            'email': emailController.text,
+                            'dob': dobController.text,
+                            'gender': genderController.text,
+                            'region': regionController.text,
+                          },
+                        ),
                       ),
                     );
                   },
@@ -324,7 +289,6 @@ class _ProfileDetailsScreenState
                   ),
                 ),
               ),
-
               SizedBox(height: height * 0.03),
             ],
           ),
@@ -333,86 +297,45 @@ class _ProfileDetailsScreenState
     );
   }
 
-  Widget _buildTextField(
-    BuildContext context, {
-    required String hint,
-    TextEditingController? controller,
-    String? suffixImage,
-    VoidCallback? onSuffixTap,
-  }) {
-
-            final colors = context.colors;
-
+  Widget _buildTextField(BuildContext context, {required String hint, TextEditingController? controller, String? suffixImage, VoidCallback? onSuffixTap}) {
+    final colors = context.colors;
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
 
     return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(width * 0.09),
-
-      color: colors.textField,
-
-      boxShadow: [
-        BoxShadow(
-          color: AppColorsLegacy.textPrimary.withOpacity(0.06),
-          blurRadius: 12,
-          spreadRadius: 1,
-          offset: Offset(0, 4), // x,y
-        ),
-      ],
-    ),
-    child: TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(
-          fontSize: width * 0.04,
-          color: colors.textHint,
-          fontFamily: 'Montserrat'
-        ),
-        // prefixIcon: Icon(
-        //   icon,
-        //   color: Colors.grey.shade600,
-        //   size: width * 0.055,
-        // ),
-        suffixIcon: suffixImage != null
-            ? IconButton(
-              onPressed: onSuffixTap,
-              splashRadius: width * 0.06,
-              icon: Padding(
-              padding: EdgeInsets.all(width * 0.035),
-              child: Image.asset(
-                suffixImage,
-                width: width * 0.05,
-                height: width * 0.05,
-              ),
-            ))
-            : null,
-        filled: true,
-        fillColor: colors.textField,
-        contentPadding: EdgeInsets.symmetric(
-          vertical: height * 0.022,
-          horizontal: width * 0.06,
-        ),
-        border: OutlineInputBorder(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(width * 0.09),
-          borderSide: BorderSide.none,
+          color: colors.textField,
+          boxShadow: [
+            BoxShadow(
+              color: AppColorsLegacy.textPrimary.withOpacity(0.06),
+              blurRadius: 12,
+              spreadRadius: 1,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(width * 0.09),
-          borderSide: BorderSide.none,
-        ),
-
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(width * 0.09),
-          borderSide: BorderSide(
-        color: AppColorsLegacy.primary,
-        width: 2,
-      ),
-        ),
-      ),
-    ));
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(fontSize: width * 0.04, color: colors.textHint, fontFamily: 'Montserrat'),
+            suffixIcon: suffixImage != null
+                ? IconButton(
+                    onPressed: onSuffixTap,
+                    icon: Padding(
+                      padding: EdgeInsets.all(width * 0.035),
+                      child: Image.asset(suffixImage, width: width * 0.05, height: width * 0.05),
+                    ))
+                : null,
+            filled: true,
+            fillColor: colors.textField,
+            contentPadding: EdgeInsets.symmetric(vertical: height * 0.022, horizontal: width * 0.06),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(width * 0.09), borderSide: BorderSide.none),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(width * 0.09), borderSide: BorderSide.none),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(width * 0.09), borderSide: BorderSide(color: AppColorsLegacy.primary, width: 2)),
+          ),
+        ));
   }
 }

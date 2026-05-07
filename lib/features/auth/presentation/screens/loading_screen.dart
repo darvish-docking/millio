@@ -34,8 +34,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
     bool onboardingDone =
         prefs.getBool("onboardingDone") ?? false;
 
-    bool isLoggedIn =
-        prefs.getBool("isLoggedIn") ?? false;
+    final onboardingProvider = context.read<OnboardingProvider>();
+    bool isLoggedIn = onboardingProvider.isLoggedIn;
 
     await Future.delayed(
       const Duration(seconds: 2),

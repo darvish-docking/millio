@@ -261,17 +261,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fallbackIcon: Icons.logout_outlined,
                     gradientColors: [AppColors.category8, colors.background],
                     onTap: () async {
-                      final prefs = await SharedPreferences.getInstance();
-
                       // Reset tab index to 0 before logging out
                       if (context.mounted) {
                         Provider.of<TabProvider>(context, listen: false).goHome();
                       }
 
-                      await prefs.setBool("isLoggedIn", false);
-                      // await prefs.remove("password");
-                      // await prefs.remove("username"); 
-                      // await prefs.remove("email"); 
+                      // Call Firebase Sign Out via OnboardingProvider
+                      if (context.mounted) {
+                        await context.read<OnboardingProvider>().logout();
+                      }
 
                       if (!mounted) return;
                       Navigator.pushAndRemoveUntil(

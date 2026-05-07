@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:millio/core/common/main_layout.dart';
+import 'package:millio/features/auth/presentation/providers/onboarding.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
-  const LocationSelectionScreen({super.key});
+  final Map<String, String>? tempProfile;
+  const LocationSelectionScreen({super.key, this.tempProfile});
 
   @override
   State<LocationSelectionScreen> createState() => _LocationSelectionScreenState();
@@ -55,9 +59,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-        final colors = context.colors;
-
+    final colors = context.colors;
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -76,9 +78,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: Container(
                       width: width * 0.10,
                       height: width * 0.10,
@@ -108,7 +108,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
               ),
             ),
 
-            /// Map area (takes ~1/2 screen)
+            /// Map area
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -136,8 +136,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       myLocationButtonEnabled: false,
                       zoomControlsEnabled: false,
                     ),
-                    
-                    /// Fixed Center Marker
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 35),
@@ -168,38 +166,47 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       color: colors.textPrimary,
                     ),
                   ),
-                  
                   SizedBox(height: height * 0.02),
-
-                  _buildTextField(
-                    context,
-                    hint: "Selected Location",
-                    controller: locationController,
-                  ),
-
+                  _buildTextField(context, hint: "Selected Location", controller: locationController),
                   SizedBox(height: height * 0.04),
 
-                  /// Submit Button
+                  /// Final Submit Button
                   SizedBox(
                     width: double.infinity,
                     height: height * 0.07,
                     child: ElevatedButton(
                       onPressed: () async {
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setBool("isLoggedIn", true);
-                        await prefs.setBool("onboardingDone", true);
+                        final onboarding = context.read<OnboardingProvider>();
+                        
+                        try {
+                          // Collect data from the previous screen and this one
+                          final profile = widget.tempProfile ?? {};
+                          
+                          await onboarding.completeOnboarding(
+                            full: profile['username'] ?? onboarding.username,
+                            nick: profile['nickname'] ?? onboarding.nickname,
+                            mail: profile['email'] ?? onboarding.email,
+                            birth: profile['dob'] ?? onboarding.dob,
+                            gen: profile['gender'] ?? onboarding.gender,
+                            reg: profile['region'] ?? onboarding.region,
+                            loc: locationController.text,
+                          );
 
-                        if (!mounted) return;
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MainLayout(),
-                          ),
-                          (route) => false,
-                        );
+                          if (!mounted) return;
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MainLayout()),
+                            (route) => false,
+                          );
+                        } catch (e) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(e.toString())),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColorsLegacy.primary, // As requested
+                        backgroundColor: AppColorsLegacy.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(width * 0.09),
                         ),
@@ -215,7 +222,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       ),
                     ),
                   ),
-                  
                   SizedBox(height: height * 0.03),
                 ],
               ),
@@ -226,17 +232,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     );
   }
 
-  Widget _buildTextField(
-    BuildContext context, {
-    required String hint,
-    required TextEditingController controller,
-  }) {
-
-            final colors = context.colors;
-
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
+  Widget _buildTextField(BuildContext context, {required String hint, required TextEditingController controller}) {
+    final colors = context.colors;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     return Container(
       decoration: BoxDecoration(
@@ -247,41 +246,22 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
             color: AppColorsLegacy.textPrimary.withOpacity(0.06),
             blurRadius: 12,
             spreadRadius: 1,
-            offset: const Offset(0, 4), // x,y
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: TextField(
         controller: controller,
-        readOnly: true, // For mocked map interaction
+        readOnly: true,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: width * 0.04,
-            color: AppColorsLegacy.backgroundSecondary5,
-            fontFamily: 'Montserrat',
-          ),
+          hintStyle: TextStyle(fontSize: width * 0.04, color: AppColorsLegacy.backgroundSecondary5, fontFamily: 'Montserrat'),
           filled: true,
           fillColor: colors.textField,
-          contentPadding: EdgeInsets.symmetric(
-            vertical: height * 0.022,
-            horizontal: width * 0.05,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(width * 0.09),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(width * 0.09),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(width * 0.09),
-            borderSide:  BorderSide(
-              color: AppColorsLegacy.primary,
-              width: 2,
-            ),
-          ),
+          contentPadding: EdgeInsets.symmetric(vertical: height * 0.022, horizontal: width * 0.05),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(width * 0.09), borderSide: BorderSide.none),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(width * 0.09), borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(width * 0.09), borderSide: BorderSide(color: AppColorsLegacy.primary, width: 2)),
         ),
       ),
     );
