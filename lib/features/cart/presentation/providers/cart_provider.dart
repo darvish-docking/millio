@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:millio/features/cart/data/models/voucher_model.dart';
 
 class CartItem {
   final SpecialOffer product;
@@ -29,6 +30,7 @@ class CartItem {
 
 class CartProvider extends ChangeNotifier {
   List<CartItem> _items = [];
+  Voucher? _appliedVoucher;
   static const String _cartKey = 'user_cart_items';
 
   CartProvider() {
@@ -36,6 +38,12 @@ class CartProvider extends ChangeNotifier {
   }
 
   List<CartItem> get items => _items;
+  Voucher? get appliedVoucher => _appliedVoucher;
+
+  void applyVoucher(Voucher? voucher) {
+    _appliedVoucher = voucher;
+    notifyListeners();
+  }
 
   // --- PERSISTENCE LOGIC ---
   Future<void> _saveCartToPrefs() async {
@@ -101,14 +109,34 @@ class CartProvider extends ChangeNotifier {
   }
 
   double get deliveryFee => 5.00;
-  double get discount => subtotal > 20 ? 4.99 : 0.00; 
-  double get total => subtotal + deliveryFee - discount;
+  
+  double get discount {
+    if (_appliedVoucher != null) {
+      switch (_appliedVoucher!.id) {
+        case '1': // Free Delivery
+          return deliveryFee;
+        case '2': // 15% Off Total
+          return subtotal * 0.15;
+        case '4': // $5.00 Welcome Gift
+          return 5.00;
+        default:
+          return 0.00;
+      }
+    }
+    return subtotal > 20 ? 4.99 : 0.00;
+  }
+
+  double get total {
+    double result = subtotal + deliveryFee - discount;
+    return result > 0 ? result : 0.0;
+  }
 
   int get itemCount => _items.length;
   bool get isEmpty => _items.isEmpty;
 
   void clearCart() {
     _items.clear();
+    _appliedVoucher = null;
     _saveCartToPrefs();
     notifyListeners();
   }

@@ -8,6 +8,7 @@ import 'package:millio/features/cart/presentation/screens/cart.dart';
 import 'package:millio/features/home/presentation/screens/notification_screen.dart';
 import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/presentation/screens/filter_screen.dart';
+import 'package:millio/features/home/presentation/screens/search_screen.dart';
 
 class SpecialOffer {
   final String image;
@@ -255,6 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Image.asset(
                     "assets/images/Logo2.png",
                     width: w * .12,
+                    color: colors.textPrimary
                   ),
 
                   const Spacer(),
@@ -332,12 +334,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 child: TextField(
-                  controller: _searchController,
-                  focusNode: _searchFocusNode,
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
+                  readOnly: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SearchScreen()),
+                    );
                   },
                   decoration: InputDecoration(
                     hintText: "What are you craving?",
@@ -345,41 +347,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icons.search, 
                       color: Colors.grey,
                     ),
-                    suffixIcon: _searchQuery.isEmpty 
-                        ? IconButton(
-                            icon: Image.asset(
-                              'assets/images/Filter.png',
-                              height: 24,
-                              width: 24,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const FilterScreen()),
-                              );
-                            },
-                          )
-                        : IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _searchQuery = "";
-                              });
-                            },
-                          ),
+                    suffixIcon: IconButton(
+                      icon: Image.asset(
+                        'assets/images/Filter.png',
+                        height: 24,
+                        width: 24,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const FilterScreen()),
+                        );
+                      },
+                    ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       vertical: h * .02,
                     ),
                   ),
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty && !_recentSearches.contains(value)) {
-                      setState(() {
-                        _recentSearches.insert(0, value);
-                      });
-                    }
-                  },
                 ),
               ),
             ),

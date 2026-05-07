@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/providers/tab_provider.dart';
+import 'package:provider/provider.dart';
 
 class CategoriesScreen extends StatelessWidget {
   final List<String> categories;
@@ -74,7 +76,7 @@ AppColors.category5,
                   final index = i * 2;
                   if (index >= categories.length) return const SizedBox();
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.only(bottom: 24),
                     child: _buildCategoryItem(index, bgColors, w, context),
                   );
                 }),
@@ -83,42 +85,35 @@ AppColors.category5,
             const SizedBox(width: 16),
             Expanded(
               child: Column(
-                children: List.generate((categories.length / 2).floor(), (i) {
-                  final index = i * 2 + 1;
-                  if (index >= categories.length) return const SizedBox();
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: _buildCategoryItem(index, bgColors, w, context),
-                  );
-                }),
+                children: [
+                  SizedBox(height: w * 0.18), // Added top offset for second column
+                  ...List.generate((categories.length / 2).floor(), (i) {
+                    final index = i * 2 + 1;
+                    if (index >= categories.length) return const SizedBox();
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: _buildCategoryItem(index, bgColors, w, context),
+                    );
+                  }),
+                ],
               ),
             ),
           ],
         ),
       ),
       bottomNavigationBar: CustomBottomNav(
-        index: 0,
+        index: context.watch<TabProvider>().currentIndex,
         onTap: (value) {
-          if (value == 0) {
-            Navigator.popUntil(context, (route) => route.isFirst);
-          }
+          context.read<TabProvider>().setIndex(value);
+          Navigator.popUntil(context, (route) => route.isFirst);
         },
       ),
     );
   }
 
   Widget _buildCategoryItem(int index, List<Color> bgColors, double w, BuildContext context) {
-    
-    bool isLarge = false;
-    // Creates a staggered height pattern
-    if (index % 2 == 0) {
-      isLarge = (index % 4 == 0);
-    } else {
-      isLarge = (index % 4 == 3);
-    }
-    
-    // Assign varying heights based on the layout pattern
-    final height = isLarge ? w * 0.55 : w * 0.40;
+    // Uniform height as seen in the design image
+    final height = w * 0.52;
 
     return Column(
       children: [
@@ -135,23 +130,39 @@ AppColors.category5,
                 context.colors.background,
               ],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: context.colors.boxShadow,
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          child: Center(
-            child: Image.asset(
-              "assets/images/${categories[index]}.png",
-              width: w * 0.2,
-              fit: BoxFit.contain,
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/${categories[index]}.png",
+                width: w * 0.22,
+                height: w * 0.22,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                categories[index],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
+                  fontSize: w * 0.038,
+                  color: context.colors.textPrimary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          categories[index],
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

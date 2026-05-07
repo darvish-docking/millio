@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/providers/tab_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart'; 
 import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/presentation/screens/filter_screen.dart';
@@ -197,11 +199,10 @@ class SpecialOffersScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: CustomBottomNav(
-        index: 0,
+        index: context.watch<TabProvider>().currentIndex,
         onTap: (value) {
-          if (value == 0) {
-            Navigator.popUntil(context, (route) => route.isFirst);
-          }
+          context.read<TabProvider>().setIndex(value);
+          Navigator.popUntil(context, (route) => route.isFirst);
         },
       ),
     );

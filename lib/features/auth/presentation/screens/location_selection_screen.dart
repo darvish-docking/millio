@@ -3,6 +3,7 @@ import 'package:millio/core/constants/app_colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:millio/core/common/main_layout.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
   const LocationSelectionScreen({super.key});
@@ -183,14 +184,19 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     width: double.infinity,
                     height: height * 0.07,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Action for Go to shopping
-                        Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (context) => const MainLayout(),
-  ),
-);
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool("isLoggedIn", true);
+                        await prefs.setBool("onboardingDone", true);
+
+                        if (!mounted) return;
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainLayout(),
+                          ),
+                          (route) => false,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColorsLegacy.primary, // As requested

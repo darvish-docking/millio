@@ -208,94 +208,101 @@ late TextEditingController fullNameController;
 
               SizedBox(height: height * 0.02),
 
-              buildField(
-                controller: dobController,
-                hint: "DOB",
+              buildSelector(
+                value: dobController.text.isEmpty ? "DOB" : dobController.text,
                 width: width,
                 height: height,
                 suffix: Icons.calendar_today_outlined,
                 onTap: () async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000),
-      firstDate: DateTime(1950),
-      lastDate: DateTime.now(),
-    );
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(2000),
+                    firstDate: DateTime(1950),
+                    lastDate: DateTime.now(),
+                  );
 
-    if (pickedDate != null) {
-      dobController.text =
-          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-    }
-  },
+                  if (pickedDate != null) {
+                    setState(() {
+                      dobController.text =
+                          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                    });
+                  }
+                },
               ),
 
               SizedBox(height: height * 0.02),
 
-              buildField(
-                controller: genderController,
-                hint: "Gender",
+              buildSelector(
+                value: genderController.text.isEmpty ? "Gender" : genderController.text,
                 width: width,
                 height: height,
                 suffix: Icons.keyboard_arrow_down,
                 onTap: () {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25),
-        ),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Wrap(
-            children: [
-              ListTile(
-                title: const Text("Male"),
-                onTap: () {
-                  genderController.text = "Male";
-                  Navigator.pop(context);
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(25),
+                      ),
+                    ),
+                    builder: (context) {
+                      return Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Wrap(
+                          children: [
+                            ListTile(
+                              title: const Text("Male"),
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = "Male";
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text("Female"),
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = "Female";
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text("Other"),
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = "Other";
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
-              ),
-              ListTile(
-                title: const Text("Female"),
-                onTap: () {
-                  genderController.text = "Female";
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text("Other"),
-                onTap: () {
-                  genderController.text = "Other";
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  },
               ),
 
               SizedBox(height: height * 0.02),
 
-              buildField(
-                controller: regionController,
-                hint: "Region",
+              buildSelector(
+                value: regionController.text.isEmpty ? "Region" : regionController.text,
                 width: width,
                 height: height,
                 suffix: Icons.keyboard_arrow_down,
-                 onTap: () {
-    showCountryPicker(
-      context: context,
-      showPhoneCode: false,
-      onSelect: (Country country) {
-        regionController.text = country.name;
-      },
-    );
-  },
+                onTap: () {
+                  showCountryPicker(
+                    context: context,
+                    showPhoneCode: false,
+                    onSelect: (Country country) {
+                      setState(() {
+                        regionController.text = country.name;
+                      });
+                    },
+                  );
+                },
               ),
 
               SizedBox(height: height * 0.06),
@@ -314,6 +321,7 @@ late TextEditingController fullNameController;
                     gen: genderController.text,
                     reg: regionController.text,
                   );
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColorsLegacy.primary,
@@ -402,6 +410,56 @@ late TextEditingController fullNameController;
               width: 1.2,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSelector({
+    required String value,
+    required double width,
+    required double height,
+    required IconData suffix,
+    required VoidCallback onTap,
+  }) {
+    final colors = context.colors;
+    bool isPlaceholder = value == "DOB" || value == "Gender" || value == "Region";
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: width * 0.05,
+          vertical: height * 0.022,
+        ),
+        decoration: BoxDecoration(
+          color: colors.textField,
+          borderRadius: BorderRadius.circular(50),
+          boxShadow: [
+            BoxShadow(
+              color: AppColorsLegacy.textPrimary.withOpacity(0.06),
+              blurRadius: 10,
+              spreadRadius: 1,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: isPlaceholder ? AppColorsLegacy.textSecondary : colors.textPrimary,
+                fontSize: width * 0.04,
+              ),
+            ),
+            Icon(
+              suffix,
+              color: AppColorsLegacy.textSecondary,
+            ),
+          ],
         ),
       ),
     );

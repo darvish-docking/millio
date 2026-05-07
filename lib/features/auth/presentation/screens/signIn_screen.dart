@@ -2,11 +2,69 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/screens/forgot_password.dart';
-import 'package:millio/features/auth/presentation/screens/otp_screen.dart';
 import 'package:millio/features/auth/presentation/screens/signup_screen.dart';
+import 'package:millio/core/common/main_layout.dart';
+import 'package:millio/features/auth/presentation/providers/onboarding.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signInUser() async {
+    String enteredUsername = _usernameController.text.trim();
+    String enteredPassword = _passwordController.text.trim();
+
+    if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    String? savedUsername = prefs.getString("username");
+    String? savedPassword = prefs.getString("password");
+
+    if (enteredUsername == savedUsername && enteredPassword == savedPassword) {
+      await prefs.setBool("isLoggedIn", true);
+      
+      // Refresh the provider data so ProfileScreen sees it
+      if (!mounted) return;
+      await context.read<OnboardingProvider>().loadUserData();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login Successful!")),
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MainLayout()),
+        (route) => false,
+      );
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid username or password")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +156,8 @@ class SignInScreen extends StatelessWidget {
           /// 🔹 FOREGROUND CONTENT
           SafeArea(
             child: SingleChildScrollView(
-              // padding: const EdgeInsets.symmetric(horizontal: with),
               child: Column(
                 children: [
-                  // const SizedBox(height: 30),
-
                   /// Image
                   Image.asset(
                     "assets/images/noodles.png",
@@ -153,6 +208,7 @@ class SignInScreen extends StatelessWidget {
                         ],
                       ),
                       child: TextField(
+                        controller: _usernameController,
                          style: TextStyle(
     color: colors.hintText, // 👈 typing text color
   
@@ -207,6 +263,7 @@ class SignInScreen extends StatelessWidget {
                         ],
                       ),
                       child: TextField(
+                        controller: _passwordController,
                         obscureText: true,
                         style: TextStyle(
     color: colors.hintText, // 👈 typing text color
@@ -301,14 +358,7 @@ class SignInScreen extends StatelessWidget {
                       width: double.infinity,
                       height: height * 0.06,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OtpScreen(),
-                            ),
-                          );
-                        },
+                        onPressed: _signInUser,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColorsLegacy.primary,
                           shape: RoundedRectangleBorder(
@@ -403,7 +453,6 @@ class SignInScreen extends StatelessWidget {
 
   Widget _socialButton(String imagePath, BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
 
     return Row(
       children: [

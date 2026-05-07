@@ -4,6 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class OnboardingProvider extends ChangeNotifier {
   int _currentIndex = 0;
 
+  OnboardingProvider() {
+    loadUserData();
+  }
+
   int get currentIndex => _currentIndex;
 
   void updateIndex(int index) {
@@ -55,7 +59,7 @@ class OnboardingProvider extends ChangeNotifier {
     required String gen,
     required String reg,
   }) {
-    var fullName = full;
+    _username = full;
     _nickname = nick;
     _email = mail;
     _dob = birth;

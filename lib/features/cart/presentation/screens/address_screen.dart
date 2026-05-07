@@ -15,14 +15,21 @@ class SavedAddress {
 }
 
 class AddressScreen extends StatefulWidget {
-  const AddressScreen({super.key});
+  final String? initialSelectedAddressId;
+  const AddressScreen({super.key, this.initialSelectedAddressId});
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
 }
 
 class _AddressScreenState extends State<AddressScreen> {
-  String? _selectedAddressId = '1'; // Defaulting to the first one for demo
+  late String? _selectedAddressId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedAddressId = widget.initialSelectedAddressId ?? '1';
+  }
 
   final List<SavedAddress> _addresses = [
     SavedAddress(

@@ -1,21 +1,26 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/core/providers/tab_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessage {
-  final String text;
+  final String? text;
   final String time;
   final bool isSentByMe;
   final String? date;
   final List<String> reactions;
+  final String? imageUrl; // Added for image support
 
   ChatMessage({
-    required this.text,
+    this.text,
     required this.time,
     required this.isSentByMe,
     this.date,
     this.reactions = const [],
+    this.imageUrl,
   });
 }
 
@@ -28,6 +33,8 @@ class ChatBoxScreen extends StatefulWidget {
 
 class _ChatBoxScreenState extends State<ChatBoxScreen> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final ImagePicker _picker = ImagePicker();
   bool _isTyping = false;
 
   final List<ChatMessage> messages = [
@@ -51,14 +58,91 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  void _sendMessage() {
+    final text = _messageController.text.trim();
+    if (text.isNotEmpty) {
+      setState(() {
+        messages.add(ChatMessage(
+          text: text,
+          time: DateFormat('hh:mm a').format(DateTime.now()),
+          isSentByMe: true,
+        ));
+        _messageController.clear();
+      });
+      _scrollToBottom();
+    }
+  }
+
+  Future<void> _handleImageUpload(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        setState(() {
+          messages.add(ChatMessage(
+            time: DateFormat('hh:mm a').format(DateTime.now()),
+            isSentByMe: true,
+            imageUrl: image.path,
+          ));
+        });
+        _scrollToBottom();
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+    }
+  }
+
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Camera"),
+              onTap: () {
+                Navigator.pop(context);
+                _handleImageUpload(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Gallery"),
+              onTap: () {
+                Navigator.pop(context);
+                _handleImageUpload(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
-                                final colors = context.colors;
-
+    final colors = context.colors;
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
@@ -74,13 +158,12 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               padding: EdgeInsets.symmetric(horizontal: padding, vertical: h * 0.015),
               child: Row(
                 children: [
-                  // Back Button
                   Material(
                     color: AppColorsLegacy.backgroundSecondary1,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
-                      onTap: () => context.read<TabProvider>().goHome(),
+                      onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
                         child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
@@ -88,31 +171,23 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     ),
                   ),
                   SizedBox(width: w * 0.03),
-                  
-                  // Title
                   Text(
                     "Chat Box",
                     style: TextStyle(
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
+                      color: colors.textPrimary,
                     ),
                   ),
-                  
                   const Spacer(),
-                  
-                  // Outlined Icons (No Background)
                   IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    icon: Icon(Icons.call_outlined, color: AppColorsLegacy.textPrimary, size: w * 0.06),
+                    icon: Icon(Icons.call_outlined, color: colors.textPrimary, size: w * 0.06),
                     onPressed: () {},
                   ),
                   SizedBox(width: w * 0.04),
                   IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    icon: Icon(Icons.warning_amber_rounded, color: AppColorsLegacy.textPrimary, size: w * 0.06),
+                    icon: Icon(Icons.warning_amber_rounded, color: colors.textPrimary, size: w * 0.06),
                     onPressed: () {},
                   ),
                 ],
@@ -122,6 +197,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
             // --- DISPLAY AREA (Chat History) ---
             Expanded(
               child: ListView.builder(
+                controller: _scrollController,
                 padding: EdgeInsets.symmetric(horizontal: padding),
                 physics: const BouncingScrollPhysics(),
                 itemCount: messages.length,
@@ -203,9 +279,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                           ? IconButton(
                               key: const ValueKey("send"),
                               icon:  Icon(Icons.send, color: AppColorsLegacy.primary),
-                              onPressed: () {
-                                _messageController.clear();
-                              },
+                              onPressed: _sendMessage,
                             )
                           : Row(
                               key: const ValueKey("actions"),
@@ -213,7 +287,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                               children: [
                                 IconButton(
                                   icon: Icon(Icons.camera_alt_outlined, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
-                                  onPressed: () {},
+                                  onPressed: _showImageSourceDialog,
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.grid_view_sharp, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
@@ -233,7 +307,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
   }
 
   Widget _buildMessageBubble(ChatMessage msg, double w, double h) {
-                                final colors = context.colors;
+    final colors = context.colors;
 
     return Align(
       alignment: msg.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -253,7 +327,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
             Container(
               margin: EdgeInsets.only(bottom: h * 0.022),
               constraints: BoxConstraints(maxWidth: w * 0.72),
-              padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: h * 0.014),
+              padding: EdgeInsets.all(msg.imageUrl != null ? 4 : w * 0.04),
               decoration: BoxDecoration(
                 color: msg.isSentByMe ? AppColorsLegacy.primary : colors.textField,
                 borderRadius: BorderRadius.only(
@@ -273,33 +347,53 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    msg.text,
-                    style: TextStyle(
-                      color: msg.isSentByMe ? AppColorsLegacy.background : colors.hintText,
-                      fontFamily: 'Montserrat',
-                      fontSize: w * 0.038,
-                      height: 1.45,
+                  if (msg.imageUrl != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(w * 0.035),
+                      child: Image.file(
+                        File(msg.imageUrl!),
+                        width: w * 0.7,
+                        height: h * 0.25,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          width: w * 0.7,
+                          height: h * 0.25,
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.broken_image, color: Colors.grey),
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: h * 0.008),
-                  Align(
-                    alignment: msg.isSentByMe ? Alignment.bottomLeft : Alignment.bottomRight,
-                    child: Text(
-                      msg.time,
-                      style: TextStyle(
-                        color: msg.isSentByMe ? AppColorsLegacy.background07 : AppColorsLegacy.backgroundSecondary5,
-                        fontSize: w * 0.025,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Montserrat',
+                  if (msg.text != null)
+                    Padding(
+                      padding: EdgeInsets.all(msg.imageUrl != null ? 8 : 0),
+                      child: Text(
+                        msg.text!,
+                        style: TextStyle(
+                          color: msg.isSentByMe ? AppColorsLegacy.background : colors.hintText,
+                          fontFamily: 'Montserrat',
+                          fontSize: w * 0.038,
+                          height: 1.45,
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: msg.imageUrl != null ? 8 : 0, vertical: 4),
+                    child: Align(
+                      alignment: msg.isSentByMe ? Alignment.bottomLeft : Alignment.bottomRight,
+                      child: Text(
+                        msg.time,
+                        style: TextStyle(
+                          color: msg.isSentByMe ? AppColorsLegacy.background07 : AppColorsLegacy.backgroundSecondary5,
+                          fontSize: w * 0.025,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat',
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // --- REACTIONS OVERLAY ---
             if (msg.reactions.isNotEmpty)
               Positioned(
                 bottom: h * 0.008,

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:millio/features/cart/presentation/screens/payment_success_screen.dart';
-import 'package:millio/features/cart/presentation/screens/payment_failure_screen.dart';
 import 'package:millio/features/cart/presentation/screens/add_card_screen.dart';
 import 'package:millio/features/cart/presentation/screens/qr_scan_screen.dart';
 
@@ -14,8 +11,6 @@ class PaymentMethodScreen extends StatefulWidget {
 }
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
-  late Razorpay _razorpay;
-
   String _selectedMethodId = 'mastercard';
 
   final List<Map<String, String>> _paymentMethods = [
@@ -25,77 +20,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     {'id': 'applepay', 'title': 'Apple Pay', 'image': 'assets/images/apple.png'},
     {'id': 'payondelivery', 'title': 'Pay on Delivery', 'image': 'assets/images/Wallet.png'},
   ];
-
-
-  @override
-  void initState(){
-    super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  }
-
-  @override
-  void dispose(){
-    super.dispose();
-    _razorpay.clear(); // Removes all listeners
-  }
-
-  void _openCheckout() {
-    var options = {
-      'key': 'rzp_test_SiVFO1Fm7aO4WZ',
-      'amount': 5000, 
-      'currency': 'INR',
-      'name': 'Millio Corporation',
-      'description': 'Food Delivery Order',
-      // 'order_id': 'order_EMBFqjDHEEn80l', // Requires a valid active order ID, commented for test
-      'timeout': 60, // in seconds
-      'prefill': {
-        'contact': '9876543210',
-        'email': 'customer@millio.com'
-      }
-    };
-    
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    debugPrint("SUCCESS: ${response.paymentId}");
-    
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentSuccessScreen(
-          transactionId: response.paymentId ?? "N/A",
-          amount: "₹50.00", // This should be dynamic in a real app
-          dateTime: DateTime.now(),
-        ),
-      ),
-    );
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    debugPrint("ERROR: ${response.code} - ${response.message}");
-    
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentFailureScreen(
-          errorMessage: response.message ?? "Unknown Error",
-          dateTime: DateTime.now(),
-        ),
-      ),
-    );
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    debugPrint("WALLET: ${response.walletName}");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -286,20 +210,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     height: h * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_selectedMethodId == 'payondelivery') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PaymentSuccessScreen(
-                                transactionId: "POD-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}",
-                                amount: "₹50.00", 
-                                dateTime: DateTime.now(),
-                              ),
-                            ),
-                          );
-                        } else {
-                          _openCheckout();
-                        }
+                        Navigator.pop(context, _selectedMethodId);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColorsLegacy.primary,

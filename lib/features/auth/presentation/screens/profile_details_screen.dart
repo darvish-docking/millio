@@ -83,7 +83,7 @@ class _ProfileDetailsScreenState
                       height: MediaQuery.of(context).size.width * 0.10,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: colors.textHint.withOpacity(0.05), // faded background
+                        color: colors.hintText.withOpacity(0.05), // faded background
                       ),
                       child: Center(
                         child: Image.asset(

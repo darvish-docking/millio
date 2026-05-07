@@ -45,13 +45,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   await prefs.setString("email", email);
   await prefs.setString("password", password);
 
-
-// need to move to SIGN IN screen
-   await prefs.setBool("isLoggedIn", true);
-
+  if (!mounted) return;
   ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(
-      content: Text("Signup Successful"),
+      content: Text("Signup Successful! Please Sign In."),
     ),
   );
 
@@ -59,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
-      builder: (_) => HomeScreen(),
+      builder: (_) => const SignInScreen(),
     ),
   );
 }

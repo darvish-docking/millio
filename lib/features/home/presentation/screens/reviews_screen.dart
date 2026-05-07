@@ -21,10 +21,17 @@ class ReviewData {
   });
 }
 
-class ReviewsScreen extends StatelessWidget {
+class ReviewsScreen extends StatefulWidget {
   final SpecialOffer offer;
 
-  ReviewsScreen({super.key, required this.offer});
+  const ReviewsScreen({super.key, required this.offer});
+
+  @override
+  State<ReviewsScreen> createState() => _ReviewsScreenState();
+}
+
+class _ReviewsScreenState extends State<ReviewsScreen> {
+  int? _selectedRating; // null means "Sort by" (Show All)
 
   final List<ReviewData> reviews = [
     ReviewData(
@@ -51,16 +58,34 @@ class ReviewsScreen extends StatelessWidget {
       likes: 8,
       date: "1 month ago",
     ),
+    ReviewData(
+      userName: "Michael Chen",
+      userImage: "assets/images/username.png",
+      rating: 3.0,
+      comment: "Average experience. The food was okay, but I've had better seafood in other places. The atmosphere was nice though.",
+      likes: 5,
+      date: "2 months ago",
+    ),
+    ReviewData(
+      userName: "Emily Davis",
+      userImage: "assets/images/username.png",
+      rating: 2.0,
+      comment: "Disappointed. The food arrived cold and didn't taste very fresh. Hopefully, it was just an off day for them.",
+      likes: 3,
+      date: "3 months ago",
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-
-                        final colors = context.colors;
-
+    final colors = context.colors;
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
+
+    final filteredReviews = _selectedRating == null
+        ? reviews
+        : reviews.where((r) => r.rating.toInt() == _selectedRating).toList();
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -85,7 +110,7 @@ class ReviewsScreen extends StatelessWidget {
             ),
           ),
         ),
-        title:  Text(
+        title: Text(
           "Reviews",
           style: TextStyle(
             fontSize: 22,
@@ -105,23 +130,23 @@ class ReviewsScreen extends StatelessWidget {
             // --- RATING SUMMARY DASHBOARD ---
             Row(
               children: [
-                // Left Column: Bold Rating & Stars
                 Expanded(
                   flex: 2,
                   child: Column(
                     children: [
                       Text(
-                        offer.rating,
+                        widget.offer.rating,
                         style: TextStyle(
                           fontSize: w * 0.15,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Montserrat',
+                          color: colors.textPrimary,
                         ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(5, (index) {
-                          double r = double.tryParse(offer.rating) ?? 0.0;
+                          double r = double.tryParse(widget.offer.rating) ?? 0.0;
                           return Icon(
                             index < r.floor() ? Icons.star : Icons.star_border,
                             color: AppColorsLegacy.amber,
@@ -131,7 +156,7 @@ class ReviewsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: h * 0.01),
                       Text(
-                        "${offer.reviewCount} Reviews",
+                        "${widget.offer.reviewCount} Reviews",
                         style: TextStyle(
                           color: AppColorsLegacy.backgroundSecondary,
                           fontSize: w * 0.035,
@@ -141,16 +166,12 @@ class ReviewsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // Vertical Separator
                 Container(
                   height: h * 0.12,
                   width: 1.5,
                   color: AppColorsLegacy.backgroundSecondary2,
                   margin: EdgeInsets.symmetric(horizontal: w * 0.04),
                 ),
-
-                // Right Column: Progress Indicators
                 Expanded(
                   flex: 3,
                   child: Column(
@@ -174,12 +195,24 @@ class ReviewsScreen extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
-                  _buildFilterChip("Sort by", w, isSelected: true),
-                  _buildFilterChip("★ 5", w),
-                  _buildFilterChip("★ 4", w),
-                  _buildFilterChip("★ 3", w),
-                  _buildFilterChip("★ 2", w),
-                  _buildFilterChip("★ 1", w),
+                  _buildFilterChip("Sort by", w, isSelected: _selectedRating == null, onTap: () {
+                    setState(() => _selectedRating = null);
+                  }),
+                  _buildFilterChip("★ 5", w, isSelected: _selectedRating == 5, onTap: () {
+                    setState(() => _selectedRating = 5);
+                  }),
+                  _buildFilterChip("★ 4", w, isSelected: _selectedRating == 4, onTap: () {
+                    setState(() => _selectedRating = 4);
+                  }),
+                  _buildFilterChip("★ 3", w, isSelected: _selectedRating == 3, onTap: () {
+                    setState(() => _selectedRating = 3);
+                  }),
+                  _buildFilterChip("★ 2", w, isSelected: _selectedRating == 2, onTap: () {
+                    setState(() => _selectedRating = 2);
+                  }),
+                  _buildFilterChip("★ 1", w, isSelected: _selectedRating == 1, onTap: () {
+                    setState(() => _selectedRating = 1);
+                  }),
                 ],
               ),
             ),
@@ -187,29 +220,43 @@ class ReviewsScreen extends StatelessWidget {
             SizedBox(height: h * 0.04),
 
             // --- REVIEWS LIST ---
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: reviews.length,
-              itemBuilder: (context, index) {
-                final review = reviews[index];
-                return Column(
-                  children: [
-                    _buildReviewItem(review, w, h),
-                    // Green horizontal separator
-                    if (index < reviews.length - 1)
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: h * 0.025),
-                        child: Divider(
-                          color: AppColorsLegacy.primary.withOpacity(0.4),
-                          thickness: 1,
+            filteredReviews.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: h * 0.1),
+                      child: Text(
+                        "No reviews for this rating",
+                        style: TextStyle(
+                          color: AppColorsLegacy.backgroundSecondary,
+                          fontFamily: 'Montserrat',
                         ),
                       ),
-                    if (index == reviews.length - 1)
-                       SizedBox(height: h * 0.05),
-                  ],
-                );
-              },),
+                    ),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredReviews.length,
+                    itemBuilder: (context, index) {
+                      final review = filteredReviews[index];
+                      return Column(
+                        children: [
+                          _buildReviewItem(review, w, h),
+                          if (index < filteredReviews.length - 1)
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: h * 0.025),
+                              child: Divider(
+                                color: AppColorsLegacy.primary.withOpacity(0.4),
+                                thickness: 1,
+                              ),
+                            ),
+                          if (index == filteredReviews.length - 1)
+                            SizedBox(height: h * 0.05),
+                        ],
+                      );
+                    },
+                  ),
+
             // --- ADD REVIEW BUTTON ---
             SizedBox(
               width: double.infinity,
@@ -219,7 +266,7 @@ class ReviewsScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddReviewScreen(offer: offer),
+                      builder: (context) => AddReviewScreen(offer: widget.offer),
                     ),
                   );
                 },
@@ -258,9 +305,10 @@ class ReviewsScreen extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: w * 0.035, 
-                fontWeight: FontWeight.bold, 
-                fontFamily: 'Montserrat'
+                fontSize: w * 0.035,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat',
+                color: context.colors.textPrimary,
               ),
             ),
           ),
@@ -281,24 +329,27 @@ class ReviewsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, double w, {bool isSelected = false}) {
-    return Container(
-      margin: EdgeInsets.only(right: w * 0.03),
-      padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: w * 0.015),
-      decoration: BoxDecoration(
-        color: AppColorsLegacy.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(w * 0.05),
-        border: Border.all(
-          color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.primary.withOpacity(0.1)
+  Widget _buildFilterChip(String label, double w, {required bool isSelected, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(right: w * 0.03),
+        padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: w * 0.015),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(w * 0.05),
+          border: Border.all(
+            color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.primary.withOpacity(0.1),
+          ),
         ),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: AppColorsLegacy.primary,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          fontSize: w * 0.035,
-          fontFamily: 'Montserrat',
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.primary,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            fontSize: w * 0.035,
+            fontFamily: 'Montserrat',
+          ),
         ),
       ),
     );
@@ -308,7 +359,6 @@ class ReviewsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Top Row: User Image, Name, Stars
         Row(
           children: [
             Container(
@@ -327,9 +377,10 @@ class ReviewsScreen extends StatelessWidget {
               child: Text(
                 review.userName,
                 style: TextStyle(
-                  fontWeight: FontWeight.bold, 
-                  fontSize: w * 0.045, 
-                  fontFamily: 'Montserrat'
+                  fontWeight: FontWeight.bold,
+                  fontSize: w * 0.045,
+                  fontFamily: 'Montserrat',
+                  color: context.colors.textPrimary,
                 ),
               ),
             ),
@@ -344,10 +395,7 @@ class ReviewsScreen extends StatelessWidget {
             ),
           ],
         ),
-        
         SizedBox(height: h * 0.015),
-
-        // Review Text
         Text(
           review.comment,
           style: TextStyle(
@@ -357,10 +405,7 @@ class ReviewsScreen extends StatelessWidget {
             fontFamily: 'Montserrat',
           ),
         ),
-
         SizedBox(height: h * 0.02),
-
-        // Footer Row: Heart icon | Timestamp
         Row(
           children: [
             Icon(Icons.favorite, color: AppColorsLegacy.buttonFavourites, size: w * 0.05),
@@ -368,9 +413,10 @@ class ReviewsScreen extends StatelessWidget {
             Text(
               review.likes.toString(),
               style: TextStyle(
-                fontWeight: FontWeight.bold, 
-                fontSize: w * 0.038, 
-                fontFamily: 'Montserrat'
+                fontWeight: FontWeight.bold,
+                fontSize: w * 0.038,
+                fontFamily: 'Montserrat',
+                color: context.colors.textPrimary,
               ),
             ),
             Container(
@@ -382,9 +428,9 @@ class ReviewsScreen extends StatelessWidget {
             Text(
               review.date,
               style: TextStyle(
-                color: AppColorsLegacy.backgroundSecondary, 
-                fontSize: w * 0.035, 
-                fontFamily: 'Montserrat'
+                color: AppColorsLegacy.backgroundSecondary,
+                fontSize: w * 0.035,
+                fontFamily: 'Montserrat',
               ),
             ),
           ],

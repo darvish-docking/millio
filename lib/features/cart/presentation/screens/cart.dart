@@ -5,6 +5,11 @@ import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/features/cart/presentation/screens/address_screen.dart';
 import 'package:millio/features/cart/presentation/screens/voucher_screen.dart';
 import 'package:millio/features/cart/presentation/screens/payment_method_screen.dart';
+import 'package:millio/features/cart/presentation/screens/order_tracking_screen.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:millio/features/cart/presentation/screens/payment_success_screen.dart';
+import 'package:millio/features/cart/presentation/screens/payment_failure_screen.dart';
+import 'package:millio/features/cart/data/models/voucher_model.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
@@ -15,12 +20,111 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final Razorpay _razorpay = Razorpay();
   int _activeTabIndex = 0; // 0: Cart, 1: Checkout, 2: Delivery
   final List<String> _tabs = ["Cart", "Checkout", "Delivery"];
   
   // Track selected address for Checkout flow
   SavedAddress? _selectedAddress;
   String? _selectedPaymentMethodId;
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+    // Initialize with a default address matching the first one in AddressScreen
+    _selectedAddress = SavedAddress(
+      id: '1',
+      label: 'Home',
+      details: '23, Orchard Street, Near City Mall, New York, 10001',
+    );
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _openCheckout(double totalAmount) {
+    var options = {
+      'key': 'rzp_test_SiVFO1Fm7aO4WZ',
+      'amount': (totalAmount * 100).toInt(), 
+      'currency': 'INR',
+      'name': 'Millio Corporation',
+      'description': 'Food Delivery Order',
+      'timeout': 60,
+      'prefill': {
+        'contact': '9876543210',
+        'email': 'customer@millio.com'
+      }
+    };
+    
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    if (!mounted) return;
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentSuccessScreen(
+          transactionId: response.paymentId ?? "N/A",
+          amount: "\$${cart.total.toStringAsFixed(2)}",
+          dateTime: DateTime.now(),
+        ),
+      ),
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    if (!mounted) return;
+    
+    // Better error message parsing
+    String errorMsg = "Unknown Error";
+    if (response.message != null && 
+        response.message!.isNotEmpty && 
+        response.message!.toLowerCase() != 'undefined') {
+      errorMsg = response.message!;
+    } else {
+      // Fallback based on common Razorpay error codes
+      switch (response.code) {
+        case 2:
+          errorMsg = "Payment cancelled by user";
+          break;
+        case 4:
+          errorMsg = "Invalid request or network issue";
+          break;
+        case 5:
+          errorMsg = "Payment method not supported";
+          break;
+        default:
+          errorMsg = "Transaction failed (Code: ${response.code})";
+      }
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentFailureScreen(
+          errorMessage: errorMsg,
+          dateTime: DateTime.now(),
+        ),
+      ),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    debugPrint("WALLET: ${response.walletName}");
+  }
 
   String _getPaymentMethodName(String id) {
     switch (id) {
@@ -150,7 +254,7 @@ class _CartScreenState extends State<CartScreen> {
                 ? (cart.isEmpty ? _buildEmptyCartFlow(w, h, padding) : _buildCartItemsFlow(w, h, padding, cart))
                 : (_activeTabIndex == 1 
                     ? _buildCheckoutFlow(w, h, padding, cart) 
-                    : _buildPlaceholderSection(_tabs[_activeTabIndex])),
+                    : const OrderTrackingScreen()),
             ),
           ],
         ),
@@ -210,7 +314,24 @@ class _CartScreenState extends State<CartScreen> {
             height: h * 0.07,
             child: ElevatedButton(
               onPressed: () {
-                // Finalize order
+                if (_selectedPaymentMethodId == 'payondelivery') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentSuccessScreen(
+                        transactionId: "POD-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}",
+                        amount: "\$${cart.total.toStringAsFixed(2)}",
+                        dateTime: DateTime.now(),
+                      ),
+                    ),
+                  );
+                } else if (_selectedPaymentMethodId != null) {
+                  _openCheckout(cart.total);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please select a payment method")),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColorsLegacy.primary,
@@ -288,7 +409,11 @@ class _CartScreenState extends State<CartScreen> {
           onPressed: () async {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AddressScreen()),
+              MaterialPageRoute(
+                builder: (context) => AddressScreen(
+                  initialSelectedAddressId: _selectedAddress?.id,
+                ),
+              ),
             );
             if (result != null && result is SavedAddress) {
               setState(() {
@@ -303,12 +428,16 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildVoucherButton(double w) {
+    final cart = context.watch<CartProvider>();
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const VoucherScreen()),
         );
+        if (result != null && result is Voucher) {
+          cart.applyVoucher(result);
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -323,7 +452,7 @@ class _CartScreenState extends State<CartScreen> {
             SizedBox(width: w * 0.03),
              Expanded(
               child: Text(
-                "Use voucher",
+                cart.appliedVoucher?.title ?? "Use voucher",
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -332,7 +461,13 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
             ),
-            Icon(Icons.chevron_right, color: AppColorsLegacy.primary, size: w * 0.06), // Green chevron
+            if (cart.appliedVoucher != null)
+              GestureDetector(
+                onTap: () => cart.applyVoucher(null),
+                child: Icon(Icons.close, color: AppColorsLegacy.primary, size: w * 0.05),
+              )
+            else
+              Icon(Icons.chevron_right, color: AppColorsLegacy.primary, size: w * 0.06), // Green chevron
           ],
         ),
       ),

@@ -51,39 +51,41 @@ class ProductDescriptionScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          // --- Decorative Background Layer (Bottom) ---
           
+          // 🍳 Blurred background shadow
           Positioned(
-            bottom: 0,
+            bottom: -h * 0.08,
             left: 0,
             child: Image.asset(
               'assets/images/shade1.png',
-              width:  w ,
+              width: w * 0.8,
               fit: BoxFit.contain,
             ),
           ),
 
-          
-
-          // 🍳 Decorative bottom background
+          // 🍳 Decorative Tray (bullseye)
           Positioned(
-            bottom: h * 0.001,
-            left: -w * 0.2,
+            bottom: -h * 0.02,
+            left: -w * 0.15,
             child: Image.asset(
               'assets/images/bullseye.png',
-              width: w * 0.8,
+              width: w * 0.65,
             ),
           ),
 
-          // 🍳 Decorative bottom background
+          // 🍳 Floating Fried Egg 
           Positioned(
-            bottom: 0,
-            right: 0,
+            bottom: -h * 0.05,
+            right: -w * 0.1,
             child: Image.asset(
               'assets/images/Egg.png',
-              width: w * 0.8,
+              width: w * 0.6,
             ),
           ),
 
+          // --- Foreground Layer (Top) ---
+          
           // 📜 Main Content
           SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: padding),
@@ -105,7 +107,7 @@ class ProductDescriptionScreen extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColorsLegacy.textPrimary.withOpacity(0.05),
+                        color: Colors.black.withOpacity(0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
@@ -114,13 +116,13 @@ class ProductDescriptionScreen extends StatelessWidget {
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.all(12),
-                        decoration:  BoxDecoration(
-                          color: AppColorsLegacy.background,
+                        decoration:  const BoxDecoration(
+                          color: Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child:  Icon(
+                        child:  const Icon(
                           Icons.play_arrow,
-                          color: AppColorsLegacy.textPrimary,
+                          color: Colors.black,
                           size: 30,
                         ),
                       ),
@@ -130,9 +132,9 @@ class ProductDescriptionScreen extends StatelessWidget {
 
                 // ℹ️ Information Section
                  Text(
-                  "Information",
+                  "Infomation", // Matching typo in design image
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
                     color: colors.textPrimary,
@@ -143,7 +145,7 @@ class ProductDescriptionScreen extends StatelessWidget {
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna. Etiam tempor orci eu lobortis elementum. Et tortor at risus viverra",
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColorsLegacy.backgroundSecondary6,
+                    color: colors.textSecondary.withOpacity(0.7),
                     height: 1.6,
                     fontFamily: 'Montserrat',
                   ),
@@ -152,9 +154,9 @@ class ProductDescriptionScreen extends StatelessWidget {
 
                 // 🥗 Ingredients Section
                  Text(
-                  "Ingredients",
+                  "Ingridients", // Matching typo in design image
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
                     color: colors.textPrimary,

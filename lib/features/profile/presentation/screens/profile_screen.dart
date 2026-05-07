@@ -5,7 +5,12 @@ import 'package:millio/features/auth/presentation/screens/signIn_screen.dart';
 import 'package:millio/features/home/presentation/screens/notification_screen.dart';
 import 'package:millio/core/providers/tab_provider.dart';
 import 'package:millio/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:millio/features/cart/presentation/screens/address_screen.dart';
+import 'package:millio/features/cart/presentation/screens/payment_method_screen.dart';
+import 'package:millio/features/auth/presentation/screens/new_password.dart';
 import 'package:millio/features/profile/presentation/screens/preferences_screen.dart';
+import 'package:millio/features/profile/presentation/screens/privacy_settings_screen.dart';
+import 'package:millio/features/profile/presentation/screens/wishlist_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -148,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fontSize: w * 0.055,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Montserrat',
-                color: AppColorsLegacy.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
             SizedBox(height: h * 0.005),
@@ -187,7 +192,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     imagePath: "assets/images/Wallet.png",
                     fallbackIcon: Icons.account_balance_wallet_outlined,
                     gradientColors: [AppColors.category3, colors.background],
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const PaymentMethodScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     w: w,
@@ -195,7 +205,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     imagePath: "assets/images/Bookmark.png",
                     fallbackIcon: Icons.bookmark_border,
                     gradientColors: [AppColors.category4, colors.background],
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const WishlistScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     w: w,
@@ -203,7 +218,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     imagePath: "assets/images/Location.png",
                     fallbackIcon: Icons.location_on_outlined,
                     gradientColors: [AppColors.category5, colors.background],
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AddressScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     w: w,
@@ -211,7 +231,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     imagePath: "assets/images/Lock.png",
                     fallbackIcon: Icons.lock_outline,
                     gradientColors: [AppColors.category6, colors.background],
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const PrivacySettingsScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     w: w,
@@ -219,7 +244,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     imagePath: "assets/images/Password.png",
                     fallbackIcon: Icons.password_outlined,
                     gradientColors: [AppColors.category7, colors.background],
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NewPasswordScreen()),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     w: w,
@@ -230,10 +260,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () async {
                       final prefs = await SharedPreferences.getInstance();
 
+                      // Reset tab index to 0 before logging out
+                      if (context.mounted) {
+                        Provider.of<TabProvider>(context, listen: false).goHome();
+                      }
+
                       await prefs.setBool("isLoggedIn", false);
-                      await prefs.remove("password");
-                      await prefs.remove("username"); 
-                      await prefs.remove("email"); 
+                      // await prefs.remove("password");
+                      // await prefs.remove("username"); 
+                      // await prefs.remove("email"); 
 
                       if (!mounted) return;
                       Navigator.pushAndRemoveUntil(

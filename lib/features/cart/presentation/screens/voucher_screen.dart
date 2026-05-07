@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-
-class Voucher {
-  final String id;
-  final String title;
-  final String details;
-  final String imagePath;
-
-  Voucher({
-    required this.id,
-    required this.title,
-    required this.details,
-    required this.imagePath,
-  });
-}
+import 'package:millio/features/cart/data/models/voucher_model.dart';
 
 class VoucherScreen extends StatefulWidget {
   const VoucherScreen({super.key});

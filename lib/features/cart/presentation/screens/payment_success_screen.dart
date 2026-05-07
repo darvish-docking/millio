@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/cart/presentation/screens/order_tracking_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
@@ -220,36 +221,69 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
 
             SizedBox(height: h * 0.05),
 
-            // --- CONTINUE SHOPPING BUTTON ---
+            // --- BUTTONS SECTION ---
             Padding(
               padding: EdgeInsets.symmetric(horizontal: w * 0.08),
-              child: SizedBox(
-                width: double.infinity,
-                height: h * 0.065,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate back to HomeScreen and clear stack
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      (route) => false,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColorsLegacy.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    "Continue Shopping",
-                    style: TextStyle(
-                      color: AppColorsLegacy.background,
-                      fontSize: w * 0.04,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat',
+              child: Column(
+                children: [
+                  // Track Order Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: h * 0.065,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const OrderTrackingScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColorsLegacy.primaryLight,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        "Track Order",
+                        style: TextStyle(
+                          color: AppColorsLegacy.primary,
+                          fontSize: w * 0.04,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(height: h * 0.015),
+                  // Continue Shopping Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: h * 0.065,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate back to HomeScreen and clear stack
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          (route) => false,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColorsLegacy.primary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        "Continue Shopping",
+                        style: TextStyle(
+                          color: AppColorsLegacy.background,
+                          fontSize: w * 0.04,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             
