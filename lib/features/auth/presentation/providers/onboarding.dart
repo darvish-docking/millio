@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,7 @@ class OnboardingProvider extends ChangeNotifier {
             _dob = data['dob'] ?? "";
             _gender = data['gender'] ?? "";
             _region = data['region'] ?? "";
+            _profilePicture = data['profilePicture'] ?? "";
           }
         } catch (e) {
           print("Error fetching profile in listener: $e");
@@ -59,6 +62,7 @@ class OnboardingProvider extends ChangeNotifier {
   String _dob = "";
   String _region = "";
   String _gender = "";
+  String _profilePicture = "";
 
   bool _isLoggedIn = false;
   
@@ -70,6 +74,7 @@ class OnboardingProvider extends ChangeNotifier {
   String get dob => _dob;
   String get region => _region;
   String get gender => _gender;
+  String get profilePicture => _profilePicture;
 
   bool get isLoggedIn => _isLoggedIn;
 
@@ -79,6 +84,7 @@ class OnboardingProvider extends ChangeNotifier {
 
     _username = prefs.getString("username") ?? "";
     _email = prefs.getString("email") ?? "";
+    _profilePicture = prefs.getString("profilePicture") ?? "";
     
     // Check Firebase current user first
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -96,6 +102,7 @@ class OnboardingProvider extends ChangeNotifier {
           _dob = data['dob'] ?? _dob;
           _gender = data['gender'] ?? _gender;
           _region = data['region'] ?? _region;
+          _profilePicture = data['profilePicture'] ?? _profilePicture;
         }
       } catch (e) {
         print("Error fetching profile in loadUserData: $e");
@@ -122,6 +129,7 @@ class OnboardingProvider extends ChangeNotifier {
     required String birth,
     required String gen,
     required String reg,
+    File? image,
   }) async {
     _username = full;
     _nickname = nick;
@@ -129,6 +137,11 @@ class OnboardingProvider extends ChangeNotifier {
     _dob = birth;
     _gender = gen;
     _region = reg;
+
+    if (image != null) {
+      final bytes = await image.readAsBytes();
+      _profilePicture = base64Encode(bytes);
+    }
 
     // Save to Firestore if user is logged in
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -141,8 +154,14 @@ class OnboardingProvider extends ChangeNotifier {
           'dob': birth,
           'gender': gen,
           'region': reg,
+          'profilePicture': _profilePicture,
           'updatedAt': FieldValue.serverTimestamp(),
         });
+
+        // Also update local prefs
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("username", full);
+        await prefs.setString("profilePicture", _profilePicture);
       } catch (e) {
         print("Error updating profile in Firestore: $e");
       }
@@ -159,6 +178,7 @@ class OnboardingProvider extends ChangeNotifier {
     required String gen,
     required String reg,
     required String loc,
+    File? image,
   }) async {
     _username = full;
     _nickname = nick;
@@ -170,6 +190,11 @@ class OnboardingProvider extends ChangeNotifier {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       try {
+        if (image != null) {
+          final bytes = await image.readAsBytes();
+          _profilePicture = base64Encode(bytes);
+        }
+
         await _dbService.updateUserProfile(currentUser.uid, {
           'username': full,
           'nickname': nick,
@@ -178,6 +203,7 @@ class OnboardingProvider extends ChangeNotifier {
           'gender': gen,
           'region': reg,
           'location': loc,
+          'profilePicture': _profilePicture,
           'isFirstSignIn': false,
           'onboardingCompletedAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
@@ -186,6 +212,7 @@ class OnboardingProvider extends ChangeNotifier {
         // Also save to local prefs
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("username", full);
+        await prefs.setString("profilePicture", _profilePicture);
         await prefs.setBool("onboardingDone", true);
         await prefs.setBool("isLoggedIn", true);
       } catch (e) {

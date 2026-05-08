@@ -43,4 +43,28 @@ class DatabaseService {
       throw 'Error updating user profile: $e';
     }
   }
+
+  // Save Order to Firestore
+  Future<void> saveOrder({
+    required String uid,
+    required String transactionId,
+    required double totalAmount,
+    required List<Map<String, dynamic>> items,
+    required String status,
+    String? paymentMethod,
+  }) async {
+    try {
+      await _db.collection('orders').add({
+        'userId': uid,
+        'transactionId': transactionId,
+        'totalAmount': totalAmount,
+        'items': items,
+        'status': status,
+        'paymentMethod': paymentMethod,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw 'Error saving order: $e';
+    }
+  }
 }

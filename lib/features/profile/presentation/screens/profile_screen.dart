@@ -14,6 +14,7 @@ import 'package:millio/features/profile/presentation/screens/privacy_settings_sc
 import 'package:millio/features/profile/presentation/screens/wishlist_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -135,11 +136,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
-                          child: CircleAvatar(
-                            radius: w * 0.11,
-                            backgroundImage: const AssetImage('assets/images/profile.png'),
-                            onBackgroundImageError: (exception, stackTrace) {},
-                            child: null,
+                          child: Consumer<OnboardingProvider>(
+                            builder: (context, provider, child) {
+                              return CircleAvatar(
+                                radius: w * 0.11,
+                                backgroundImage: provider.profilePicture.isNotEmpty
+                                    ? MemoryImage(base64Decode(provider.profilePicture))
+                                    : const AssetImage('assets/images/profile.png') as ImageProvider,
+                                onBackgroundImageError: (exception, stackTrace) {},
+                                child: null,
+                              );
+                            },
                           ),
                         ),
                       ),

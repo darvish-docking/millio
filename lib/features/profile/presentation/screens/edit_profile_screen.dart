@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 
 
@@ -20,6 +23,26 @@ late TextEditingController fullNameController;
   late TextEditingController dobController;
   late TextEditingController genderController;
   late TextEditingController regionController;
+
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70, // Optimize image size
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+    }
+  }
 
     @override
   void initState() {
@@ -133,30 +156,46 @@ late TextEditingController fullNameController;
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    CircleAvatar(
-                      radius: width * 0.16,
-                      backgroundImage:
-                          const AssetImage("assets/images/profile.png"),
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: _imageFile != null
+                          ? CircleAvatar(
+                              radius: width * 0.16,
+                              backgroundImage: FileImage(_imageFile!),
+                            )
+                          : Consumer<OnboardingProvider>(
+                              builder: (context, provider, child) {
+                                return CircleAvatar(
+                                  radius: width * 0.16,
+                                  backgroundImage: provider.profilePicture.isNotEmpty
+                                      ? MemoryImage(base64Decode(provider.profilePicture))
+                                      : const AssetImage("assets/images/profile.png") as ImageProvider,
+                                );
+                              },
+                            ),
                     ),
 
                     Positioned(
                       right: 0,
                       bottom: 10,
-                      child: Container(
-                        height: width * 0.09,
-                        width: width * 0.09,
-                        decoration: BoxDecoration(
-                          color: AppColorsLegacy.primary,
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: AppColorsLegacy.background,
-                            width: 2,
+                      child: GestureDetector(
+                        onTap: _pickImage,
+                        child: Container(
+                          height: width * 0.09,
+                          width: width * 0.09,
+                          decoration: BoxDecoration(
+                            color: AppColorsLegacy.primary,
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(
+                              color: AppColorsLegacy.background,
+                              width: 2,
+                            ),
                           ),
-                        ),
-                        child: Icon(
-                          Icons.photo_library_outlined,
-                          color: AppColorsLegacy.background,
-                          size: width * 0.045,
+                          child: Icon(
+                            Icons.photo_library_outlined,
+                            color: AppColorsLegacy.background,
+                            size: width * 0.045,
+                          ),
                         ),
                       ),
                     ),
@@ -314,13 +353,14 @@ late TextEditingController fullNameController;
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<OnboardingProvider>().updateProfile(
-                    full: fullNameController.text,
-                    nick: nickNameController.text,
-                    mail: emailController.text,
-                    birth: dobController.text,
-                    gen: genderController.text,
-                    reg: regionController.text,
-                  );
+                      full: fullNameController.text,
+                      nick: nickNameController.text,
+                      mail: emailController.text,
+                      birth: dobController.text,
+                      gen: genderController.text,
+                      reg: regionController.text,
+                      image: _imageFile,
+                    );
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(

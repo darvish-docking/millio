@@ -11,6 +11,9 @@ import 'package:millio/features/cart/presentation/screens/payment_success_screen
 import 'package:millio/features/cart/presentation/screens/payment_failure_screen.dart';
 import 'package:millio/features/cart/data/models/voucher_model.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:millio/core/services/database_service.dart';
+import 'package:millio/core/services/auth_service.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -51,7 +54,7 @@ class _CartScreenState extends State<CartScreen> {
 
   void _openCheckout(double totalAmount) {
     var options = {
-      'key': 'rzp_test_SiVFO1Fm7aO4WZ',
+      'key': dotenv.env['Razorpay_Test_API_key'],
       'amount': (totalAmount * 100).toInt(), 
       'currency': 'INR',
       'name': 'Millio Corporation',
@@ -73,12 +76,31 @@ class _CartScreenState extends State<CartScreen> {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     if (!mounted) return;
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final user = AuthService().currentUser;
+
+    if (user != null) {
+      DatabaseService().saveOrder(
+        uid: user.uid,
+        transactionId: response.paymentId ?? "N/A",
+        totalAmount: cart.total,
+        items: cart.items.map((item) => item.toMap()).toList(),
+        status: "Success",
+        paymentMethod: _selectedPaymentMethodId ?? "Razorpay",
+      );
+    }
+
+    final amountStr = "\$${cart.total.toStringAsFixed(2)}";
+    final txId = response.paymentId ?? "N/A";
+
+    // Clear cart after saving
+    cart.clearCart();
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PaymentSuccessScreen(
-          transactionId: response.paymentId ?? "N/A",
-          amount: "\$${cart.total.toStringAsFixed(2)}",
+          transactionId: txId,
+          amount: amountStr,
           dateTime: DateTime.now(),
         ),
       ),

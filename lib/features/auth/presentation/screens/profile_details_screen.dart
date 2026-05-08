@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -49,17 +50,56 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      print("Attempting to open image picker with source: $source");
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        imageQuality: 80,
+      );
 
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+      if (pickedFile != null) {
+        print("Image selected: ${pickedFile.path}");
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      } else {
+        print("No image was selected (user cancelled).");
+      }
+    } catch (e) {
+      print("CRITICAL ERROR picking image: $e");
     }
+  }
+
+  void _showImageSourceActionSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -135,17 +175,26 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                                 fit: BoxFit.cover,
                               ),
                             )
-                          : Icon(
-                              Icons.person,
-                              size: width * 0.15,
-                              color: AppColorsLegacy.backgroundSecondary5,
-                            ),
+                          : context.watch<OnboardingProvider>().profilePicture.isNotEmpty
+                              ? ClipOval(
+                                  child: Image.memory(
+                                    base64Decode(context.watch<OnboardingProvider>().profilePicture),
+                                    height: width * 0.32,
+                                    width: width * 0.32,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.person,
+                                  size: width * 0.15,
+                                  color: AppColorsLegacy.backgroundSecondary5,
+                                ),
                     ),
                     Positioned(
                       bottom: 0,
                       right: 0,
                       child: GestureDetector(
-                        onTap: _pickImage,
+                        onTap: () => _showImageSourceActionSheet(context),
                         child: Container(
                           height: width * 0.09,
                           width: width * 0.09,
@@ -268,6 +317,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                             'gender': genderController.text,
                             'region': regionController.text,
                           },
+                          profileImage: _image,
                         ),
                       ),
                     );

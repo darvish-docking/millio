@@ -6,6 +6,9 @@ class AuthService {
   // Stream to track auth state changes
   Stream<User?> get user => _auth.authStateChanges();
 
+  // Get Current User
+  User? get currentUser => _auth.currentUser;
+
   // Sign Up with Email and Password
   Future<UserCredential?> signUp(String email, String password) async {
     try {

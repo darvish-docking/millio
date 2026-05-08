@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
@@ -10,7 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
   final Map<String, String>? tempProfile;
-  const LocationSelectionScreen({super.key, this.tempProfile});
+  final File? profileImage;
+  const LocationSelectionScreen({super.key, this.tempProfile, this.profileImage});
 
   @override
   State<LocationSelectionScreen> createState() => _LocationSelectionScreenState();
@@ -188,9 +190,10 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                             mail: profile['email'] ?? onboarding.email,
                             birth: profile['dob'] ?? onboarding.dob,
                             gen: profile['gender'] ?? onboarding.gender,
-                            reg: profile['region'] ?? onboarding.region,
-                            loc: locationController.text,
-                          );
+                             reg: profile['region'] ?? onboarding.region,
+                             loc: locationController.text,
+                             image: widget.profileImage,
+                           );
 
                           if (!mounted) return;
                           Navigator.pushAndRemoveUntil(
