@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/home_screen.dart';
 import 'package:millio/features/home/presentation/screens/product_details.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -11,9 +12,11 @@ class WishlistScreen extends StatefulWidget {
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
-  // Mock wishlist data based on SpecialOffer model
-  final List<SpecialOffer> wishlistItems = [
-    SpecialOffer(
+  // Mock wishlist data based on Product model
+  final List<Product> wishlistItems = [
+    Product(
+      id: '1',
+      category: 'Snacks',
       image: "assets/images/Buffalo Chicken Dip.png",
       title: "Buffalo Chicken Dip",
       distance: "1.2 km",
@@ -21,7 +24,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
       reviewCount: "(230)",
       price: 12.99,
     ),
-    SpecialOffer(
+    Product(
+      id: '2',
+      category: 'Desserts',
       image: "assets/images/Maltesers Tiramisu.png",
       title: "Maltesers Tiramisu",
       distance: "0.8 km",
@@ -29,7 +34,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
       reviewCount: "(540)",
       price: 24.00,
     ),
-    SpecialOffer(
+    Product(
+      id: '3',
+      category: 'Main Course',
       image: "assets/images/Sirloin steak.png",
       title: "Sirloin steak",
       distance: "1.5 km",
@@ -118,7 +125,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
     );
   }
 
-  Widget _buildWishlistItem(SpecialOffer item, double w, dynamic colors) {
+  Widget _buildWishlistItem(Product item, double w, dynamic colors) {
     return GestureDetector(
       onTap: () {
         Navigator.push(

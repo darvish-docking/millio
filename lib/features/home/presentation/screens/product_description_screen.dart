@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 
 class ProductDescriptionScreen extends StatelessWidget {
-  final SpecialOffer offer;
+  final Product offer;
 
   const ProductDescriptionScreen({super.key, required this.offer});
 
@@ -132,7 +132,7 @@ class ProductDescriptionScreen extends StatelessWidget {
 
                 // ℹ️ Information Section
                  Text(
-                  "Infomation", // Matching typo in design image
+                  "Information", // Matching typo in design image
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

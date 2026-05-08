@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
 import 'package:millio/features/home/presentation/screens/add_review_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 
 class ReviewData {
   final String userName;
@@ -22,7 +22,7 @@ class ReviewData {
 }
 
 class ReviewsScreen extends StatefulWidget {
-  final SpecialOffer offer;
+  final Product offer;
 
   const ReviewsScreen({super.key, required this.offer});
 

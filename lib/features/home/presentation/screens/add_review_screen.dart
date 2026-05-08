@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 
 class AddReviewScreen extends StatefulWidget {
-  final SpecialOffer offer;
+  final Product offer;
 
   const AddReviewScreen({super.key, required this.offer});
 

@@ -9,97 +9,9 @@ import 'package:millio/features/home/presentation/screens/notification_screen.da
 import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/presentation/screens/filter_screen.dart';
 import 'package:millio/features/home/presentation/screens/search_screen.dart';
-
-class SpecialOffer {
-  final String image;
-  final String title;
-  final String distance;
-  final String rating;
-  final String reviewCount;
-  final double price;
-
-  SpecialOffer({
-    required this.image,
-    required this.title,
-    required this.distance,
-    required this.rating,
-    required this.reviewCount,
-    required this.price,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'image': image,
-      'title': title,
-      'distance': distance,
-      'rating': rating,
-      'reviewCount': reviewCount,
-      'price': price,
-    };
-  }
-
-  factory SpecialOffer.fromMap(Map<String, dynamic> map) {
-    return SpecialOffer(
-      image: map['image'] ?? '',
-      title: map['title'] ?? '',
-      distance: map['distance'] ?? '',
-      rating: map['rating'] ?? '',
-      reviewCount: map['reviewCount'] ?? '',
-      price: (map['price'] ?? 0.0).toDouble(),
-    );
-  }
-}
-
-final List<SpecialOffer> specialOffers = [
-  SpecialOffer(
-    image: "assets/images/Buffalo Chicken Dip.png",
-    title: "Buffalo Chicken Dip",
-    distance: "1.2 km",
-    rating: "4.8",
-    reviewCount: "(230)",
-    price: 12.99,
-  ),
-  SpecialOffer(
-    image: "assets/images/Baked Spaghetti.png",
-    title: "Baked Spaghetti",
-    distance: "2.1 km",
-    rating: "4.5",
-    reviewCount: "(115)",
-    price: 15.50,
-  ),
-  SpecialOffer(
-    image: "assets/images/Maltesers Tiramisu.png",
-    title: "Maltesers Tiramisu",
-    distance: "0.8 km",
-    rating: "4.9",
-    reviewCount: "(540)",
-    price: 24.00,
-  ),
-  SpecialOffer(
-    image: "assets/images/Backyard Burgers.png",
-    title: "Backyard Burgers",
-    distance: "3.5 km",
-    rating: "4.7",
-    reviewCount: "(88)",
-    price: 6.99,
-  ),
-  SpecialOffer(
-    image: "assets/images/Sirloin steak.png",
-    title: "Sirloin steak",
-    distance: "1.5 km",
-    rating: "4.6",
-    reviewCount: "(122)",
-    price: 4.50,
-  ),
-  SpecialOffer(
-    image: "assets/images/Canadian Lobster.png",
-    title: "Canadian Lobster",
-    distance: "4.2 km",
-    rating: "4.2",
-    reviewCount: "(319)",
-    price: 5.99,
-  ),
-];
+import 'package:millio/features/home/data/models/product_model.dart';
+import 'package:millio/features/home/presentation/providers/home_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -229,13 +141,17 @@ class _HomeScreenState extends State<HomeScreen> {
     w = size.width;
     h = size.height;
 
+    final homeProvider = context.watch<HomeProvider>();
+    final products = homeProvider.products;
+    final hotDeals = homeProvider.hotDeals;
+
     // Filter categories based on search query
     final filteredCategories = categories
         .where((cat) => cat.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
     // Filter special offers based on search query
-    final filteredOffers = specialOffers
+    final filteredOffers = products
         .where((offer) => offer.title.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
@@ -561,112 +477,109 @@ AppColors.category5,
 
               SizedBox(height: h * .015),
 
-              SizedBox(
-                height: h * .35,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: 5,
-                  itemBuilder: (_, index) {
-                    return AnimatedBuilder(
-                      animation: _pageController,
-                      builder: (context, child) {
-                        double value = 1.0;
-                        if (_pageController.position.haveDimensions) {
-                          value = _pageController.page! - index;
-                          value = (1 - (value.abs() * 0.15)).clamp(0.85, 1.0);
-                        } else {
-                          value = index == 0 ? 1.0 : 0.85;
-                        }
-                        return Transform.scale(
-                          scale: value,
-                          child: child,
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: colors.primary,
-                          borderRadius: BorderRadius.circular(24),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colors.primary.withAlpha(102), // ~0.4 opacity
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              // Image.asset(
-                              //   "assets/deal${index + 1}.png",
-                              //   fit: BoxFit.cover,
-                              //   errorBuilder: (context, error, stackTrace) {
-                              //     return const Center(
-                              //       child: Icon(Icons.local_offer, color: Colors.white54, size: 50),
-                              //     );
-                              //   },
-                              // ),
-                              Container(
-                                // width: w * 0.05,
-                                // height: h * 0.05,
-                                color: colors.primaryLight.withAlpha(153)), // ~0.6 opacity
-                              Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+              homeProvider.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
+                      height: h * .35,
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: hotDeals.length,
+                        itemBuilder: (_, index) {
+                          final deal = hotDeals[index];
+                          return AnimatedBuilder(
+                            animation: _pageController,
+                            builder: (context, child) {
+                              double value = 1.0;
+                              if (_pageController.position.haveDimensions) {
+                                value = _pageController.page! - index;
+                                value = (1 - (value.abs() * 0.15)).clamp(0.85, 1.0);
+                              } else {
+                                value = index == 0 ? 1.0 : 0.85;
+                              }
+                              return Transform.scale(
+                                scale: value,
+                                child: child,
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: colors.primary,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: colors.primary.withAlpha(102), // ~0.4 opacity
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(24),
+                                child: Stack(
+                                  fit: StackFit.expand,
                                   children: [
-                                    Image.asset(
-                                      "assets/images/food-1.png",
-                                      width: w * 0.25,
-                                      height: h * 0.16,
-                                      fit: BoxFit.contain,
+                                    if (deal.image.isNotEmpty)
+                                      Image.asset(
+                                        deal.image,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: colors.primaryLight.withAlpha(153),
+                                          );
+                                        },
+                                      )
+                                    else
+                                      Container(color: colors.primaryLight.withAlpha(153)),
+                                    Container(
+                                      color: Colors.black.withAlpha(100), // Darken image slightly for text readability
                                     ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Seafood Som Tum',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: colors.textPrimary,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Montserrat',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '\$ 3.99 - \$ 2.59',
-                                      style: TextStyle(
-                                        color: colors.primary,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Montserrat',
+                                    Center(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            deal.title,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Montserrat',
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '\$ ${deal.price.toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Montserrat',
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                 
                               ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
 
               SizedBox(height: h * .03),
 
-              /// SPECIAL OFFER
               sectionHeader("Special Offers", onSeeAllTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SpecialOffersScreen(specialOffers: specialOffers),
+                    builder: (context) => SpecialOffersScreen(specialOffers: products),
                   ),
                 );
               }),

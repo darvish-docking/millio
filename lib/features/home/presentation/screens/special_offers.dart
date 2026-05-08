@@ -3,12 +3,12 @@ import 'package:millio/core/common/custom_bottom_nav.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/core/providers/tab_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart'; 
+import 'package:millio/features/home/data/models/product_model.dart'; 
 import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/presentation/screens/filter_screen.dart';
 
 class SpecialOffersScreen extends StatelessWidget {
-  final List<SpecialOffer> specialOffers;
+  final List<Product> specialOffers;
 
   const SpecialOffersScreen({super.key, required this.specialOffers});
 

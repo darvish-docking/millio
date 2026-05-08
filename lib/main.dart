@@ -9,9 +9,12 @@ import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/loading_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/core/providers/tab_provider.dart';
+import 'package:millio/features/home/presentation/providers/home_provider.dart';
 import 'package:millio/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:millio/core/utils/seed_data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   
+  // Seed sample data if products collection is empty
+  await seedProductsIfEmpty();
+
   runApp(
     MultiProvider(
       providers: [
@@ -45,6 +51,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => TabProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => HomeProvider(),
         ),
       ],
       child: const MyApp(),

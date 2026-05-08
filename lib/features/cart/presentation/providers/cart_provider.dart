@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:millio/features/cart/data/models/voucher_model.dart';
 
 class CartItem {
-  final SpecialOffer product;
+  final Product product;
   int quantity;
 
   CartItem({
@@ -22,7 +22,7 @@ class CartItem {
 
   factory CartItem.fromMap(Map<String, dynamic> map) {
     return CartItem(
-      product: SpecialOffer.fromMap(map['product']),
+      product: Product.fromMap(map['product'], map['product']['id'] ?? ''),
       quantity: map['quantity'] ?? 1,
     );
   }
@@ -65,8 +65,8 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  void addItem(SpecialOffer product, int quantity) {
-    final index = _items.indexWhere((item) => item.product.title == product.title);
+  void addItem(Product product, int quantity) {
+    final index = _items.indexWhere((item) => item.product.id == product.id);
     
     if (index >= 0) {
       _items[index].quantity += quantity;
@@ -79,7 +79,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   void removeItem(CartItem item) {
-    _items.removeWhere((i) => i.product.title == item.product.title);
+    _items.removeWhere((i) => i.product.id == item.product.id);
     _saveCartToPrefs();
     notifyListeners();
   }
@@ -94,7 +94,7 @@ class CartProvider extends ChangeNotifier {
     if (item.quantity > 1) {
       item.quantity--;
     } else {
-      _items.removeWhere((i) => i.product.title == item.product.title);
+      _items.removeWhere((i) => i.product.id == item.product.id);
     }
     _saveCartToPrefs();
     notifyListeners();

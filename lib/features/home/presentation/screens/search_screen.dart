@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
+import 'package:millio/features/home/presentation/providers/home_provider.dart';
 import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/presentation/screens/filter_screen.dart';
 import 'package:millio/core/common/custom_bottom_nav.dart';
@@ -169,13 +170,16 @@ class _SearchScreenState extends State<SearchScreen> {
     final w = size.width;
     final h = size.height;
 
+    final homeProvider = context.watch<HomeProvider>();
+    final products = homeProvider.products;
+
     // Filter categories based on search query
     final filteredCategories = categories
         .where((cat) => cat.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
     // Filter offers for search results
-    final filteredOffers = specialOffers
+    final filteredOffers = products
         .where((offer) => offer.title.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
@@ -356,7 +360,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: specialOffers.length > 4 ? 4 : specialOffers.length,
+                  itemCount: products.length > 4 ? 4 : products.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 16,
@@ -364,7 +368,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     childAspectRatio: 0.72,
                   ),
                   itemBuilder: (context, index) {
-                    final item = specialOffers[index];
+                    final item = products[index];
                     return _buildProductCard(item, w, colors);
                   },
                 ),
@@ -460,7 +464,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildProductCard(SpecialOffer item, double w, dynamic colors) {
+  Widget _buildProductCard(Product item, double w, dynamic colors) {
     return GestureDetector(
       onTap: () {
         Navigator.push(

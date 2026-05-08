@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
+import 'package:millio/features/home/presentation/providers/home_provider.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/features/cart/presentation/screens/address_screen.dart';
 import 'package:millio/features/cart/presentation/screens/voucher_screen.dart';
@@ -165,6 +166,8 @@ class _CartScreenState extends State<CartScreen> {
                     final colors = context.colors;
 
     final cart = context.watch<CartProvider>();
+    final homeProvider = context.watch<HomeProvider>();
+    final products = homeProvider.products;
     final size = MediaQuery.of(context).size;
     final w = size.width;
     final h = size.height;
@@ -273,7 +276,7 @@ class _CartScreenState extends State<CartScreen> {
             // --- CONTENT AREA ---
             Expanded(
               child: _activeTabIndex == 0 
-                ? (cart.isEmpty ? _buildEmptyCartFlow(w, h, padding) : _buildCartItemsFlow(w, h, padding, cart))
+                ? (cart.isEmpty ? _buildEmptyCartFlow(w, h, padding, products) : _buildCartItemsFlow(w, h, padding, cart))
                 : (_activeTabIndex == 1 
                     ? _buildCheckoutFlow(w, h, padding, cart) 
                     : const OrderTrackingScreen()),
@@ -691,7 +694,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildEmptyCartFlow(double w, double h, double padding) {
+  Widget _buildEmptyCartFlow(double w, double h, double padding, List<Product> products) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -821,9 +824,9 @@ class _CartScreenState extends State<CartScreen> {
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.only(left: padding),
               physics: const BouncingScrollPhysics(),
-              itemCount: specialOffers.length,
+              itemCount: products.length,
               itemBuilder: (context, index) {
-                return _buildSuggestedProductCard(w, h, specialOffers[index]);
+                return _buildSuggestedProductCard(w, h, products[index]);
               },
             ),
           ),
@@ -981,7 +984,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildSuggestedProductCard(double w, double h, SpecialOffer offer) {
+  Widget _buildSuggestedProductCard(double w, double h, Product offer) {
                     final colors = context.colors;
 
     return Container(

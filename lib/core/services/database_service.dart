@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -66,5 +67,27 @@ class DatabaseService {
     } catch (e) {
       throw 'Error saving order: $e';
     }
+  }
+
+  // Get all products
+  Stream<List<Product>> getProducts() {
+    return _db.collection('products').snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Product.fromMap(doc.data(), doc.id))
+          .toList();
+    });
+  }
+
+  // Get hot deals
+  Stream<List<Product>> getHotDeals() {
+    return _db
+        .collection('products')
+        .where('isHotDeal', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Product.fromMap(doc.data(), doc.id))
+          .toList();
+    });
   }
 }

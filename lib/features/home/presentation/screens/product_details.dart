@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/home/presentation/screens/product_description_screen.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
+import 'package:millio/features/home/data/models/product_model.dart';
 import 'package:millio/features/home/presentation/screens/reviews_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  final SpecialOffer offer;
+  final Product offer;
 
   const ProductDetailsScreen({super.key, required this.offer});
 
