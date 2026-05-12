@@ -100,6 +100,7 @@ class DatabaseService {
   // Get all products
   Stream<List<Product>> getProducts() {
     return _db.collection('products').snapshots().map((snapshot) {
+
       return snapshot.docs
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
@@ -116,6 +117,102 @@ class DatabaseService {
       return snapshot.docs
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
+    });
+  }
+
+  /// Streams reviews for a product ordered by createdAt descending.
+  Stream<List<Map<String, dynamic>>> getProductReviews(String productId) {
+    return _db
+        .collection('products')
+        .doc(productId)
+        .collection('reviews')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((s) => s.docs.map((d) => {'id': d.id, ...d.data()}).toList());
+  }
+
+  /// Streams notifications for a user ordered by createdAt descending.
+  /// Firestore path: notifications/{uid}/items/{notificationId}
+  Stream<List<Map<String, dynamic>>> getNotifications(String uid) {
+    return _db
+        .collection('notifications')
+        .doc(uid)
+        .collection('items')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((s) => s.docs.map((d) => {'id': d.id, ...d.data()}).toList());
+  }
+
+  /// Marks all unread notifications as read using a batch write.
+  Future<void> markAllNotificationsRead(String uid) async {
+    final unread = await _db
+        .collection('notifications')
+        .doc(uid)
+        .collection('items')
+        .where('isRead', isEqualTo: false)
+        .get();
+
+    if (unread.docs.isEmpty) return;
+
+    final batch = _db.batch();
+    for (final doc in unread.docs) {
+      batch.update(doc.reference, {'isRead': true});
+    }
+    await batch.commit();
+  }
+
+  /// Toggles the isRead field on a single notification document.
+  Future<void> toggleNotificationRead(
+      String uid, String notificationId, bool currentValue) async {
+    await _db
+        .collection('notifications')
+        .doc(uid)
+        .collection('items')
+        .doc(notificationId)
+        .update({'isRead': !currentValue});
+  }
+
+  /// Writes a new review and atomically updates aggregateRating + reviewCount.
+  Future<void> addReview({
+    required String productId,
+    required String uid,
+    required String userName,
+    required String comment,
+    required double rating,
+    String profilePicture = '',
+  }) async {
+    final productRef = _db.collection('products').doc(productId);
+    final reviewRef = productRef.collection('reviews').doc();
+
+    await _db.runTransaction((tx) async {
+      final productSnap = await tx.get(productRef);
+      final data = productSnap.data() ?? {};
+      // reviewCount may be a String like "(230)" in legacy product docs — handle both.
+      final rawCount = data['reviewCount'];
+      final currentCount = rawCount is int
+          ? rawCount
+          : rawCount is num
+              ? rawCount.toInt()
+              : 0;
+      final currentRating = (data['aggregateRating'] as num?)?.toDouble() ?? 0.0;
+
+      final newCount = currentCount + 1;
+      final newRating = ((currentRating * currentCount) + rating) / newCount;
+
+      tx.set(reviewRef, {
+        'uid': uid,
+        'userName': userName,
+        'profilePicture': profilePicture,
+        'rating': rating,
+        'comment': comment,
+        'likes': 0,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      tx.update(productRef, {
+        'aggregateRating': newRating,
+        'reviewCount': newCount,
+      });
     });
   }
 }

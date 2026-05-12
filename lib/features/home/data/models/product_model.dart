@@ -47,7 +47,7 @@ class Product {
       title: map['title'] ?? '',
       distance: map['distance'] ?? '',
       rating: map['rating'] ?? '0.0',
-      reviewCount: map['reviewCount'] ?? '(0)',
+      reviewCount: map['reviewCount']?.toString() ?? '0',
       price: (map['price'] ?? 0.0).toDouble(),
       category: map['category'] ?? 'Uncategorized',
       isHotDeal: map['isHotDeal'] ?? false,

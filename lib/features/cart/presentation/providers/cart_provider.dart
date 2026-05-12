@@ -42,6 +42,7 @@ class CartProvider extends ChangeNotifier {
 
   void applyVoucher(Voucher? voucher) {
     _appliedVoucher = voucher;
+    
     notifyListeners();
   }
 
@@ -100,6 +101,11 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeVoucher() {
+  _appliedVoucher = null;
+  notifyListeners();
+}
+
   double get subtotal {
     double total = 0.0;
     for (var item in _items) {
@@ -110,26 +116,79 @@ class CartProvider extends ChangeNotifier {
 
   double get deliveryFee => 5.00;
   
+  // double get discount {
+  //   if (_appliedVoucher != null) {
+  //     switch (_appliedVoucher!.id) {
+  //       case '1': // Free Delivery
+  //         return deliveryFee;
+  //       case '2': // 15% Off Total
+  //         return subtotal * 0.15;
+  //       case '4': // $5.00 Welcome Gift
+  //         return 5.00;
+  //       default:
+  //         return 0.00;
+  //     }
+  //   }
+  //   return 0.00;
+  // }
+
   double get discount {
-    if (_appliedVoucher != null) {
-      switch (_appliedVoucher!.id) {
-        case '1': // Free Delivery
-          return deliveryFee;
-        case '2': // 15% Off Total
-          return subtotal * 0.15;
-        case '4': // $5.00 Welcome Gift
-          return 5.00;
-        default:
-          return 0.00;
-      }
-    }
-    return subtotal > 20 ? 4.99 : 0.00;
+    
+    print(_appliedVoucher?.title);
+
+  if (_appliedVoucher == null) {
+    return 0;
   }
 
-  double get total {
-    double result = subtotal + deliveryFee - discount;
-    return result > 0 ? result : 0.0;
+  // Minimum order check
+  if (subtotal < _appliedVoucher!.minimumOrder) {
+    return 0;
   }
+
+  switch (_appliedVoucher!.discountType) {
+
+    case 'percentage':
+      return subtotal *
+          (_appliedVoucher!.discountValue / 100);
+
+    case 'fixed':
+      return _appliedVoucher!.discountValue;
+
+    default:
+      return 0;
+  }
+}
+
+
+  double get finalDeliveryFee {
+  if (_appliedVoucher?.discountType ==
+      'free_delivery') {
+    return 0;
+  }
+
+  return deliveryFee;
+}
+
+
+
+  // double get total {
+  //   double result = subtotal + deliveryFee - discount;
+  //   return result > 0 ? result : 0.0;
+  // }
+
+  double get total {
+
+     print('DISCOUNT: $discount');
+  print('DELIVERY: $finalDeliveryFee');
+
+  final result =
+      subtotal +
+      finalDeliveryFee -
+      discount;
+
+  return result > 0 ? result : 0;
+}
+
 
   int get itemCount => _items.length;
   bool get isEmpty => _items.isEmpty;

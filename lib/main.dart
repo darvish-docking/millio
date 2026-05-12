@@ -1,14 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:millio/core/providers/theme_provider.dart';
+import 'package:millio/core/services/notification_service.dart';
 import 'package:millio/core/theme/dark_theme.dart';
 import 'package:millio/core/theme/light_theme.dart';
 import 'package:millio/features/auth/presentation/providers/onboarding.dart';
 import 'package:millio/features/auth/presentation/screens/loading_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/core/providers/tab_provider.dart';
+import 'package:millio/features/cart/presentation/providers/vocher_provider.dart';
 import 'package:millio/features/home/presentation/providers/home_provider.dart';
 import 'package:millio/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +35,12 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize notifications for already-signed-in users (returning users)
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null) {
+    await NotificationService().initialize(currentUser.uid);
+  }
   
 
 
@@ -53,6 +62,9 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => HomeProvider(),
         ),
+        ChangeNotifierProvider(
+  create: (_) => VoucherProvider(),
+),
       ],
       child: const MyApp(),
     ),

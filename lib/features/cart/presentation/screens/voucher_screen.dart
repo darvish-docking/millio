@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/cart/data/models/voucher_model.dart';
+import 'package:millio/features/cart/presentation/providers/vocher_provider.dart';
+import 'package:provider/provider.dart';
 
 class VoucherScreen extends StatefulWidget {
   const VoucherScreen({super.key});
@@ -10,34 +14,42 @@ class VoucherScreen extends StatefulWidget {
 }
 
 class _VoucherScreenState extends State<VoucherScreen> {
-  String? _selectedVoucherId;
 
-  final List<Voucher> _vouchers = [
-    Voucher(
-      id: '1',
-      title: 'Free Delivery',
-      details: 'On your first 3 orders above \$15',
-      imagePath: 'assets/images/cart-icon.png',
-    ),
-     Voucher(
-      id: '2',
-      title: '15% Off Total',
-      details: 'Valid for all restaurants today',
-      imagePath: 'assets/images/Discount.png',
-    ),
-    Voucher(
-      id: '3',
-      title: 'Buy 1 Get 1',
-      details: 'On selected pizza outlets',
-      imagePath: 'assets/images/Fast Food.png',
-    ),
-    Voucher(
-      id: '4',
-      title: '\$5.00 Welcome Gift',
-      details: 'New user special offer',
-      imagePath: 'assets/images/Wallet.png',
-    ),
-  ];
+  @override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    context.read<VoucherProvider>().fetchVouchers();
+  });
+}
+
+  // final List<Voucher> _vouchers = [
+  //   Voucher(
+  //     id: '1',
+  //     title: 'Free Delivery',
+  //     details: 'On your first 3 orders above \$15',
+  //     imagePath: 'assets/images/cart-icon.png',
+  //   ),
+  //    Voucher(
+  //     id: '2',
+  //     title: '15% Off Total',
+  //     details: 'Valid for all restaurants today',
+  //     imagePath: 'assets/images/Discount.png',
+  //   ),
+  //   Voucher(
+  //     id: '3',
+  //     title: 'Buy 1 Get 1',
+  //     details: 'On selected pizza outlets',
+  //     imagePath: 'assets/images/Fast Food.png',
+  //   ),
+  //   Voucher(
+  //     id: '4',
+  //     title: '\$5.00 Welcome Gift',
+  //     details: 'New user special offer',
+  //     imagePath: 'assets/images/Wallet.png',
+  //   ),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +59,8 @@ class _VoucherScreenState extends State<VoucherScreen> {
     final w = size.width;
     final h = size.height;
     final padding = w * 0.05;
+
+    final provider = context.watch<VoucherProvider>();
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -84,20 +98,22 @@ class _VoucherScreenState extends State<VoucherScreen> {
               ),
             ),
 
+  
             // --- VOUCHER LIST ---
             Expanded(
+              
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: padding, vertical: h * 0.02),
-                itemCount: _vouchers.length,
+                itemCount: provider.vouchers.length,
                 itemBuilder: (context, index) {
-                  final voucher = _vouchers[index];
-                  final isSelected = _selectedVoucherId == voucher.id;
+                  final voucher = provider.vouchers[index];
+                  final isSelected = provider.selectedVoucher?.id ==
+    voucher.id;
 
                   return GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _selectedVoucherId = voucher.id;
-                      });
+                      provider.selectVoucher(voucher);
+                      
                     },
                     child: Container(
                       margin: EdgeInsets.only(bottom: h * 0.02),
@@ -130,8 +146,8 @@ class _VoucherScreenState extends State<VoucherScreen> {
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(14), // Increased padding to reduce icon size
-                            child: Image.asset(
-                              voucher.imagePath,
+                            child: Image.memory(
+                              base64Decode(voucher.imagePath),
                               color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.textPrimary, // Active: white, Inactive: black
                               fit: BoxFit.contain,
                             ),
@@ -193,11 +209,11 @@ class _VoucherScreenState extends State<VoucherScreen> {
                 width: double.infinity,
                 height: h * 0.06,
                 child: ElevatedButton(
-                  onPressed: _selectedVoucherId == null 
+                  onPressed: provider.selectedVoucher == null 
                     ? null 
                     : () {
                         // Apply voucher logic
-                        Navigator.pop(context, _vouchers.firstWhere((v) => v.id == _selectedVoucherId));
+                        Navigator.pop(context,  provider.selectedVoucher);
                       },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColorsLegacy.primary,

@@ -228,6 +228,7 @@ class _CartScreenState extends State<CartScreen> {
                     final colors = context.colors;
 
     final cart = context.watch<CartProvider>();
+    
     final homeProvider = context.watch<HomeProvider>();
     final products = homeProvider.products;
     final size = MediaQuery.of(context).size;
@@ -504,7 +505,9 @@ class _CartScreenState extends State<CartScreen> {
           MaterialPageRoute(builder: (context) => const VoucherScreen()),
         );
         if (result != null && result is Voucher) {
-          cart.applyVoucher(result);
+          // cart.applyVoucher(result);
+          context.read<CartProvider>()
+    .applyVoucher(result);
         }
       },
       child: Container(
@@ -531,7 +534,8 @@ class _CartScreenState extends State<CartScreen> {
             ),
             if (cart.appliedVoucher != null)
               GestureDetector(
-                onTap: () => cart.applyVoucher(null),
+                onTap: () => context.read<CartProvider>()
+    .removeVoucher(),
                 child: Icon(Icons.close, color: AppColorsLegacy.primary, size: w * 0.05),
               )
             else
@@ -629,6 +633,10 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _buildCartCheckoutDetails(double w, double h, double padding, CartProvider cart) {
                     final colors = context.colors;
+
+print("DISCOUNT UI: ${cart.discount}");
+print("TOTAL UI: ${cart.total}");
+print("DELIVERY UI: ${cart.finalDeliveryFee}");
 
     double subtotal = cart.subtotal;
     double deliveryFee = cart.deliveryFee;

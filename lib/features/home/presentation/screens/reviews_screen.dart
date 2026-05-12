@@ -1,25 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/services/database_service.dart';
 import 'package:millio/features/home/presentation/screens/add_review_screen.dart';
 import 'package:millio/features/home/data/models/product_model.dart';
-
-class ReviewData {
-  final String userName;
-  final String userImage;
-  final double rating;
-  final String comment;
-  final int likes;
-  final String date;
-
-  ReviewData({
-    required this.userName,
-    required this.userImage,
-    required this.rating,
-    required this.comment,
-    required this.likes,
-    required this.date,
-  });
-}
 
 class ReviewsScreen extends StatefulWidget {
   final Product offer;
@@ -33,48 +20,34 @@ class ReviewsScreen extends StatefulWidget {
 class _ReviewsScreenState extends State<ReviewsScreen> {
   int? _selectedRating; // null means "Sort by" (Show All)
 
-  final List<ReviewData> reviews = [
-    ReviewData(
-      userName: "Alexander Hipwell",
-      userImage: "assets/images/username.png",
-      rating: 5.0,
-      comment: "This food is absolutely amazing! The flavors are rich and well-balanced. I highly recommend it to anyone looking for a premium dining experience.",
-      likes: 24,
-      date: "3 days ago",
-    ),
-    ReviewData(
-      userName: "Sophia Martinez",
-      userImage: "assets/images/username.png",
-      rating: 4.0,
-      comment: "Very delicious and fresh. The portion size was perfect. Only giving 4 stars because the delivery took slightly longer than expected, but the taste made up for it.",
-      likes: 12,
-      date: "1 week ago",
-    ),
-    ReviewData(
-      userName: "James Wilson",
-      userImage: "assets/images/username.png",
-      rating: 5.0,
-      comment: "Best meal I've had in a long time. The presentation was beautiful and the quality of ingredients was top-notch. Will order again definitely!",
-      likes: 8,
-      date: "1 month ago",
-    ),
-    ReviewData(
-      userName: "Michael Chen",
-      userImage: "assets/images/username.png",
-      rating: 3.0,
-      comment: "Average experience. The food was okay, but I've had better seafood in other places. The atmosphere was nice though.",
-      likes: 5,
-      date: "2 months ago",
-    ),
-    ReviewData(
-      userName: "Emily Davis",
-      userImage: "assets/images/username.png",
-      rating: 2.0,
-      comment: "Disappointed. The food arrived cold and didn't taste very fresh. Hopefully, it was just an off day for them.",
-      likes: 3,
-      date: "3 months ago",
-    ),
-  ];
+  final DatabaseService _dbService = DatabaseService();
+  List<Map<String, dynamic>> _allReviews = [];
+  bool _reviewsLoading = true;
+  StreamSubscription<List<Map<String, dynamic>>>? _reviewsSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _reviewsSub = _dbService.getProductReviews(widget.offer.id).listen(
+      (reviews) {
+        setState(() {
+          _allReviews = reviews;
+          _reviewsLoading = false;
+        });
+      },
+      onError: (_) {
+        setState(() {
+          _reviewsLoading = false;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _reviewsSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +57,10 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
     final padding = w * 0.05;
 
     final filteredReviews = _selectedRating == null
-        ? reviews
-        : reviews.where((r) => r.rating.toInt() == _selectedRating).toList();
+        ? _allReviews
+        : _allReviews
+            .where((r) => (r['rating'] as num).toInt() == _selectedRating)
+            .toList();
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -102,9 +77,10 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
               clipBehavior: Clip.hardEdge,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child:  Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColorsLegacy.textPrimary),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(Icons.arrow_back_ios_new,
+                      size: 18, color: AppColorsLegacy.textPrimary),
                 ),
               ),
             ),
@@ -128,63 +104,111 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- RATING SUMMARY DASHBOARD ---
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.offer.rating,
-                        style: TextStyle(
-                          fontSize: w * 0.15,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Montserrat',
-                          color: colors.textPrimary,
-                        ),
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('products')
+                  .doc(widget.offer.id)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                double liveRating;
+                int liveCount;
+
+                if (snapshot.hasData && snapshot.data!.exists) {
+                  final data =
+                      snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                  liveRating = (data['aggregateRating'] as num?)?.toDouble() ??
+                      (double.tryParse(widget.offer.rating) ?? 0.0);
+                  // reviewCount may be stored as int (after first review) or
+                  // as a String like "(230)" in legacy product docs — handle both.
+                  final rawCount = data['reviewCount'];
+                  if (rawCount is int) {
+                    liveCount = rawCount;
+                  } else if (rawCount is num) {
+                    liveCount = rawCount.toInt();
+                  } else {
+                    liveCount = int.tryParse(
+                            widget.offer.reviewCount.replaceAll(RegExp(r'[^0-9]'), '')) ??
+                        0;
+                  }
+                } else {
+                  liveRating = double.tryParse(widget.offer.rating) ?? 0.0;
+                  liveCount = int.tryParse(
+                          widget.offer.reviewCount.replaceAll(RegExp(r'[^0-9]'), '')) ??
+                      0;
+                }
+
+                final ratingString = liveRating.toStringAsFixed(1);
+                final totalReviews = _allReviews.isEmpty ? liveCount : _allReviews.length;
+
+                // Compute progress bar values from live reviews
+                double barValue(int star) {
+                  if (_allReviews.isEmpty) return 0.0;
+                  final count = _allReviews
+                      .where((r) => (r['rating'] as num).toInt() == star)
+                      .length;
+                  return count / _allReviews.length;
+                }
+
+                return Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          Text(
+                            ratingString,
+                            style: TextStyle(
+                              fontSize: w * 0.15,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Montserrat',
+                              color: colors.textPrimary,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(5, (index) {
+                              return Icon(
+                                index < liveRating.floor()
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                color: AppColorsLegacy.amber,
+                                size: w * 0.05,
+                              );
+                            }),
+                          ),
+                          SizedBox(height: h * 0.01),
+                          Text(
+                            "$totalReviews Reviews",
+                            style: TextStyle(
+                              color: AppColorsLegacy.backgroundSecondary,
+                              fontSize: w * 0.035,
+                              fontFamily: 'Montserrat',
+                            ),
+                          ),
+                        ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(5, (index) {
-                          double r = double.tryParse(widget.offer.rating) ?? 0.0;
-                          return Icon(
-                            index < r.floor() ? Icons.star : Icons.star_border,
-                            color: AppColorsLegacy.amber,
-                            size: w * 0.05,
-                          );
-                        }),
+                    ),
+                    Container(
+                      height: h * 0.12,
+                      width: 1.5,
+                      color: AppColorsLegacy.backgroundSecondary2,
+                      margin: EdgeInsets.symmetric(horizontal: w * 0.04),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        children: [
+                          _buildRatingProgressRow("5", barValue(5), w),
+                          _buildRatingProgressRow("4", barValue(4), w),
+                          _buildRatingProgressRow("3", barValue(3), w),
+                          _buildRatingProgressRow("2", barValue(2), w),
+                          _buildRatingProgressRow("1", barValue(1), w),
+                        ],
                       ),
-                      SizedBox(height: h * 0.01),
-                      Text(
-                        "${widget.offer.reviewCount} Reviews",
-                        style: TextStyle(
-                          color: AppColorsLegacy.backgroundSecondary,
-                          fontSize: w * 0.035,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: h * 0.12,
-                  width: 1.5,
-                  color: AppColorsLegacy.backgroundSecondary2,
-                  margin: EdgeInsets.symmetric(horizontal: w * 0.04),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    children: [
-                      _buildRatingProgressRow("5", 0.9, w),
-                      _buildRatingProgressRow("4", 0.15, w),
-                      _buildRatingProgressRow("3", 0.05, w),
-                      _buildRatingProgressRow("2", 0.02, w),
-                      _buildRatingProgressRow("1", 0.01, w),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
 
             SizedBox(height: h * 0.05),
@@ -195,24 +219,24 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
-                  _buildFilterChip("Sort by", w, isSelected: _selectedRating == null, onTap: () {
-                    setState(() => _selectedRating = null);
-                  }),
-                  _buildFilterChip("★ 5", w, isSelected: _selectedRating == 5, onTap: () {
-                    setState(() => _selectedRating = 5);
-                  }),
-                  _buildFilterChip("★ 4", w, isSelected: _selectedRating == 4, onTap: () {
-                    setState(() => _selectedRating = 4);
-                  }),
-                  _buildFilterChip("★ 3", w, isSelected: _selectedRating == 3, onTap: () {
-                    setState(() => _selectedRating = 3);
-                  }),
-                  _buildFilterChip("★ 2", w, isSelected: _selectedRating == 2, onTap: () {
-                    setState(() => _selectedRating = 2);
-                  }),
-                  _buildFilterChip("★ 1", w, isSelected: _selectedRating == 1, onTap: () {
-                    setState(() => _selectedRating = 1);
-                  }),
+                  _buildFilterChip("Sort by", w,
+                      isSelected: _selectedRating == null,
+                      onTap: () => setState(() => _selectedRating = null)),
+                  _buildFilterChip("★ 5", w,
+                      isSelected: _selectedRating == 5,
+                      onTap: () => setState(() => _selectedRating = 5)),
+                  _buildFilterChip("★ 4", w,
+                      isSelected: _selectedRating == 4,
+                      onTap: () => setState(() => _selectedRating = 4)),
+                  _buildFilterChip("★ 3", w,
+                      isSelected: _selectedRating == 3,
+                      onTap: () => setState(() => _selectedRating = 3)),
+                  _buildFilterChip("★ 2", w,
+                      isSelected: _selectedRating == 2,
+                      onTap: () => setState(() => _selectedRating = 2)),
+                  _buildFilterChip("★ 1", w,
+                      isSelected: _selectedRating == 1,
+                      onTap: () => setState(() => _selectedRating = 1)),
                 ],
               ),
             ),
@@ -220,42 +244,52 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             SizedBox(height: h * 0.04),
 
             // --- REVIEWS LIST ---
-            filteredReviews.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: h * 0.1),
-                      child: Text(
-                        "No reviews for this rating",
-                        style: TextStyle(
-                          color: AppColorsLegacy.backgroundSecondary,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
+            if (_reviewsLoading)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: h * 0.05),
+                  child: const CircularProgressIndicator(),
+                ),
+              )
+            else if (filteredReviews.isEmpty)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: h * 0.1),
+                  child: Text(
+                    "No reviews for this rating",
+                    style: TextStyle(
+                      color: AppColorsLegacy.backgroundSecondary,
+                      fontFamily: 'Montserrat',
                     ),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: filteredReviews.length,
-                    itemBuilder: (context, index) {
-                      final review = filteredReviews[index];
-                      return Column(
-                        children: [
-                          _buildReviewItem(review, w, h),
-                          if (index < filteredReviews.length - 1)
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: h * 0.025),
-                              child: Divider(
-                                color: AppColorsLegacy.primary.withOpacity(0.4),
-                                thickness: 1,
-                              ),
-                            ),
-                          if (index == filteredReviews.length - 1)
-                            SizedBox(height: h * 0.05),
-                        ],
-                      );
-                    },
                   ),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: filteredReviews.length,
+                itemBuilder: (context, index) {
+                  final review = filteredReviews[index];
+                  return Column(
+                    children: [
+                      _buildReviewItem(review, w, h),
+                      if (index < filteredReviews.length - 1)
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: h * 0.025),
+                          child: Divider(
+                            color:
+                                AppColorsLegacy.primary.withOpacity(0.4),
+                            thickness: 1,
+                          ),
+                        ),
+                      if (index == filteredReviews.length - 1)
+                        SizedBox(height: h * 0.05),
+                    ],
+                  );
+                },
+              ),
 
             // --- ADD REVIEW BUTTON ---
             SizedBox(
@@ -266,7 +300,8 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddReviewScreen(offer: widget.offer),
+                      builder: (context) =>
+                          AddReviewScreen(offer: widget.offer),
                     ),
                   );
                 },
@@ -329,24 +364,33 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
     );
   }
 
-  Widget _buildFilterChip(String label, double w, {required bool isSelected, required VoidCallback onTap}) {
+  Widget _buildFilterChip(String label, double w,
+      {required bool isSelected, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(right: w * 0.03),
-        padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: w * 0.015),
+        padding: EdgeInsets.symmetric(
+            horizontal: w * 0.04, vertical: w * 0.015),
         decoration: BoxDecoration(
-          color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.primary.withOpacity(0.1),
+          color: isSelected
+              ? AppColorsLegacy.primary
+              : AppColorsLegacy.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(w * 0.05),
           border: Border.all(
-            color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.primary.withOpacity(0.1),
+            color: isSelected
+                ? AppColorsLegacy.primary
+                : AppColorsLegacy.primary.withOpacity(0.1),
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.primary,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: isSelected
+                ? AppColorsLegacy.background
+                : AppColorsLegacy.primary,
+            fontWeight:
+                isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: w * 0.035,
             fontFamily: 'Montserrat',
           ),
@@ -355,7 +399,46 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
     );
   }
 
-  Widget _buildReviewItem(ReviewData review, double w, double h) {
+  String _formatDate(dynamic createdAt) {
+    if (createdAt == null) return 'Just now';
+    if (createdAt is Timestamp) {
+      final dt = createdAt.toDate();
+      return DateFormat('MMM d, yyyy').format(dt);
+    }
+    return 'Just now';
+  }
+
+  Widget _buildReviewItem(Map<String, dynamic> r, double w, double h) {
+    final userName = r['userName'] as String? ?? 'Anonymous';
+    final rating = (r['rating'] as num?)?.toDouble() ?? 0.0;
+    final comment = r['comment'] as String? ?? '';
+    final likes = (r['likes'] as num?)?.toInt() ?? 0;
+    final dateStr = _formatDate(r['createdAt']);
+    final profilePicture = r['profilePicture'] as String? ?? '';
+
+    // Build avatar: use base64 image if available, else show initial letter
+    Widget avatarChild;
+    ImageProvider? avatarImage;
+    if (profilePicture.isNotEmpty) {
+      try {
+        avatarImage = MemoryImage(base64Decode(profilePicture));
+      } catch (_) {
+        avatarImage = null;
+      }
+    }
+    if (avatarImage == null) {
+      avatarChild = Text(
+        userName.isNotEmpty ? userName[0].toUpperCase() : '?',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: w * 0.05,
+          color: AppColorsLegacy.textPrimary,
+        ),
+      );
+    } else {
+      avatarChild = const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -364,18 +447,20 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColorsLegacy.backgroundSecondary1, width: 2),
+                border: Border.all(
+                    color: AppColorsLegacy.backgroundSecondary1, width: 2),
               ),
               child: CircleAvatar(
                 radius: w * 0.06,
-                backgroundImage: AssetImage(review.userImage),
                 backgroundColor: AppColorsLegacy.backgroundSecondary2,
+                backgroundImage: avatarImage,
+                child: avatarImage == null ? avatarChild : null,
               ),
             ),
             SizedBox(width: w * 0.04),
             Expanded(
               child: Text(
-                review.userName,
+                userName,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: w * 0.045,
@@ -387,7 +472,9 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             Row(
               children: List.generate(5, (index) {
                 return Icon(
-                  index < review.rating.floor() ? Icons.star : Icons.star_border,
+                  index < rating.floor()
+                      ? Icons.star
+                      : Icons.star_border,
                   color: AppColorsLegacy.amber,
                   size: w * 0.045,
                 );
@@ -397,7 +484,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
         ),
         SizedBox(height: h * 0.015),
         Text(
-          review.comment,
+          comment,
           style: TextStyle(
             color: AppColorsLegacy.backgroundSecondary7,
             fontSize: w * 0.036,
@@ -408,10 +495,11 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
         SizedBox(height: h * 0.02),
         Row(
           children: [
-            Icon(Icons.favorite, color: AppColorsLegacy.buttonFavourites, size: w * 0.05),
+            Icon(Icons.favorite,
+                color: AppColorsLegacy.buttonFavourites, size: w * 0.05),
             SizedBox(width: w * 0.02),
             Text(
-              review.likes.toString(),
+              likes.toString(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: w * 0.038,
@@ -426,7 +514,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
               margin: EdgeInsets.symmetric(horizontal: w * 0.04),
             ),
             Text(
-              review.date,
+              dateStr,
               style: TextStyle(
                 color: AppColorsLegacy.backgroundSecondary,
                 fontSize: w * 0.035,

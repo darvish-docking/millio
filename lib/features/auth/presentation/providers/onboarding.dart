@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:millio/core/services/auth_service.dart';
 import 'package:millio/core/services/database_service.dart';
+import 'package:millio/core/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingProvider extends ChangeNotifier {
@@ -39,6 +40,9 @@ class OnboardingProvider extends ChangeNotifier {
         } catch (e) {
           print("Error fetching profile in listener: $e");
         }
+
+        // Initialize push notifications for this user session
+        NotificationService().initialize(user.uid).catchError((_) {});
       } else {
         _isLoggedIn = false;
         _username = "";
