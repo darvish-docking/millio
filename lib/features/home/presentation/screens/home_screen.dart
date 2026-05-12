@@ -501,7 +501,16 @@ AppColors.category5,
                                 child: child,
                               );
                             },
-                            child: Container(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetailsScreen(offer: deal),
+                                  ),
+                                );
+                              },
+                              child: Container(
                               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                               decoration: BoxDecoration(
                                 color: colors.primary,
@@ -568,6 +577,8 @@ AppColors.category5,
                                 ),
                               ),
                             ),
+                            ), // closes GestureDetector
+
                           );
                         },
                       ),

@@ -45,28 +45,56 @@ class DatabaseService {
     }
   }
 
-  // Save Order to Firestore
-  Future<void> saveOrder({
+  // Save a completed order to Firestore with full cart details
+  Future<String> saveOrder({
     required String uid,
     required String transactionId,
-    required double totalAmount,
     required List<Map<String, dynamic>> items,
+    required double subtotal,
+    required double deliveryFee,
+    required double discount,
+    required double totalAmount,
     required String status,
     String? paymentMethod,
+    String? voucherId,
+    String? voucherTitle,
+    String? deliveryAddress,
+    String? deliveryAddressLabel,
   }) async {
     try {
-      await _db.collection('orders').add({
+      final docRef = await _db.collection('orders').add({
         'userId': uid,
         'transactionId': transactionId,
-        'totalAmount': totalAmount,
         'items': items,
+        'subtotal': subtotal,
+        'deliveryFee': deliveryFee,
+        'discount': discount,
+        'totalAmount': totalAmount,
         'status': status,
         'paymentMethod': paymentMethod,
+        'voucherId': voucherId,
+        'voucherTitle': voucherTitle,
+        'deliveryAddress': deliveryAddress,
+        'deliveryAddressLabel': deliveryAddressLabel,
+        'itemCount': items.length,
         'createdAt': FieldValue.serverTimestamp(),
       });
+      return docRef.id;
     } catch (e) {
       throw 'Error saving order: $e';
     }
+  }
+
+  // Fetch all orders for a user
+  Stream<List<Map<String, dynamic>>> getUserOrders(String uid) {
+    return _db
+        .collection('orders')
+        .where('userId', isEqualTo: uid)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => {'id': doc.id, ...doc.data()})
+            .toList());
   }
 
   // Get all products

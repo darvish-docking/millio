@@ -14,7 +14,6 @@ import 'package:millio/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:millio/core/utils/seed_data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,8 +33,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   
-  // Seed sample data if products collection is empty
-  await seedProductsIfEmpty();
+
 
   runApp(
     MultiProvider(

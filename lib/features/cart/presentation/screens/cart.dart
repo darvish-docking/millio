@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:millio/core/services/database_service.dart';
 import 'package:millio/core/services/auth_service.dart';
+import 'package:millio/features/home/presentation/screens/product_details.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -82,16 +83,23 @@ class _CartScreenState extends State<CartScreen> {
     if (user != null) {
       DatabaseService().saveOrder(
         uid: user.uid,
-        transactionId: response.paymentId ?? "N/A",
-        totalAmount: cart.total,
+        transactionId: response.paymentId ?? 'N/A',
         items: cart.items.map((item) => item.toMap()).toList(),
-        status: "Success",
-        paymentMethod: _selectedPaymentMethodId ?? "Razorpay",
+        subtotal: cart.subtotal,
+        deliveryFee: cart.deliveryFee,
+        discount: cart.discount,
+        totalAmount: cart.total,
+        status: 'Success',
+        paymentMethod: _selectedPaymentMethodId ?? 'Razorpay',
+        voucherId: cart.appliedVoucher?.id,
+        voucherTitle: cart.appliedVoucher?.title,
+        deliveryAddress: _selectedAddress?.details,
+        deliveryAddressLabel: _selectedAddress?.label,
       );
     }
 
-    final amountStr = "\$${cart.total.toStringAsFixed(2)}";
-    final txId = response.paymentId ?? "N/A";
+    final amountStr = '\$${cart.total.toStringAsFixed(2)}';
+    final txId = response.paymentId ?? 'N/A';
 
     // Clear cart after saving
     cart.clearCart();
@@ -147,6 +155,60 @@ class _CartScreenState extends State<CartScreen> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     debugPrint("WALLET: ${response.walletName}");
+  }
+
+  Future<void> _onOrderNow(CartProvider cart) async {
+    if (_selectedPaymentMethodId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select a payment method")),
+      );
+      return;
+    }
+
+    if (_selectedPaymentMethodId == 'payondelivery') {
+      final user = AuthService().currentUser;
+      final txId = "POD-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
+      final amountStr = "\$${cart.total.toStringAsFixed(2)}";
+      final now = DateTime.now();
+
+      if (user != null) {
+        try {
+          await DatabaseService().saveOrder(
+            uid: user.uid,
+            transactionId: txId,
+            items: cart.items.map((item) => item.toMap()).toList(),
+            subtotal: cart.subtotal,
+            deliveryFee: cart.deliveryFee,
+            discount: cart.discount,
+            totalAmount: cart.total,
+            status: 'Pending',
+            paymentMethod: 'Pay on Delivery',
+            voucherId: cart.appliedVoucher?.id,
+            voucherTitle: cart.appliedVoucher?.title,
+            deliveryAddress: _selectedAddress?.details,
+            deliveryAddressLabel: _selectedAddress?.label,
+          );
+        } catch (e) {
+          debugPrint('Order save error: $e');
+        }
+      }
+
+      cart.clearCart();
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentSuccessScreen(
+            transactionId: txId,
+            amount: amountStr,
+            dateTime: now,
+          ),
+        ),
+      );
+    } else {
+      _openCheckout(cart.total);
+    }
   }
 
   String _getPaymentMethodName(String id) {
@@ -338,26 +400,7 @@ class _CartScreenState extends State<CartScreen> {
             width: double.infinity,
             height: h * 0.07,
             child: ElevatedButton(
-              onPressed: () {
-                if (_selectedPaymentMethodId == 'payondelivery') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentSuccessScreen(
-                        transactionId: "POD-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}",
-                        amount: "\$${cart.total.toStringAsFixed(2)}",
-                        dateTime: DateTime.now(),
-                      ),
-                    ),
-                  );
-                } else if (_selectedPaymentMethodId != null) {
-                  _openCheckout(cart.total);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Please select a payment method")),
-                  );
-                }
-              },
+              onPressed: () => _onOrderNow(cart),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColorsLegacy.primary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
@@ -987,7 +1030,16 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildSuggestedProductCard(double w, double h, Product offer) {
                     final colors = context.colors;
 
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailsScreen(offer: offer),
+          ),
+        );
+      },
+      child: Container(
       width: w * 0.48,
       margin: EdgeInsets.only(right: w * 0.05),
       padding: const EdgeInsets.all(10),
@@ -1068,8 +1120,9 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ],
         ),
-      );
-    }
+      ),  // closes GestureDetector child: Container
+    );   // closes GestureDetector
+  }
 }
 
 class DashedDivider extends StatelessWidget {
