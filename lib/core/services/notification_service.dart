@@ -25,10 +25,14 @@ class NotificationService {
       sound: true,
     );
 
-    // 2. Register FCM token
-    final token = await _fcm.getToken();
-    if (token != null) {
-      await _saveFcmToken(uid, token);
+    // 2. Register FCM token (APNS may not be ready on iOS yet — that's fine, onTokenRefresh will catch it)
+    try {
+      final token = await _fcm.getToken();
+      if (token != null) {
+        await _saveFcmToken(uid, token);
+      }
+    } catch (_) {
+      // APNS token not yet available — will be picked up by onTokenRefresh below
     }
 
     // 3. Refresh token listener

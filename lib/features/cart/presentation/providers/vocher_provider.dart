@@ -14,14 +14,23 @@ class VoucherProvider extends ChangeNotifier {
 
   bool isLoading = false;
 
+  String? errorMessage;
+
   Future<void> fetchVouchers() async {
     isLoading = true;
+    errorMessage = null;
     notifyListeners();
 
-    vouchers = await datasource.getVouchers();
-
-    isLoading = false;
-    notifyListeners();
+    try {
+      vouchers = await datasource.getVouchers();
+    } catch (e) {
+      debugPrint('VoucherProvider: error fetching vouchers — $e');
+      vouchers = [];
+      errorMessage = 'Failed to load vouchers. Check your connection.';
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   void selectVoucher(Voucher voucher) {

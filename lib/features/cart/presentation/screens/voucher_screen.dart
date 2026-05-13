@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/cart/data/models/voucher_model.dart';
 import 'package:millio/features/cart/presentation/providers/vocher_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -101,8 +100,50 @@ void initState() {
   
             // --- VOUCHER LIST ---
             Expanded(
-              
-              child: ListView.builder(
+              child: provider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : provider.errorMessage != null
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: padding),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.cloud_off, size: w * 0.12,
+                                  color: AppColorsLegacy.textSecondary),
+                              SizedBox(height: h * 0.02),
+                              Text(
+                                provider.errorMessage!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: w * 0.04,
+                                  color: AppColorsLegacy.textSecondary,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                              SizedBox(height: h * 0.02),
+                              TextButton.icon(
+                                onPressed: () =>
+                                    context.read<VoucherProvider>().fetchVouchers(),
+                                icon: const Icon(Icons.refresh, size: 18),
+                                label: const Text("Retry"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : provider.vouchers.isEmpty
+                        ? Center(
+                            child: Text(
+                              "No vouchers available",
+                              style: TextStyle(
+                                fontSize: w * 0.04,
+                                color: AppColorsLegacy.textSecondary,
+                                fontFamily: 'Montserrat',
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: padding, vertical: h * 0.02),
                 itemCount: provider.vouchers.length,
                 itemBuilder: (context, index) {
@@ -145,12 +186,8 @@ void initState() {
                               color: isSelected ? AppColorsLegacy.primary : colors.textHint,
                               shape: BoxShape.circle,
                             ),
-                            padding: const EdgeInsets.all(14), // Increased padding to reduce icon size
-                            child: Image.memory(
-                              base64Decode(voucher.imagePath),
-                              color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.textPrimary, // Active: white, Inactive: black
-                              fit: BoxFit.contain,
-                            ),
+                            padding: const EdgeInsets.all(14),
+                            child: _buildVoucherIcon(voucher.imagePath, isSelected),
                           ),
                           SizedBox(width: w * 0.04),
 
@@ -237,5 +274,25 @@ void initState() {
         ),
       ),
     );
+  }
+
+  Widget _buildVoucherIcon(String imagePath, bool isSelected) {
+    try {
+      final bytes = base64Decode(imagePath);
+      return Image.memory(
+        bytes,
+        color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.textPrimary,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => Icon(
+          Icons.discount,
+          color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.textPrimary,
+        ),
+      );
+    } catch (e) {
+      return Icon(
+        Icons.discount,
+        color: isSelected ? AppColorsLegacy.background : AppColorsLegacy.textPrimary,
+      );
+    }
   }
 }

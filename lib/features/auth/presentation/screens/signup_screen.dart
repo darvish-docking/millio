@@ -339,6 +339,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     child: TextFormField(
                       controller:passwordController,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
                         hintText: "Password",
                         hintStyle:  TextStyle(
@@ -406,6 +411,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: TextFormField(
                       controller:confirmPasswordController,
                       obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
                         hintText: "Confirm Password",
                         hintStyle:  TextStyle(

@@ -180,6 +180,11 @@ class NewPasswordScreen extends StatelessWidget {
                         ],
                       ),
                       child: TextField(
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           hintText: "Password",
                           hintStyle:  TextStyle(
@@ -230,6 +235,10 @@ class NewPasswordScreen extends StatelessWidget {
                       ),
                       child: TextField(
                         obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           hintText: "Confirm Password",
                           hintStyle:  TextStyle(

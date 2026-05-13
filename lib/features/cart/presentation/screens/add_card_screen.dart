@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/services/auth_service.dart';
+import 'package:millio/core/services/database_service.dart';
+import 'package:millio/features/cart/data/models/card_model.dart';
 
 class AddCardScreen extends StatefulWidget {
   const AddCardScreen({super.key});
@@ -24,6 +27,51 @@ class _AddCardScreenState extends State<AddCardScreen> {
     _cvvController.dispose();
     _expiryController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveCard() async {
+    final user = AuthService().currentUser;
+    if (user == null) return;
+
+    final cardNumber = _cardNumberController.text.replaceAll(' ', '');
+    if (cardNumber.length < 16) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a valid 16-digit card number")),
+      );
+      return;
+    }
+
+    final lastFourDigits = cardNumber.substring(cardNumber.length - 4);
+    final network = detectCardNetwork(cardNumber);
+
+    try {
+      final cardId = await DatabaseService().saveCard(
+        uid: user.uid,
+        cardHolderName: _nameController.text.trim(),
+        lastFourDigits: lastFourDigits,
+        cardNetwork: network,
+        expiryDate: _expiryController.text.trim(),
+        isDefault: _isDefaultCard,
+      );
+
+      if (!mounted) return;
+
+      final card = CardInfo(
+        id: cardId,
+        cardHolderName: _nameController.text.trim(),
+        lastFourDigits: lastFourDigits,
+        cardNetwork: network,
+        expiryDate: _expiryController.text.trim(),
+        isDefault: _isDefaultCard,
+      );
+
+      Navigator.pop(context, card);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to save card: $e")),
+      );
+    }
   }
 
   @override
@@ -324,10 +372,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                       width: double.infinity,
                       height: h * 0.055,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: handle save card logic
-                          Navigator.pop(context);
-                        },
+                        onPressed: _saveCard,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColorsLegacy.primary,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

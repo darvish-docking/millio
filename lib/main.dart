@@ -12,7 +12,9 @@ import 'package:millio/features/auth/presentation/screens/loading_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
 import 'package:millio/core/providers/tab_provider.dart';
 import 'package:millio/features/cart/presentation/providers/vocher_provider.dart';
+import 'package:millio/features/home/presentation/providers/chat_provider.dart';
 import 'package:millio/features/home/presentation/providers/home_provider.dart';
+import 'package:millio/features/profile/presentation/providers/wishlist_provider.dart';
 import 'package:millio/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,6 +67,12 @@ Future<void> main() async {
         ChangeNotifierProvider(
   create: (_) => VoucherProvider(),
 ),
+        ChangeNotifierProvider(
+          create: (_) => ChatProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => WishlistProvider(),
+        ),
       ],
       child: const MyApp(),
     ),

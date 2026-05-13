@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/features/cart/presentation/screens/add_card_screen.dart';
 import 'package:millio/features/cart/presentation/screens/qr_scan_screen.dart';
+import 'package:millio/features/cart/presentation/screens/saved_cards_screen.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   const PaymentMethodScreen({super.key});
@@ -12,12 +13,14 @@ class PaymentMethodScreen extends StatefulWidget {
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   String _selectedMethodId = 'mastercard';
+  String? _selectedCardId;
 
   final List<Map<String, String>> _paymentMethods = [
     {'id': 'mastercard', 'title': 'Mastercard', 'image': 'assets/images/MasterCard.png'},
     {'id': 'paypal', 'title': 'PayPal', 'image': 'assets/images/Paypal.png'},
     {'id': 'visa', 'title': 'Visa', 'image': 'assets/images/Visa.png'},
     {'id': 'applepay', 'title': 'Apple Pay', 'image': 'assets/images/apple.png'},
+    {'id': 'mycards', 'title': 'My Cards', 'image': 'assets/images/Wallet.png'},
     {'id': 'payondelivery', 'title': 'Pay on Delivery', 'image': 'assets/images/Wallet.png'},
   ];
 
@@ -98,13 +101,30 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 itemCount: _paymentMethods.length,
                 itemBuilder: (context, index) {
                   final method = _paymentMethods[index];
-                  final isSelected = _selectedMethodId == method['id'];
+                  final isMyCards = method['id'] == 'mycards';
+                  final isSelected = isMyCards
+                    ? _selectedCardId != null
+                    : _selectedMethodId == method['id'];
 
                   return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedMethodId = method['id']!;
-                      });
+                    onTap: () async {
+                      if (isMyCards) {
+                        final result = await Navigator.push<String>(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SavedCardsScreen()),
+                        );
+                        if (result != null) {
+                          setState(() {
+                            _selectedCardId = result;
+                            _selectedMethodId = 'mycards';
+                          });
+                        }
+                      } else {
+                        setState(() {
+                          _selectedMethodId = method['id']!;
+                          _selectedCardId = null;
+                        });
+                      }
                     },
                     child: AnimatedContainer(
                       height: h * 0.06,
@@ -113,7 +133,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       padding: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.015),
                       decoration: BoxDecoration(
                         color: isSelected ? colors.textField : colors.textField,
-                        borderRadius: BorderRadius.circular(w * 0.1), // Pill shaped like textfields
+                        borderRadius: BorderRadius.circular(w * 0.1),
                         border: Border.all(
                           color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
                           width: 1.5,
@@ -141,7 +161,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           // Title
                           Expanded(
                             child: Text(
-                              method['title']!,
+                              isMyCards && _selectedCardId != null
+                                ? 'Card ending in ...${_selectedCardId!.length > 4 ? _selectedCardId!.substring(_selectedCardId!.length - 4) : ''}'
+                                : method['title']!,
                               style: TextStyle(
                                 fontSize: w * 0.038,
                                 fontWeight: FontWeight.bold,
@@ -181,11 +203,17 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     width: double.infinity,
                     height: h * 0.06,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const AddCardScreen()),
                         );
+                        if (result != null && mounted) {
+                          setState(() {
+                            _selectedCardId = 'from_add';
+                            _selectedMethodId = 'mycards';
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colors.textField,
@@ -210,7 +238,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     height: h * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context, _selectedMethodId);
+                        final result = _selectedCardId != null
+                          ? 'card_$_selectedCardId'
+                          : _selectedMethodId;
+                        Navigator.pop(context, result);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColorsLegacy.primary,
@@ -238,7 +269,3 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     );
   }
 }
-
-
-
-

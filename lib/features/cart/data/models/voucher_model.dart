@@ -32,12 +32,17 @@ class Voucher {
           map['discountType'] ?? '',
 
       discountValue:
-          (map['discountValue'] ?? 0)
-              .toDouble(),
+          _toDouble(map['discountValue']),
 
       minimumOrder:
-          (map['minimumOrder'] ?? 0)
-              .toDouble(),
+          _toDouble(map['minimumOrder']),
     );
+  }
+
+  static double _toDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 }

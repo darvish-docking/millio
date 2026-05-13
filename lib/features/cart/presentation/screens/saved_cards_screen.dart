@@ -4,62 +4,66 @@ import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/core/services/auth_service.dart';
 import 'package:millio/core/services/database_service.dart';
-import 'package:millio/features/cart/data/models/address_model.dart';
-import 'package:millio/features/cart/presentation/screens/add_address_screen.dart';
+import 'package:millio/features/cart/data/models/card_model.dart';
+import 'package:millio/features/cart/presentation/screens/add_card_screen.dart';
 
-class AddressScreen extends StatefulWidget {
-  final String? initialSelectedAddressId;
-  const AddressScreen({super.key, this.initialSelectedAddressId});
+class SavedCardsScreen extends StatefulWidget {
+  const SavedCardsScreen({super.key});
 
   @override
-  State<AddressScreen> createState() => _AddressScreenState();
+  State<SavedCardsScreen> createState() => _SavedCardsScreenState();
 }
 
-class _AddressScreenState extends State<AddressScreen> {
-  String? _selectedAddressId;
-  List<Address> _addresses = [];
+class _SavedCardsScreenState extends State<SavedCardsScreen> {
+  List<CardInfo> _cards = [];
   bool _isLoading = true;
-  StreamSubscription<List<Address>>? _addressSubscription;
+  String? _selectedCardId;
+  StreamSubscription<List<CardInfo>>? _cardSubscription;
 
   @override
   void initState() {
     super.initState();
-    _selectedAddressId = widget.initialSelectedAddressId;
-    _fetchAddresses();
+    _fetchCards();
   }
 
   @override
   void dispose() {
-    _addressSubscription?.cancel();
+    _cardSubscription?.cancel();
     super.dispose();
   }
 
-  void _fetchAddresses() {
+  void _fetchCards() {
     final user = AuthService().currentUser;
     if (user == null) {
       setState(() => _isLoading = false);
       return;
     }
 
-    _addressSubscription = DatabaseService().getUserAddresses(user.uid).listen((addresses) {
+    _cardSubscription = DatabaseService().getUserCards(user.uid).listen((cards) {
       if (!mounted) return;
       setState(() {
-        _addresses = addresses;
+        _cards = cards;
         _isLoading = false;
-        if (_selectedAddressId == null && addresses.isNotEmpty) {
-          _selectedAddressId = addresses.first.id;
-        }
       });
     }, onError: (e) {
-      debugPrint('Address stream error: $e');
+      debugPrint('Cards stream error: $e');
       if (!mounted) return;
       setState(() => _isLoading = false);
     });
   }
 
+  String _networkAsset(String network) {
+    switch (network) {
+      case 'visa': return 'assets/images/Visa.png';
+      case 'mastercard': return 'assets/images/MasterCard.png';
+      case 'amex': return 'assets/images/Card.png';
+      default: return 'assets/images/Wallet.png';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-                    final colors = context.colors;
+    final colors = context.colors;
 
     final size = MediaQuery.of(context).size;
     final w = size.width;
@@ -90,7 +94,7 @@ class _AddressScreenState extends State<AddressScreen> {
                   ),
                   SizedBox(width: w * 0.04),
                   Text(
-                    "Address",
+                    "My Cards",
                     style: TextStyle(
                       fontSize: w * 0.055,
                       fontWeight: FontWeight.bold,
@@ -102,37 +106,65 @@ class _AddressScreenState extends State<AddressScreen> {
               ),
             ),
 
-            // --- ADDRESS LIST ---
+            // --- CARDS LIST ---
             Expanded(
               child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _addresses.isEmpty
+                : _cards.isEmpty
                     ? Center(
                         child: Padding(
                           padding: EdgeInsets.all(padding),
-                          child: Text(
-                            "No saved addresses. Add a new address.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: w * 0.04,
-                              color: AppColorsLegacy.textSecondary,
-                              fontFamily: 'Montserrat',
-                            ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "No saved cards",
+                                style: TextStyle(
+                                  fontSize: w * 0.04,
+                                  color: AppColorsLegacy.textSecondary,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                              SizedBox(height: h * 0.02),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final result = await Navigator.push<CardInfo>(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const AddCardScreen()),
+                                  );
+                                  if (result != null && mounted) {
+                                    setState(() => _selectedCardId = result.id);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColorsLegacy.primary,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                                  elevation: 0,
+                                ),
+                                child: Text(
+                                  "Add New Card",
+                                  style: TextStyle(
+                                    color: AppColorsLegacy.background,
+                                    fontSize: w * 0.035,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Montserrat',
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       )
                     : ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: padding, vertical: h * 0.02),
-                itemCount: _addresses.length,
+                itemCount: _cards.length,
                 itemBuilder: (context, index) {
-                  final address = _addresses[index];
-                  final isSelected = _selectedAddressId == address.id;
+                  final card = _cards[index];
+                  final isSelected = _selectedCardId == card.id;
 
                   return GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _selectedAddressId = address.id;
-                      });
+                      setState(() => _selectedCardId = card.id);
                     },
                     child: Container(
                       margin: EdgeInsets.only(bottom: h * 0.02),
@@ -156,32 +188,22 @@ class _AddressScreenState extends State<AddressScreen> {
                       ),
                       child: Row(
                         children: [
-                          // Prefix Icon (Location Ring)
-                          Container(
-                            width: w * 0.12,
-                            height: w * 0.12,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: AppColorsLegacy.primary, width: 1.5),
-                            ),
-                            padding: const EdgeInsets.all(4),
-                            child: Container(
-                              decoration:  BoxDecoration(
-                                color: isSelected ? colors.hintText : colors.textField,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.location_on, color: AppColorsLegacy.background, size: w * 0.05),
-                            ),
+                          // Card Network Icon
+                          Image.asset(
+                            _networkAsset(card.cardNetwork),
+                            width: w * 0.1,
+                            height: w * 0.1,
+                            fit: BoxFit.contain,
                           ),
                           SizedBox(width: w * 0.04),
 
-                          // Text Info
+                          // Card Info
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  address.label,
+                                  card.maskedNumber,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: w * 0.04,
@@ -191,45 +213,29 @@ class _AddressScreenState extends State<AddressScreen> {
                                 ),
                                 SizedBox(height: h * 0.005),
                                 Text(
-                                  address.details,
+                                  'Expires ${card.expiryDate}',
                                   style: TextStyle(
                                     color: AppColorsLegacy.textSecondary,
                                     fontSize: w * 0.032,
                                     fontFamily: 'Montserrat',
-                                    height: 1.3,
                                   ),
                                 ),
                               ],
                             ),
                           ),
 
-                          // Suffix Icons (Menu + Checkbox)
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              IconButton(
-                                icon:  Icon(Icons.more_horiz, color: AppColorsLegacy.textSecondary),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  // Menu action
-                                },
+                          // Selection Dot
+                          Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
+                              border: Border.all(
+                                color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary3,
+                                width: 1.5,
                               ),
-                              SizedBox(height: h * 0.015),
-                              // Selection Dot
-                              Container(
-                                width: 12,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isSelected ? AppColorsLegacy.primary : AppColors.transparent,
-                                  border: Border.all(
-                                    color: isSelected ? AppColorsLegacy.primary : AppColorsLegacy.backgroundSecondary3,
-                                    width: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -239,7 +245,7 @@ class _AddressScreenState extends State<AddressScreen> {
               ),
             ),
 
-            // --- ACTION BUTTONS ---
+            // --- BOTTOM BUTTONS ---
             Padding(
               padding: EdgeInsets.all(padding),
               child: Column(
@@ -249,14 +255,12 @@ class _AddressScreenState extends State<AddressScreen> {
                     height: h * 0.06,
                     child: ElevatedButton(
                       onPressed: () async {
-                        final result = await Navigator.push<Address>(
+                        final result = await Navigator.push<CardInfo>(
                           context,
-                          MaterialPageRoute(builder: (context) => const AddAddressScreen()),
+                          MaterialPageRoute(builder: (context) => const AddCardScreen()),
                         );
                         if (result != null && mounted) {
-                          setState(() {
-                            _selectedAddressId = result.id;
-                          });
+                          setState(() => _selectedCardId = result.id);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -265,7 +269,7 @@ class _AddressScreenState extends State<AddressScreen> {
                         elevation: 0,
                       ),
                       child: Text(
-                        "Add New Address",
+                        "Add New Card",
                         style: TextStyle(
                           color: AppColorsLegacy.primary,
                           fontSize: w * 0.04,
@@ -281,9 +285,8 @@ class _AddressScreenState extends State<AddressScreen> {
                     height: h * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_selectedAddressId != null) {
-                          final selected = _addresses.firstWhere((a) => a.id == _selectedAddressId);
-                          Navigator.pop(context, selected);
+                        if (_selectedCardId != null) {
+                          Navigator.pop(context, _selectedCardId);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -292,7 +295,7 @@ class _AddressScreenState extends State<AddressScreen> {
                         elevation: 0,
                       ),
                       child: Text(
-                        "Apply",
+                        "Use This Card",
                         style: TextStyle(
                           color: AppColorsLegacy.background,
                           fontSize: w * 0.04,

@@ -11,6 +11,7 @@ class Product {
   final String category;
   final bool isHotDeal;
   final String description;
+  final Map<String, String> ingredients;
 
   Product({
     required this.id,
@@ -23,6 +24,7 @@ class Product {
     required this.category,
     this.isHotDeal = false,
     this.description = "",
+    this.ingredients = const {},
   });
 
   Map<String, dynamic> toMap() {
@@ -37,10 +39,12 @@ class Product {
       'category': category,
       'isHotDeal': isHotDeal,
       'description': description,
+      'ingredients': ingredients,
     };
   }
 
   factory Product.fromMap(Map<String, dynamic> map, String docId) {
+    final rawIngredients = map['Ingredients'] ?? map['ingredients'];
     return Product(
       id: docId,
       image: map['image'] ?? '',
@@ -52,6 +56,10 @@ class Product {
       category: map['category'] ?? 'Uncategorized',
       isHotDeal: map['isHotDeal'] ?? false,
       description: map['description'] ?? '',
+      ingredients: rawIngredients is Map
+          ? (rawIngredients as Map<dynamic, dynamic>)
+              .map((k, v) => MapEntry(k.toString(), v.toString()))
+          : {},
     );
   }
 }

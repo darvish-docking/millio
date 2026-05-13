@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:millio/core/constants/app_colors.dart';
+import 'package:millio/core/services/auth_service.dart';
+import 'package:millio/core/services/database_service.dart';
+import 'package:millio/features/cart/data/models/address_model.dart';
 import 'package:millio/features/cart/presentation/screens/set_location_screen.dart';
 
 class AddAddressScreen extends StatefulWidget {
@@ -12,7 +15,85 @@ class AddAddressScreen extends StatefulWidget {
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
   bool _isDefaultAddress = false;
-  bool _isMapFocused = false;
+  bool _isLoading = false;
+
+  final _labelController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _countryController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  double? _latitude;
+  double? _longitude;
+
+  @override
+  void dispose() {
+    _labelController.dispose();
+    _fullNameController.dispose();
+    _countryController.dispose();
+    _streetController.dispose();
+    _cityController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveAddress() async {
+    final user = AuthService().currentUser;
+    if (user == null) return;
+
+    if (_labelController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter an address title")),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final addressId = await DatabaseService().saveAddress(
+        uid: user.uid,
+        label: _labelController.text.trim(),
+        fullName: _fullNameController.text.trim(),
+        country: _countryController.text.trim(),
+        street: _streetController.text.trim(),
+        city: _cityController.text.trim(),
+        phone: _phoneController.text.trim(),
+        email: _emailController.text.trim(),
+        isDefault: _isDefaultAddress,
+        latitude: _latitude,
+        longitude: _longitude,
+      );
+
+      if (!mounted) return;
+
+      final address = Address(
+        id: addressId,
+        label: _labelController.text.trim(),
+        fullName: _fullNameController.text.trim(),
+        country: _countryController.text.trim(),
+        street: _streetController.text.trim(),
+        city: _cityController.text.trim(),
+        phone: _phoneController.text.trim(),
+        email: _emailController.text.trim(),
+        isDefault: _isDefaultAddress,
+        latitude: _latitude,
+        longitude: _longitude,
+      );
+
+      Navigator.pop(context, address);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to save address: $e")),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,11 +154,11 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       hint: "Address Title (e.g. Home, Work)",
                       imagePath: "assets/images/Edit.png",
                       w: w,
+                      controller: _labelController,
                     ),
                     
                     SizedBox(height: h * 0.025),
 
-                    // --- MAP SECTION ---
                     // --- MAP SECTION ---
                     GestureDetector(
                       onTap: () {
@@ -191,24 +272,28 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       hint: "Full Name",
                       imagePath: "assets/images/username.png",
                       w: w,
+                      controller: _fullNameController,
                     ),
                     SizedBox(height: h * 0.015),
                     _buildTextField(
                       hint: "Country / Region",
                       imagePath: "assets/images/Location.png",
                       w: w,
+                      controller: _countryController,
                     ),
                     SizedBox(height: h * 0.015),
                     _buildTextField(
                       hint: "Street Address",
                       imagePath: "assets/images/Location.png",
                       w: w,
+                      controller: _streetController,
                     ),
                     SizedBox(height: h * 0.015),
                     _buildTextField(
                       hint: "Town / City",
                       imagePath: "assets/images/Location.png",
                       w: w,
+                      controller: _cityController,
                     ),
                     SizedBox(height: h * 0.015),
                     _buildTextField(
@@ -216,6 +301,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       imagePath: "assets/images/Call.png",
                       w: w,
                       keyboardType: TextInputType.phone,
+                      controller: _phoneController,
                     ),
                     SizedBox(height: h * 0.015),
                     _buildTextField(
@@ -223,6 +309,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       imagePath: "assets/images/Message.png",
                       w: w,
                       keyboardType: TextInputType.emailAddress,
+                      controller: _emailController,
                     ),
 
                     SizedBox(height: h * 0.02),
@@ -273,23 +360,30 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       width: double.infinity,
                       height: h * 0.06,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: _isLoading ? null : _saveAddress,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColorsLegacy.primary,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           elevation: 0,
                         ),
-                        child: Text(
-                          "Save Address",
-                          style: TextStyle(
-                            color: AppColorsLegacy.background,
-                            fontSize: w * 0.035,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
+                        child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              "Save Address",
+                              style: TextStyle(
+                                color: AppColorsLegacy.background,
+                                fontSize: w * 0.035,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                              ),
+                            ),
                       ),
                     ),
                     
@@ -308,18 +402,15 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     required String hint,
     required String imagePath,
     required double w,
+    required TextEditingController controller,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return _TextFieldWithFocus(
       hint: hint,
       imagePath: imagePath,
       w: w,
+      controller: controller,
       keyboardType: keyboardType,
-      onFocused: () {
-        setState(() {
-          _isMapFocused = false;
-        });
-      },
     );
   }
 }
@@ -328,15 +419,15 @@ class _TextFieldWithFocus extends StatefulWidget {
   final String hint;
   final String imagePath;
   final double w;
+  final TextEditingController controller;
   final TextInputType keyboardType;
-  final VoidCallback onFocused;
 
   const _TextFieldWithFocus({
     required this.hint,
     required this.imagePath,
     required this.w,
+    required this.controller,
     required this.keyboardType,
-    required this.onFocused,
   });
 
   @override
@@ -352,11 +443,10 @@ class _TextFieldWithFocusState extends State<_TextFieldWithFocus> {
     super.initState();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
-      setState(() {
-        _isFocused = _focusNode.hasFocus;
-      });
-      if (_focusNode.hasFocus) {
-        widget.onFocused();
+      if (mounted) {
+        setState(() {
+          _isFocused = _focusNode.hasFocus;
+        });
       }
     });
   }
@@ -389,6 +479,7 @@ class _TextFieldWithFocusState extends State<_TextFieldWithFocus> {
         ),
       ),
       child: TextField(
+        controller: widget.controller,
         focusNode: _focusNode,
         keyboardType: widget.keyboardType,
         style: const TextStyle(

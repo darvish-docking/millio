@@ -1,28 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
 import 'package:millio/core/providers/tab_provider.dart';
+import 'package:millio/features/home/data/models/chat_message_model.dart';
+import 'package:millio/features/home/presentation/providers/chat_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
-class ChatMessage {
-  final String? text;
-  final String time;
-  final bool isSentByMe;
-  final String? date;
-  final List<String> reactions;
-  final String? imageUrl; // Added for image support
-
-  ChatMessage({
-    this.text,
-    required this.time,
-    required this.isSentByMe,
-    this.date,
-    this.reactions = const [],
-    this.imageUrl,
-  });
-}
 
 class ChatBoxScreen extends StatefulWidget {
   const ChatBoxScreen({super.key});
@@ -36,14 +22,6 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
   final ScrollController _scrollController = ScrollController();
   final ImagePicker _picker = ImagePicker();
   bool _isTyping = false;
-
-  final List<ChatMessage> messages = [
-    ChatMessage(text: "Hello! How can I help you today?", time: "10:00 AM", isSentByMe: false, date: "Today"),
-    ChatMessage(text: "I'd like to check the status of my order #12345.", time: "10:05 AM", isSentByMe: true, reactions: ["😊"]),
-    ChatMessage(text: "Of course! Let me check that for you.", time: "10:06 AM", isSentByMe: false),
-    ChatMessage(text: "Your order is currently being prepared and will be out for delivery shortly.", time: "10:10 AM", isSentByMe: false, reactions: ["👍", "🥙"]),
-    ChatMessage(text: "Thank you for the quick response! Can't wait to try it.", time: "10:12 AM", isSentByMe: true),
-  ];
 
   @override
   void initState() {
@@ -74,32 +52,24 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
     });
   }
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
-    if (text.isNotEmpty) {
-      setState(() {
-        messages.add(ChatMessage(
-          text: text,
-          time: DateFormat('hh:mm a').format(DateTime.now()),
-          isSentByMe: true,
-        ));
-        _messageController.clear();
-      });
-      _scrollToBottom();
-    }
+    if (text.isEmpty) return;
+    await context.read<ChatProvider>().sendMessage(text);
+    _messageController.clear();
+    _scrollToBottom();
   }
 
   Future<void> _handleImageUpload(ImageSource source) async {
     try {
-      final XFile? image = await _picker.pickImage(source: source);
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 70,
+      );
       if (image != null) {
-        setState(() {
-          messages.add(ChatMessage(
-            time: DateFormat('hh:mm a').format(DateTime.now()),
-            isSentByMe: true,
-            imageUrl: image.path,
-          ));
-        });
+        await context.read<ChatProvider>().sendImage(File(image.path));
         _scrollToBottom();
       }
     } catch (e) {
@@ -140,6 +110,21 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
     );
   }
 
+  void _toggleReaction(String messageId) {
+    context.read<ChatProvider>().toggleReaction(messageId, '❤️');
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final msgDate = DateTime(date.year, date.month, date.day);
+    final diff = today.difference(msgDate).inDays;
+
+    if (diff == 0) return "Today";
+    if (diff == 1) return "Yesterday";
+    return DateFormat('MMM dd, yyyy').format(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -147,13 +132,13 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
     final w = size.width;
     final h = size.height;
     final padding = w * 0.04;
+    final chat = context.watch<ChatProvider>();
 
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
-            // --- CUSTOM HEADER ---
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding, vertical: h * 0.015),
               child: Row(
@@ -163,7 +148,13 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
-                      onTap: () => Navigator.pop(context),
+                      onTap: () {
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).pop();
+                        } else {
+                          context.read<TabProvider>().goHome();
+                        }
+                      },
                       child: Padding(
                         padding: EdgeInsets.all(w * 0.025),
                         child: Icon(Icons.arrow_back_ios_new, size: w * 0.045, color: AppColorsLegacy.textPrimary),
@@ -194,42 +185,58 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               ),
             ),
 
-            // --- DISPLAY AREA (Chat History) ---
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: EdgeInsets.symmetric(horizontal: padding),
-                physics: const BouncingScrollPhysics(),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final msg = messages[index];
-                  bool showDate = msg.date != null;
-
-                  return Column(
-                    children: [
-                      if (showDate)
-                        Padding(
-                          padding: EdgeInsets.only(top: h * 0.01, bottom: h * 0.025),
-                          child: Center(
-                            child: Text(
-                              msg.date!,
-                              style: TextStyle(
-                                color: AppColorsLegacy.backgroundSecondary4,
-                                fontSize: w * 0.035,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Montserrat',
-                              ),
+              child: chat.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : chat.messages.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No messages yet. Start a conversation!",
+                            style: TextStyle(
+                              color: AppColorsLegacy.backgroundSecondary4,
+                              fontSize: w * 0.04,
+                              fontFamily: 'Montserrat',
                             ),
                           ),
+                        )
+                      : ListView.builder(
+                          controller: _scrollController,
+                          padding: EdgeInsets.symmetric(horizontal: padding),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: chat.messages.length,
+                          itemBuilder: (context, index) {
+                            final msg = chat.messages[index];
+                            final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+                            final isSentByMe = msg.senderId == currentUserId;
+                            final showDate = index == 0 ||
+                                chat.messages[index].timestamp.day != chat.messages[index - 1].timestamp.day ||
+                                chat.messages[index].timestamp.month != chat.messages[index - 1].timestamp.month ||
+                                chat.messages[index].timestamp.year != chat.messages[index - 1].timestamp.year;
+
+                            return Column(
+                              children: [
+                                if (showDate)
+                                  Padding(
+                                    padding: EdgeInsets.only(top: h * 0.01, bottom: h * 0.025),
+                                    child: Center(
+                                      child: Text(
+                                        _formatDate(msg.timestamp),
+                                        style: TextStyle(
+                                          color: AppColorsLegacy.backgroundSecondary4,
+                                          fontSize: w * 0.035,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Montserrat',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                _buildMessageBubble(msg, isSentByMe, w, h),
+                              ],
+                            );
+                          },
                         ),
-                      _buildMessageBubble(msg, w, h),
-                    ],
-                  );
-                },
-              ),
             ),
 
-            // --- BOTTOM INPUT AREA ---
             Padding(
               padding: EdgeInsets.fromLTRB(padding, 0, padding, padding * 0.5),
               child: Container(
@@ -263,38 +270,44 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                         style: TextStyle(fontFamily: 'Montserrat', fontSize: w * 0.04),
                       ),
                     ),
-                    
-                    // Vertical Separator
                     Container(
                       height: 18,
                       width: 1,
                       color: AppColorsLegacy.backgroundSecondary2,
                       margin: EdgeInsets.symmetric(horizontal: w * 0.01),
                     ),
-
-                    // Contextual Action Buttons
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
-                      child: _isTyping
-                          ? IconButton(
-                              key: const ValueKey("send"),
-                              icon:  Icon(Icons.send, color: AppColorsLegacy.primary),
-                              onPressed: _sendMessage,
+                      child: chat.isSending
+                          ? Padding(
+                              key: const ValueKey("sending"),
+                              padding: EdgeInsets.all(w * 0.025),
+                              child: SizedBox(
+                                width: w * 0.05,
+                                height: w * 0.05,
+                                child: const CircularProgressIndicator(strokeWidth: 2),
+                              ),
                             )
-                          : Row(
-                              key: const ValueKey("actions"),
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.camera_alt_outlined, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
-                                  onPressed: _showImageSourceDialog,
+                          : _isTyping
+                              ? IconButton(
+                                  key: const ValueKey("send"),
+                                  icon: Icon(Icons.send, color: AppColorsLegacy.primary),
+                                  onPressed: _sendMessage,
+                                )
+                              : Row(
+                                  key: const ValueKey("actions"),
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.camera_alt_outlined, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
+                                      onPressed: _showImageSourceDialog,
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.grid_view_sharp, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
+                                      onPressed: () {},
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.grid_view_sharp, color: AppColorsLegacy.backgroundSecondary4, size: w * 0.055),
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
                     ),
                   ],
                 ),
@@ -306,35 +319,28 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
     );
   }
 
-  Widget _buildMessageBubble(ChatMessage msg, double w, double h) {
+  Widget _buildMessageBubble(ChatMessageModel msg, bool isSentByMe, double w, double h) {
     final colors = context.colors;
+    final isHearted = msg.reactions.contains('❤️');
 
     return Align(
-      alignment: msg.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
-        onLongPress: () {
-          setState(() {
-            if (msg.reactions.contains("❤️")) {
-              msg.reactions.remove("❤️");
-            } else {
-              msg.reactions.add("❤️");
-            }
-          });
-        },
+        onLongPress: () => _toggleReaction(msg.id),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
             Container(
               margin: EdgeInsets.only(bottom: h * 0.022),
               constraints: BoxConstraints(maxWidth: w * 0.72),
-              padding: EdgeInsets.all(msg.imageUrl != null ? 4 : w * 0.04),
+              padding: EdgeInsets.all(msg.imageBase64 != null ? 4 : w * 0.04),
               decoration: BoxDecoration(
-                color: msg.isSentByMe ? AppColorsLegacy.primary : colors.textField,
+                color: isSentByMe ? AppColorsLegacy.primary : colors.textField,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(w * 0.045),
                   topRight: Radius.circular(w * 0.045),
-                  bottomLeft: Radius.circular(msg.isSentByMe ? w * 0.045 : 0),
-                  bottomRight: Radius.circular(msg.isSentByMe ? 0 : w * 0.045),
+                  bottomLeft: Radius.circular(isSentByMe ? w * 0.045 : 0),
+                  bottomRight: Radius.circular(isSentByMe ? 0 : w * 0.045),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -347,11 +353,11 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (msg.imageUrl != null)
+                  if (msg.imageBase64 != null)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(w * 0.035),
-                      child: Image.file(
-                        File(msg.imageUrl!),
+                      child: Image.memory(
+                        base64Decode(msg.imageBase64!),
                         width: w * 0.7,
                         height: h * 0.25,
                         fit: BoxFit.cover,
@@ -365,11 +371,11 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     ),
                   if (msg.text != null)
                     Padding(
-                      padding: EdgeInsets.all(msg.imageUrl != null ? 8 : 0),
+                      padding: EdgeInsets.all(msg.imageBase64 != null ? 8 : 0),
                       child: Text(
                         msg.text!,
                         style: TextStyle(
-                          color: msg.isSentByMe ? AppColorsLegacy.background : colors.hintText,
+                          color: isSentByMe ? AppColorsLegacy.background : colors.hintText,
                           fontFamily: 'Montserrat',
                           fontSize: w * 0.038,
                           height: 1.45,
@@ -377,13 +383,13 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                       ),
                     ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: msg.imageUrl != null ? 8 : 0, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: msg.imageBase64 != null ? 8 : 0, vertical: 4),
                     child: Align(
-                      alignment: msg.isSentByMe ? Alignment.bottomLeft : Alignment.bottomRight,
+                      alignment: isSentByMe ? Alignment.bottomLeft : Alignment.bottomRight,
                       child: Text(
-                        msg.time,
+                        DateFormat('hh:mm a').format(msg.timestamp),
                         style: TextStyle(
-                          color: msg.isSentByMe ? AppColorsLegacy.background07 : AppColorsLegacy.backgroundSecondary5,
+                          color: isSentByMe ? AppColorsLegacy.background07 : AppColorsLegacy.backgroundSecondary5,
                           fontSize: w * 0.025,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Montserrat',
@@ -394,11 +400,11 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                 ],
               ),
             ),
-            if (msg.reactions.isNotEmpty)
+            if (isHearted)
               Positioned(
                 bottom: h * 0.008,
-                right: msg.isSentByMe ? null : -w * 0.01,
-                left: msg.isSentByMe ? -w * 0.01 : null,
+                right: isSentByMe ? null : -w * 0.01,
+                left: isSentByMe ? -w * 0.01 : null,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
@@ -413,13 +419,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                     ],
                     border: Border.all(color: AppColorsLegacy.backgroundSecondary1),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: msg.reactions.map((r) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 1),
-                      child: Text(r, style: const TextStyle(fontSize: 13)),
-                    )).toList(),
-                  ),
+                  child: const Text("❤️", style: TextStyle(fontSize: 13)),
                 ),
               ),
           ],

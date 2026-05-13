@@ -1,50 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:millio/core/constants/app_colors.dart';
-import 'package:millio/features/home/presentation/screens/home_screen.dart';
 import 'package:millio/features/home/presentation/screens/product_details.dart';
 import 'package:millio/features/home/data/models/product_model.dart';
+import 'package:millio/features/profile/presentation/providers/wishlist_provider.dart';
+import 'package:provider/provider.dart';
 
-class WishlistScreen extends StatefulWidget {
+class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
-
-  @override
-  State<WishlistScreen> createState() => _WishlistScreenState();
-}
-
-class _WishlistScreenState extends State<WishlistScreen> {
-  // Mock wishlist data based on Product model
-  final List<Product> wishlistItems = [
-    Product(
-      id: '1',
-      category: 'Snacks',
-      image: "assets/images/Buffalo Chicken Dip.png",
-      title: "Buffalo Chicken Dip",
-      distance: "1.2 km",
-      rating: "4.8",
-      reviewCount: "(230)",
-      price: 12.99,
-    ),
-    Product(
-      id: '2',
-      category: 'Desserts',
-      image: "assets/images/Maltesers Tiramisu.png",
-      title: "Maltesers Tiramisu",
-      distance: "0.8 km",
-      rating: "4.9",
-      reviewCount: "(540)",
-      price: 24.00,
-    ),
-    Product(
-      id: '3',
-      category: 'Main Course',
-      image: "assets/images/Sirloin steak.png",
-      title: "Sirloin steak",
-      distance: "1.5 km",
-      rating: "4.6",
-      reviewCount: "(122)",
-      price: 4.50,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,82 +18,91 @@ class _WishlistScreenState extends State<WishlistScreen> {
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            /// HEADER
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.02),
-              child: Row(
-                children: [
-                  Container(
-                    height: w * 0.09,
-                    width: w * 0.09,
-                    decoration: BoxDecoration(
-                      color: colors.surface,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: colors.boxShadow,
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.chevron_left,
-                        color: colors.textPrimary,
-                        size: w * 0.06,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: w * 0.04),
-                  Text(
-                    "My Wishlist",
-                    style: TextStyle(
-                      fontSize: w * 0.055,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat',
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        child: Consumer<WishlistProvider>(
+          builder: (context, wishlistProvider, _) {
+            final items = wishlistProvider.wishlist;
 
-            /// WISHLIST GRID
-            Expanded(
-              child: wishlistItems.isEmpty
-                  ? _buildEmptyState(w, h, colors)
-                  : GridView.builder(
-                      padding: EdgeInsets.all(w * 0.05),
-                      itemCount: wishlistItems.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
-                        childAspectRatio: 0.72,
+            return Column(
+              children: [
+                /// HEADER
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.02),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: w * 0.09,
+                        width: w * 0.09,
+                        decoration: BoxDecoration(
+                          color: colors.surface,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: colors.boxShadow,
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: Icon(
+                            Icons.chevron_left,
+                            color: colors.textPrimary,
+                            size: w * 0.06,
+                          ),
+                        ),
                       ),
-                      itemBuilder: (context, index) {
-                        final item = wishlistItems[index];
-                        return _buildWishlistItem(item, w, colors);
-                      },
-                    ),
-            ),
-          ],
+                      SizedBox(width: w * 0.04),
+                      Text(
+                        "My Wishlist",
+                        style: TextStyle(
+                          fontSize: w * 0.055,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// WISHLIST GRID
+                Expanded(
+                  child: wishlistProvider.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : items.isEmpty
+                          ? _buildEmptyState(w, h, colors)
+                          : GridView.builder(
+                              padding: EdgeInsets.all(w * 0.05),
+                              itemCount: items.length,
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.72,
+                              ),
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                return _buildWishlistItem(context, item, w, colors, wishlistProvider);
+                              },
+                            ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildWishlistItem(Product item, double w, dynamic colors) {
+  Widget _buildWishlistItem(BuildContext context, Product item, double w,
+      dynamic colors, WishlistProvider wishlistProvider) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailsScreen(offer: item),
+            builder: (_) => ProductDetailsScreen(offer: item),
           ),
         );
       },
@@ -169,16 +140,19 @@ class _WishlistScreenState extends State<WishlistScreen> {
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: AppColorsLegacy.primary.withOpacity(0.9),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.white,
-                        size: 16,
+                    child: GestureDetector(
+                      onTap: () => wishlistProvider.toggleWishlist(item),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColorsLegacy.primary.withOpacity(0.9),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.favorite,
+                          color: Colors.white,
+                          size: 16,
+                        ),
                       ),
                     ),
                   ),

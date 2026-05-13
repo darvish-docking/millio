@@ -9,11 +9,13 @@ class ProductDescriptionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-                    final colors = context.colors;
+    final colors = context.colors;
 
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final padding = w * 0.05;
+
+
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -30,7 +32,7 @@ class ProductDescriptionScreen extends StatelessWidget {
               clipBehavior: Clip.hardEdge,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child:  Padding(
+                child: Padding(
                   padding: EdgeInsets.all(8),
                   child: Icon(Icons.arrow_back_ios_new, size: 18, color: AppColorsLegacy.textPrimary),
                 ),
@@ -38,7 +40,7 @@ class ProductDescriptionScreen extends StatelessWidget {
             ),
           ),
         ),
-        title:  Text(
+        title: Text(
           "Description",
           style: TextStyle(
             fontSize: 22,
@@ -50,43 +52,36 @@ class ProductDescriptionScreen extends StatelessWidget {
         centerTitle: false,
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          // --- Decorative Background Layer (Bottom) ---
-          
-          // 🍳 Blurred background shadow
           Positioned(
-            bottom: -h * 0.08,
+            bottom: 0,
             left: 0,
+            right: 0,
             child: Image.asset(
               'assets/images/shade1.png',
-              width: w * 0.8,
-              fit: BoxFit.contain,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
-
-          // 🍳 Decorative Tray (bullseye)
           Positioned(
-            bottom: -h * 0.02,
+            bottom: 0,
             left: -w * 0.15,
             child: Image.asset(
               'assets/images/bullseye.png',
               width: w * 0.65,
             ),
           ),
-
-          // 🍳 Floating Fried Egg 
           Positioned(
-            bottom: -h * 0.05,
-            right: -w * 0.1,
+            bottom: 0,
+            right: 0,
             child: Image.asset(
               'assets/images/Egg.png',
               width: w * 0.6,
+              fit: BoxFit.contain,
             ),
           ),
 
-          // --- Foreground Layer (Top) ---
-          
-          // 📜 Main Content
           SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: padding),
             physics: const BouncingScrollPhysics(),
@@ -95,7 +90,6 @@ class ProductDescriptionScreen extends StatelessWidget {
               children: [
                 SizedBox(height: h * 0.01),
 
-                // 🎥 Video Preview Area
                 Container(
                   height: h * 0.28,
                   width: double.infinity,
@@ -113,26 +107,25 @@ class ProductDescriptionScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration:  const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child:  const Icon(
-                          Icons.play_arrow,
-                          color: Colors.black,
-                          size: 30,
-                        ),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_arrow,
+                        color: Colors.black,
+                        size: 30,
                       ),
                     ),
+                  ),
                 ),
                 SizedBox(height: h * 0.04),
 
-                // ℹ️ Information Section
-                 Text(
-                  "Information", // Matching typo in design image
+                Text(
+                  "Information",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -142,7 +135,9 @@ class ProductDescriptionScreen extends StatelessWidget {
                 ),
                 SizedBox(height: h * 0.015),
                 Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna. Etiam tempor orci eu lobortis elementum. Et tortor at risus viverra",
+                  offer.description.isNotEmpty
+                      ? offer.description
+                      : "No description available.",
                   style: TextStyle(
                     fontSize: 14,
                     color: colors.textSecondary.withOpacity(0.7),
@@ -152,9 +147,8 @@ class ProductDescriptionScreen extends StatelessWidget {
                 ),
                 SizedBox(height: h * 0.04),
 
-                // 🥗 Ingredients Section
-                 Text(
-                  "Ingridients", // Matching typo in design image
+                Text(
+                  "Ingridients",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -163,13 +157,24 @@ class ProductDescriptionScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: h * 0.02),
-                _buildIngredientRow("Beef", "500 g"),
-                _buildIngredientRow("Garlic", "05 g"),
-                _buildIngredientRow("Onion", "73 g"),
-                _buildIngredientRow("Soy Sauce", "64 g"),
-                _buildIngredientRow("Basil", "03 g"),
-                
-                SizedBox(height: h * 0.15), // Extra space
+                if (offer.ingredients.isNotEmpty)
+                  ...offer.ingredients.entries.map(
+                    (e) => _buildIngredientRow(e.key, e.value),
+                  )
+                else
+                  Padding(
+                    padding: EdgeInsets.only(top: h * 0.01),
+                    child: Text(
+                      "No ingredient information available.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColorsLegacy.backgroundSecondary5,
+                        fontFamily: 'Montserrat',
+                      ),
+                    ),
+                  ),
+
+                SizedBox(height: h * 0.15),
               ],
             ),
           ),

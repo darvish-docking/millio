@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:millio/features/cart/data/models/address_model.dart';
+import 'package:millio/features/cart/data/models/card_model.dart';
+import 'package:millio/features/home/data/models/chat_message_model.dart';
 import 'package:millio/features/home/data/models/product_model.dart';
 
 class DatabaseService {
@@ -170,6 +173,250 @@ class DatabaseService {
         .collection('items')
         .doc(notificationId)
         .update({'isRead': !currentValue});
+  }
+
+  // --- Addresses ---
+
+  Future<String> saveAddress({
+    required String uid,
+    required String label,
+    required String fullName,
+    required String country,
+    required String street,
+    required String city,
+    required String phone,
+    required String email,
+    bool isDefault = false,
+    double? latitude,
+    double? longitude,
+    String? addressId,
+  }) async {
+    final collection = _db.collection('users').doc(uid).collection('addresses');
+
+    if (isDefault) {
+      final batch = _db.batch();
+      final existing = await collection.where('isDefault', isEqualTo: true).get();
+      for (final doc in existing.docs) {
+        batch.update(doc.reference, {'isDefault': false});
+      }
+      await batch.commit();
+    }
+
+    final data = {
+      'label': label,
+      'fullName': fullName,
+      'country': country,
+      'street': street,
+      'city': city,
+      'phone': phone,
+      'email': email,
+      'isDefault': isDefault,
+      'latitude': latitude,
+      'longitude': longitude,
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    if (addressId != null) {
+      await collection.doc(addressId).update(data);
+      return addressId;
+    } else {
+      data['createdAt'] = FieldValue.serverTimestamp();
+      final docRef = await collection.add(data);
+      return docRef.id;
+    }
+  }
+
+  Stream<List<Address>> getUserAddresses(String uid) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('addresses')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Address.fromMap(doc.data(), doc.id))
+            .toList());
+  }
+
+  Future<void> deleteAddress(String uid, String addressId) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('addresses')
+        .doc(addressId)
+        .delete();
+  }
+
+  // --- Cards ---
+
+  Future<String> saveCard({
+    required String uid,
+    required String cardHolderName,
+    required String lastFourDigits,
+    required String cardNetwork,
+    required String expiryDate,
+    bool isDefault = false,
+  }) async {
+    final collection = _db.collection('users').doc(uid).collection('cards');
+
+    if (isDefault) {
+      final batch = _db.batch();
+      final existing = await collection.where('isDefault', isEqualTo: true).get();
+      for (final doc in existing.docs) {
+        batch.update(doc.reference, {'isDefault': false});
+      }
+      await batch.commit();
+    }
+
+    final data = {
+      'cardHolderName': cardHolderName,
+      'lastFourDigits': lastFourDigits,
+      'cardNetwork': cardNetwork,
+      'expiryDate': expiryDate,
+      'isDefault': isDefault,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    final docRef = await collection.add(data);
+    return docRef.id;
+  }
+
+  Stream<List<CardInfo>> getUserCards(String uid) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('cards')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => CardInfo.fromMap(doc.data(), doc.id))
+            .toList());
+  }
+
+  Future<void> deleteCard(String uid, String cardId) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('cards')
+        .doc(cardId)
+        .delete();
+  }
+
+  // --- Chat ---
+
+  /// Returns a chat document ID for a user (creates if needed).
+  Future<String> _ensureChatDoc(String uid) async {
+    final ref = _db.collection('chats').doc(uid);
+    final snap = await ref.get();
+    if (!snap.exists) {
+      await ref.set({
+        'userId': uid,
+        'status': 'active',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+    return uid;
+  }
+
+  /// Sends a message in the user's support chat.
+  Future<void> sendMessage({
+    required String uid,
+    required String senderName,
+    String? text,
+    String? imageBase64,
+  }) async {
+    final chatId = await _ensureChatDoc(uid);
+    final msgRef = _db
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc();
+
+    final data = ChatMessageModel(
+      id: msgRef.id,
+      text: text,
+      senderId: uid,
+      senderName: senderName,
+      timestamp: DateTime.now(),
+      imageBase64: imageBase64,
+    ).toMap();
+
+    await msgRef.set(data);
+
+    await _db.collection('chats').doc(chatId).update({
+      'lastMessage': text ?? '📷 Image',
+      'lastMessageTime': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Toggles a reaction emoji on a message.
+  Future<void> toggleReaction({
+    required String chatId,
+    required String messageId,
+    required String reaction,
+    required bool isAdding,
+  }) async {
+    final ref = _db
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+
+    if (isAdding) {
+      await ref.update({
+        'reactions': FieldValue.arrayUnion([reaction]),
+      });
+    } else {
+      await ref.update({
+        'reactions': FieldValue.arrayRemove([reaction]),
+      });
+    }
+  }
+
+  /// Streams messages for the user's support chat in chronological order.
+  Stream<List<ChatMessageModel>> getChatMessages(String uid) {
+    return _db
+        .collection('chats')
+        .doc(uid)
+        .collection('messages')
+        .orderBy('timestamp', descending: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ChatMessageModel.fromMap(doc.data(), doc.id))
+            .toList());
+  }
+
+  // --- Wishlist ---
+
+  Future<void> addToWishlist(String uid, Product product) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('wishlist')
+        .doc(product.id)
+        .set({
+      ...product.toMap(),
+      'addedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> removeFromWishlist(String uid, String productId) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('wishlist')
+        .doc(productId)
+        .delete();
+  }
+
+  Stream<List<Product>> getUserWishlist(String uid) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('wishlist')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Product.fromMap(doc.data(), doc.id))
+            .toList());
   }
 
   /// Writes a new review and atomically updates aggregateRating + reviewCount.

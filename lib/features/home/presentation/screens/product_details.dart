@@ -4,6 +4,7 @@ import 'package:millio/features/home/presentation/screens/product_description_sc
 import 'package:millio/features/home/data/models/product_model.dart';
 import 'package:millio/features/home/presentation/screens/reviews_screen.dart';
 import 'package:millio/features/cart/presentation/providers/cart_provider.dart';
+import 'package:millio/features/profile/presentation/providers/wishlist_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -298,7 +299,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       SizedBox(height: h * 0.01),
                       Text(
-                        "Experience the amazing taste of our freshly prepared ${offer.title}. Masterfully cooked with the best ingredients carefully sourced by top chefs in town. Serve hot to get the perfect joy of its blend of flavors and aroma.",
+                        offer.description.isNotEmpty
+                            ? offer.description
+                            : "Experience the amazing taste of our freshly prepared ${offer.title}.",
                         style: TextStyle(
                           fontSize: w * 0.035,
                           color: AppColorsLegacy.textSecondary,
@@ -553,20 +556,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         if (!_isSearchActive) ...[
                           SizedBox(width: padding * 0.6),
-                          Material(
-                            color: AppColorsLegacy.background.withOpacity(0.9),
-                            shape: const CircleBorder(),
-                            clipBehavior: Clip.hardEdge,
-                            child: InkWell(
-                              onTap: () {},
-                              child: SizedBox(
-                                height: iconSize,
-                                width: iconSize,
-                                child: Center(
-                                  child: Icon(Icons.favorite_border, size: iconSize * 0.55, color: AppColorsLegacy.textPrimarylight87),
+                          Consumer<WishlistProvider>(
+                            builder: (context, wishlistProvider, _) {
+                              final inWishlist = wishlistProvider.isInWishlist(widget.offer.id);
+                              return Material(
+                                color: AppColorsLegacy.background.withOpacity(0.9),
+                                shape: const CircleBorder(),
+                                clipBehavior: Clip.hardEdge,
+                                child: InkWell(
+                                  onTap: () => wishlistProvider.toggleWishlist(widget.offer),
+                                  child: SizedBox(
+                                    height: iconSize,
+                                    width: iconSize,
+                                    child: Center(
+                                      child: Icon(
+                                        inWishlist ? Icons.favorite : Icons.favorite_border,
+                                        size: iconSize * 0.55,
+                                        color: inWishlist
+                                            ? AppColorsLegacy.primary
+                                            : AppColorsLegacy.textPrimarylight87,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         ],
                       ],

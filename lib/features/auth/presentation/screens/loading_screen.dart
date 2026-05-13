@@ -21,25 +21,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-    context.read<OnboardingProvider>().loadUserData();
-  });
     _navigateNext();
   }
 
   void _navigateNext() async {
-    final prefs =
-        await SharedPreferences.getInstance();
+    await context.read<OnboardingProvider>().loadUserData();
 
-    bool onboardingDone =
-        prefs.getBool("onboardingDone") ?? false;
-
+    final prefs = await SharedPreferences.getInstance();
     final onboardingProvider = context.read<OnboardingProvider>();
+
+    bool onboardingDone = prefs.getBool("onboardingDone") ?? false;
     bool isLoggedIn = onboardingProvider.isLoggedIn;
 
-    await Future.delayed(
-      const Duration(seconds: 2),
-    );
+    await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
@@ -65,8 +59,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
         ),
       );
     }
-
-
   }
 
   @override

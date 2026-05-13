@@ -11,6 +11,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:millio/features/cart/presentation/screens/payment_success_screen.dart';
 import 'package:millio/features/cart/presentation/screens/payment_failure_screen.dart';
 import 'package:millio/features/cart/data/models/voucher_model.dart';
+import 'package:millio/features/cart/data/models/address_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:millio/core/services/database_service.dart';
@@ -30,7 +31,7 @@ class _CartScreenState extends State<CartScreen> {
   final List<String> _tabs = ["Cart", "Checkout", "Delivery"];
   
   // Track selected address for Checkout flow
-  SavedAddress? _selectedAddress;
+  Address? _selectedAddress;
   String? _selectedPaymentMethodId;
 
   @override
@@ -39,13 +40,6 @@ class _CartScreenState extends State<CartScreen> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-
-    // Initialize with a default address matching the first one in AddressScreen
-    _selectedAddress = SavedAddress(
-      id: '1',
-      label: 'Home',
-      details: '23, Orchard Street, Near City Mall, New York, 10001',
-    );
   }
 
   @override
@@ -212,6 +206,9 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String _getPaymentMethodName(String id) {
+    if (id.startsWith('card_')) {
+      return 'Card';
+    }
     switch (id) {
       case 'mastercard': return 'Mastercard';
       case 'paypal': return 'PayPal';
@@ -484,7 +481,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
             );
-            if (result != null && result is SavedAddress) {
+            if (result != null && result is Address) {
               setState(() {
                 _selectedAddress = result;
               });
@@ -505,9 +502,7 @@ class _CartScreenState extends State<CartScreen> {
           MaterialPageRoute(builder: (context) => const VoucherScreen()),
         );
         if (result != null && result is Voucher) {
-          // cart.applyVoucher(result);
-          context.read<CartProvider>()
-    .applyVoucher(result);
+          cart.applyVoucher(result);
         }
       },
       child: Container(
@@ -534,8 +529,7 @@ class _CartScreenState extends State<CartScreen> {
             ),
             if (cart.appliedVoucher != null)
               GestureDetector(
-                onTap: () => context.read<CartProvider>()
-    .removeVoucher(),
+                onTap: () => cart.removeVoucher(),
                 child: Icon(Icons.close, color: AppColorsLegacy.primary, size: w * 0.05),
               )
             else
@@ -639,7 +633,7 @@ print("TOTAL UI: ${cart.total}");
 print("DELIVERY UI: ${cart.finalDeliveryFee}");
 
     double subtotal = cart.subtotal;
-    double deliveryFee = cart.deliveryFee;
+    double deliveryFee = cart.finalDeliveryFee;
     double discount = cart.discount;
     double total = cart.total;
 

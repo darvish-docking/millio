@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:millio/core/constants/app_colors.dart';
@@ -31,12 +32,15 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
   }
 
   Future<void> _loadUserEmail() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.email != null && user.email!.isNotEmpty) {
+      if (mounted) setState(() => _userEmail = user.email!);
+      return;
+    }
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString("email");
     if (savedEmail != null && savedEmail.isNotEmpty) {
-      setState(() {
-        _userEmail = savedEmail;
-      });
+      if (mounted) setState(() => _userEmail = savedEmail);
     }
   }
 

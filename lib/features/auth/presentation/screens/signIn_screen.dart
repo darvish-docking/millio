@@ -97,376 +97,389 @@ class _SignInScreenState extends State<SignInScreen> {
 
     return Scaffold(
       body: Stack(
+        clipBehavior: Clip.none,
         children: [
-          /// 🔹 BACKGROUND
-          Column(
-            children: [
-              /// Top 3/4 Gradient → White
-              SizedBox(
-                height: height * 0.75,
-                child: Stack(
-                  children: [
-                    /// 🔹 Top Horizontal Gradient (Green → Violet)
-                    Container(
-                      decoration:  BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            colors.primary, // Green (left)
-                            AppColorsLegacy.secondary, // Violet (right)
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.topRight,
+          /// 🔹 BACKGROUND — pinned to full screen height so keyboard doesn't shift it
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: height,
+            child: Column(
+              children: [
+                /// Top 3/4 Gradient → White
+                Expanded(
+                  flex: 3,
+                  child: Stack(
+                    children: [
+                      /// 🔹 Top Horizontal Gradient (Green → Violet)
+                      Container(
+                        decoration:  BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              colors.primary,
+                              AppColorsLegacy.secondary,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.topRight,
+                          ),
                         ),
                       ),
-                    ),
 
-                    /// 🔹 Fade to White (Vertical Overlay)
-                    Container(
-                      decoration:  BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppColors.transparent, Theme.of(context).scaffoldBackgroundColor,],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0.25, 0.7], // controls fade depth
+                      /// 🔹 Fade to White (Vertical Overlay)
+                      Container(
+                        decoration:  BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [AppColors.transparent, Theme.of(context).scaffoldBackgroundColor,],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.25, 0.7],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
 
-              /// Bottom 1/4 Dark Blur Section
-              Stack(
-                children: [
-                  Container(
-                    height: height * 0.25,
-                    color: AppColorsLegacy.indigo.withValues(alpha: 0.85),
-                  ),
+                /// Bottom 1/4 Dark Blur Section
+                Expanded(
+                  flex: 1,
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: AppColorsLegacy.indigo.withValues(alpha: 0.85),
+                      ),
 
-                  /// Glow effect at center
-                  Positioned.fill(
-                    child: Center(
-                      child: Container(
-                        width: width * 0.5,
-                        height: height * 0.4,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColorsLegacy.lightPurple.withOpacity(0.4),
-                              blurRadius: 80,
-                              spreadRadius: 4,
+                      /// Glow effect at center
+                      Positioned.fill(
+                        child: Center(
+                          child: Container(
+                            width: width * 0.5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColorsLegacy.lightPurple.withOpacity(0.4),
+                                  blurRadius: 80,
+                                  spreadRadius: 4,
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
 
-                  /// Blur Layer
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                    child: Container(
-                      height: height * 0.25,
-                      color: AppColors.transparent,
-                    ),
+                      /// Blur Layer
+                      BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                        child: Container(
+                          color: AppColors.transparent,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
 
           /// 🔹 FOREGROUND CONTENT
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  /// Image
-                  Image.asset(
-                    "assets/images/noodles.png",
-                    width: double.infinity,
-                    height: height * 0.27,
-                    fit: BoxFit.cover,
+          SingleChildScrollView(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 8,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+            ),
+            child: Column(
+              children: [
+                /// Image
+                Image.asset(
+                  "assets/images/noodles.png",
+                  width: double.infinity,
+                  height: height * 0.27,
+                  fit: BoxFit.cover,
+                ),
+
+                SizedBox(height: height * 0.02),
+
+                /// Title
+                 Text(
+                  "Sign In",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                    color: colors.textPrimary
                   ),
+                ),
 
-                  SizedBox(height: height * 0.02),
+                SizedBox(height: height * 0.001),
 
-                  /// Title
-                   Text(
-                    "Sign In",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold,
-                      color: colors.textPrimary
+                /// Subtitle
+                 Text(
+                  "Access to your account",
+                  style: TextStyle(fontFamily: 'Montserrat',
+                  color: colors.textPrimary),
+                ),
+
+                SizedBox(height: height * 0.02),
+
+                /// Username Field
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColorsLegacy.textPrimary.withOpacity(
+                            0.1,
+                          ),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ),
+                    child: TextField(
+                      controller: _emailController,
+                       style: TextStyle(
+  color: colors.hintText,
 
-                  SizedBox(height: height * 0.001),
-
-                  /// Subtitle
-                   Text(
-                    "Access to your account",
-                    style: TextStyle(fontFamily: 'Montserrat',
-                    color: colors.textPrimary),
-                  ),
-
-                  SizedBox(height: height * 0.02),
-
-                  /// Username Field
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColorsLegacy.textPrimary.withOpacity(
-                              0.1,
-                            ), // shadow color
-                            blurRadius: 10, // softness
-                            spreadRadius: 1, // how much it spreads
-                            offset: const Offset(0, 4), // position (x, y)
+),
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        hintStyle:  TextStyle(
+                          fontSize: 14,
+                          fontFamily: "Montserrat",
+                          color: colors.hintText,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        filled: true,
+                        fillColor: colors.surface,
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.all(
+                            width * 0.02,
                           ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: _emailController,
-                         style: TextStyle(
-    color: colors.hintText, // 👈 typing text color
-  
-  ),
-                        decoration: InputDecoration(
-                          hintText: "Email",
-                          hintStyle:  TextStyle(
-                            fontSize: 14,
-                            fontFamily: "Montserrat", // 👈 your custom font
+                          child: Image.asset(
+                            "assets/images/username.png",
+                            width: width * 0.02,
+                            height: width * 0.02,
                             color: colors.hintText,
-                            fontWeight: FontWeight.w500,
                           ),
-                          filled: true,
-                          fillColor: colors.surface,
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(
-                              width * 0.02,
-                            ), // control spacing
-                            child: Image.asset(
-                              "assets/images/username.png",
-                              width: width * 0.02,
-                              height: width * 0.02,
-                              color: colors.hintText,
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide.none,
-                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide.none,
                         ),
                       ),
                     ),
                   ),
+                ),
 
-                  SizedBox(height: height * 0.015),
+                SizedBox(height: height * 0.015),
 
-                  /// Password Field
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColorsLegacy.textPrimary.withOpacity(
-                              0.1,
-                            ), // shadow color
-                            blurRadius: 10, // softness
-                            spreadRadius: 1, // how much it spreads
-                            offset: const Offset(0, 4), // position (x, y)
+                /// Password Field
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColorsLegacy.textPrimary.withOpacity(
+                            0.1,
                           ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        style: TextStyle(
-    color: colors.hintText, // 👈 typing text color
-  
-  ),
-                        decoration: InputDecoration(
-                          hintText: "Password",
-                          hintStyle:  TextStyle(
-                            fontSize: 14,
-                            fontFamily: "Montserrat", // 👈 your custom font
-                            color: colors.hintText,
-                            fontWeight: FontWeight.w500,
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      keyboardType: TextInputType.visiblePassword,
+                      style: TextStyle(
+  color: colors.hintText,
+
+),
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        hintStyle:  TextStyle(
+                          fontSize: 14,
+                          fontFamily: "Montserrat",
+                          color: colors.hintText,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        filled: true,
+                        fillColor: colors.surface,
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.all(
+                            width * 0.02,
                           ),
-                          filled: true,
-                          fillColor: colors.surface,
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(
-                              width * 0.02,
-                            ), // control spacing
-                            child: Image.asset(
-                              "assets/images/Lock.png",
-                              width: width * 0.02,
-                              height: width * 0.02,
-                              color: colors.hintText
-                            ),
+                          child: Image.asset(
+                            "assets/images/Lock.png",
+                            width: width * 0.02,
+                            height: width * 0.02,
+                            color: colors.hintText
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide.none,
-                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide.none,
                         ),
                       ),
                     ),
                   ),
+                ),
 
-                  SizedBox(height: height * 0.01),
+                SizedBox(height: height * 0.01),
 
-                  /// Remember + Forgot
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Transform.scale(
-                            scale: 0.85,
-                            child: Checkbox(
-                              value: true,
-                              onChanged: (v) {},
-                              activeColor: AppColorsLegacy.primary,
-                              checkColor: AppColorsLegacy.background,
-                            ),
+                /// Remember + Forgot
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Transform.scale(
+                          scale: 0.85,
+                          child: Checkbox(
+                            value: true,
+                            onChanged: (v) {},
+                            activeColor: AppColorsLegacy.primary,
+                            checkColor: AppColorsLegacy.background,
                           ),
-                           Text(
-                            "Remember Me",
-                            style: TextStyle(
-                              color:colors.textPrimary,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Montserrat',
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForgotPasswordScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Forgot Password",
+                        ),
+                         Text(
+                          "Remember Me",
                           style: TextStyle(
-                            color: colors.textPrimary,
+                            color:colors.textPrimary,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Montserrat',
                             fontSize: 13,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: height * 0.01),
-
-                  /// Sign In Button
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: height * 0.06,
-                      child: ElevatedButton(
-                        onPressed: _signInUser,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColorsLegacy.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordScreen(),
                           ),
-                        ),
-                        child:  Text(
-                          "Sign In",
-                          style: TextStyle(
-                            color: AppColorsLegacy.background,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Montserrat',
-                            fontSize: 13,
-                          ),
+                        );
+                      },
+                      child: Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                          color: colors.textPrimary,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Montserrat',
+                          fontSize: 13,
                         ),
                       ),
                     ),
+                  ],
+                ),
+
+                SizedBox(height: height * 0.01),
+
+                /// Sign In Button
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: height * 0.06,
+                    child: ElevatedButton(
+                      onPressed: _signInUser,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColorsLegacy.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      child:  Text(
+                        "Sign In",
+                        style: TextStyle(
+                          color: AppColorsLegacy.background,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Montserrat',
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
                   ),
+                ),
 
-                  SizedBox(height: height * 0.05),
+                SizedBox(height: height * 0.05),
 
-                  /// 🔹 PILL BADGE (overlapping dark section)
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: width * 0.05,
-                      vertical: height * 0.01,
+                /// 🔹 PILL BADGE (overlapping dark section)
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.05,
+                    vertical: height * 0.01,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColorsLegacy.indigo,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child:  Text(
+                    "Or Sign In With",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: AppColorsLegacy.background,
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColorsLegacy.indigo,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child:  Text(
-                      "Or Sign In With",
+                  ),
+                ),
+
+                SizedBox(height: height * 0.04),
+
+                /// 🔹 SOCIAL BUTTONS
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _socialButton('assets/images/apple.png', context),
+                    _socialButton('assets/images/google.png', context),
+                    _socialButton('assets/images/facebook.png', context),
+                  ],
+                ),
+
+                SizedBox(height: height * 0.04),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
+                        fontFamily: 'Montserrat',
                         color: AppColorsLegacy.background,
                       ),
                     ),
-                  ),
-
-                  SizedBox(height: height * 0.04),
-
-                  /// 🔹 SOCIAL BUTTONS
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _socialButton('assets/images/apple.png', context),
-                      _socialButton('assets/images/google.png', context),
-                      _socialButton('assets/images/facebook.png', context),
-                    ],
-                  ),
-
-                  SizedBox(height: height * 0.04),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account? ",
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => SignUpScreen()),
+                        );
+                      },
+                      child:  Text(
+                        "Sign Up",
                         style: TextStyle(
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w900,
                           fontFamily: 'Montserrat',
-                          color: AppColorsLegacy.background,
+                          color: AppColorsLegacy.primary,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => SignUpScreen()),
-                          );
-                        },
-                        child:  Text(
-                          "Sign Up",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Montserrat',
-                            color: AppColorsLegacy.primary, // 👈 green text
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

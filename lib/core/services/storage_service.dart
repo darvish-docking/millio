@@ -7,19 +7,25 @@ class StorageService {
   /// Uploads a profile picture to Firebase Storage and returns the download URL.
   Future<String> uploadProfilePicture(String uid, File file) async {
     try {
-      // Create a reference to the location you want to upload to
       Reference ref = _storage.ref().child('profile_pictures').child('$uid.jpg');
-
-      // Upload the file
       UploadTask uploadTask = ref.putFile(file);
-
-      // Wait for the upload to complete and get the download URL
       TaskSnapshot snapshot = await uploadTask;
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-
-      return downloadUrl;
+      return await snapshot.ref.getDownloadURL();
     } catch (e) {
       throw 'Error uploading profile picture: $e';
+    }
+  }
+
+  /// Uploads a chat image and returns the download URL.
+  Future<String> uploadChatImage(String uid, File file) async {
+    try {
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      Reference ref = _storage.ref().child('chat_images').child(uid).child(fileName);
+      UploadTask uploadTask = ref.putFile(file);
+      TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      throw 'Error uploading chat image: $e';
     }
   }
 }

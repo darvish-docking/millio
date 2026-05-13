@@ -133,27 +133,15 @@ class CartProvider extends ChangeNotifier {
   // }
 
   double get discount {
-    
-    print(_appliedVoucher?.title);
+  if (_appliedVoucher == null) return 0;
 
-  if (_appliedVoucher == null) {
-    return 0;
-  }
+  if (subtotal < _appliedVoucher!.minimumOrder) return 0;
 
-  // Minimum order check
-  if (subtotal < _appliedVoucher!.minimumOrder) {
-    return 0;
-  }
-
-  switch (_appliedVoucher!.discountType) {
-
+  switch (_appliedVoucher!.discountType.toLowerCase()) {
     case 'percentage':
-      return subtotal *
-          (_appliedVoucher!.discountValue / 100);
-
+      return subtotal * (_appliedVoucher!.discountValue / 100);
     case 'fixed':
       return _appliedVoucher!.discountValue;
-
     default:
       return 0;
   }
@@ -161,7 +149,7 @@ class CartProvider extends ChangeNotifier {
 
 
   double get finalDeliveryFee {
-  if (_appliedVoucher?.discountType ==
+  if (_appliedVoucher?.discountType.toLowerCase() ==
       'free_delivery') {
     return 0;
   }
